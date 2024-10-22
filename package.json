@@ -1,0 +1,8 @@
+{
+  "name": "leetrboo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "license": "UNLICENSED",
+  "private": true
+}
