@@ -4,5 +4,15 @@
     "packages/*"
   ],
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "sst": "3.2.46"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.145"
+  },
+  "scripts": {
+    "dev": "sst dev",
+    "deploy": "sst deploy"
+  }
 }

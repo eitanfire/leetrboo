@@ -488,7 +488,7 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.24.0.tgz#0574d7e87b44ee8511d08cc7f914bcb802b70818"
   integrity sha512-fbMkAF7fufku0N2dE5TBXcNlg0pt0cJue4xBRE2Qc5Vqikxr4VCgKj/ht6SMdFcOacVA9rqF70APJ8RN/4vMJw==
 
-"@types/aws-lambda@^8.10.145":
+"@types/aws-lambda@8.10.145":
   version "8.10.145"
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.145.tgz#b2d31a987f4888e5553ff1819f57cafa475594d9"
   integrity sha512-dtByW6WiFk5W5Jfgz1VM+YPA21xMXTuSFoLYIDY0L44jDLLflVPtZkYuu3/YxpGcvjzKFBZLU+GyKjR0HOYtyw==
@@ -2164,7 +2164,7 @@ sst-linux-x86@3.2.46:
   resolved "https://registry.yarnpkg.com/sst-linux-x86/-/sst-linux-x86-3.2.46.tgz#4a41735eb4e53c06b151bf8bb63a3e4b82c903e5"
   integrity sha512-Ni0MmESue0mAAZ+GAJWWCpjjSnMctQkAiAsNZYevr7DGCv26e6Q2qOehKGVjMGGwD/vPDMB7bz3G1zx63sNFRQ==
 
-sst@^3.2.38:
+sst@3.2.46, sst@^3.2.38:
   version "3.2.46"
   resolved "https://registry.yarnpkg.com/sst/-/sst-3.2.46.tgz#64d30b5da73ea30a1d03c971dc80e2a54263bbfe"
   integrity sha512-gxidmz5t7wuepsfEVNz2HrFD7m9lPlYpR+4AxKFSLhAYTlfeSBFt9hM6cQhKXdJ081AQgJ87fPzC83v1uQwUWg==

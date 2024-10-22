@@ -1,20 +1,18 @@
-import { SSTConfig } from "sst";
+/// <reference path="./.sst/platform/config.d.ts" />
 
-const config: SSTConfig = {
-  config(input) {
+export default $config({
+  app(input) {
     return {
       name: "leetrboo",
-      region: "us-east-1",
-      removal: input.stage === "production" ? "retain" : "remove",
+      removal: input?.stage === "production" ? "retain" : "remove",
+      home: "aws",
     };
   },
-  stacks(app) {
-    // Define your stacks here
-    // For example:
-    // app.stack(MyStack);
-  },
-  // If you're using NextJS or other bundled constructs, you might need:
-  // workspaces: ["packages/*"],
-};
-
-export default config;
+  async run() {new sst.aws.StaticSite("Web", {
+    path: 'packages/web',
+    build: {
+      command: "yarn run build",
+      output: "dist",
+    },
+  });},
+});
