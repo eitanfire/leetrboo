@@ -16,10 +16,8 @@ body {
   height: 30vh;  
 }
 
-.banner::before {
-  background-color:( Orange, 0.25);
-    display: block;
-  content: '';
+.stats {
+
 }
 
 .content-body {

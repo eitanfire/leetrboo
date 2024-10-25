@@ -4,7 +4,7 @@ type Props = {};
 
 const Stats: React.FC<Props> = ({}) => {
   return (
-    <div>
+    <div className="stats">
         Stats
     </div>
   );
