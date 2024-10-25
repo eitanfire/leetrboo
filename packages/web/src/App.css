@@ -4,14 +4,8 @@
   outline: solid #f00 1px !important;
 } */
 
-/* * {
-  background: rgb(255, 172, 28); 
-} */
-
 body {
-  /* background: purple;  */
     background: rgb(255, 172, 28); 
-
 }
 
 .header {
@@ -24,6 +18,10 @@ body {
 }
 
 .stats {
+
+}
+
+.stopwatch {
 
 }
 
