@@ -7,7 +7,7 @@ type Props = {
 
 const Header: React.FC<Props> = ({}) => {
     return (
-      <div>
+      <div className="header">
         <img src={bannerImage} className="banner" alt="banner" />
       </div>
     );

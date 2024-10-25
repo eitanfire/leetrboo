@@ -8,6 +8,10 @@ body {
   background: rgb(255, 172, 28); 
 }
 
+.header {
+  border-bottom: 5px solid #000;
+}
+
 .banner {
   height: 30vh;  
 }
