@@ -1,3 +1,24 @@
-.body {
-  height: 75%
+/* * {
+  background: #000 !important;
+  color: #0f0 !important;
+  outline: solid #f00 1px !important;
+} */
+
+body {
+  background: rgb(255, 172, 28); 
+}
+
+.banner {
+  height: 30vh;  
+}
+
+.banner::before {
+  background-color:( Orange, 0.25);
+    display: block;
+  content: '';
+}
+
+.content-body {
+height: 70vh;
+  background-color: rgb(242, 240, 240);
 }

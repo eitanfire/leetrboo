@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import "./App.css";
 
 import React, { FC } from "react";
 
@@ -8,7 +9,7 @@ const App: React.FC<Props> = ({}) => {
   return (
     <>
       <Header />
-      <div className="body"></div>
+      <div className="content-body"></div>
     </>
   );
 };
