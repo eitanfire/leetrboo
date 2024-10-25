@@ -1,4 +1,5 @@
 import React, {FC} from "react";
+import bannerImage from "../assets/Halloween-costume-contest.png";
 
 type Props = {
 
@@ -6,8 +7,10 @@ type Props = {
 
 const Header: React.FC<Props> = ({}) => {
     return (
-        <div>Header</div>
-    )
+      <>
+        <img src={bannerImage} alt="banner" />
+      </>
+    );
 }
 
 export default Header;
