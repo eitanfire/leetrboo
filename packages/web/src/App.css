@@ -1,4 +1,3 @@
-/* Reset default margins and padding */
 * {
   margin: 0;
   padding: 0;
@@ -16,12 +15,6 @@ html, body, #root {
 .container-fluid {
   max-width: none !important;
   padding: 0 !important;
-  margin: 0 !important;
-  width: 100% !important;
-}
-
-/* Override Bootstrap row defaults */
-.row {
   margin: 0 !important;
   width: 100% !important;
 }
@@ -76,16 +69,6 @@ html, body, #root {
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  padding-left: 10px;
-}
-
-.stopwatch {
-  flex-grow: 1;
-  text-align: center;
-  display: flex;
-  align-items: center;
   justify-content: center;
   height: 100%;
   padding-left: 10px;
