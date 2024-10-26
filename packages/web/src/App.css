@@ -1,31 +1,100 @@
-/* * {
-  background: #000 !important;
-  color: #0f0 !important;
-  outline: solid #f00 1px !important;
-} */
+/* Reset default margins and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-body {
-    background: rgb(255, 172, 28); 
+html, body, #root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+/* Override Bootstrap container max-width */
+.container-fluid {
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* Override Bootstrap row defaults */
+.row {
+  margin: 0 !important;
+  width: 100% !important;
 }
 
 .header {
+  background: rgb(255, 172, 28);
   border-bottom: 5px solid #000;
-  max-width: 100%;
+  width: 100%;
+  padding: 5px 10px;
+  display: flex;
+  font-size: 3em;
+  line-height: 1em;
+  color: rgb(252, 250, 250);
+  align-items: center;
+  min-height: 30vh;
 }
 
 .banner {
-  height: 30vh;  
+  max-height: 30vh;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@media screen and (max-width: 1200px) {
+  .header {
+    font-size: 2.5em;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .header {
+    font-size: 2em;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .header {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .header {
+    font-size: 1.2em;
+  }
 }
 
 .stats {
-
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding-left: 10px;
 }
 
 .stopwatch {
-
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding-left: 10px;
 }
 
 .content-body {
-height: 70vh;
+  height: 70vh;
+  width: 100%;
   background-color: rgb(242, 240, 240);
+  margin: 0;
+  padding: 0;
 }
