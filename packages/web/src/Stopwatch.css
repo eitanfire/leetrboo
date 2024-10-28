@@ -1,0 +1,158 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.countdown-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.countdown-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.countdown-circle {
+  fill: none;
+  stroke: url(#warm-gradient);
+  stroke-width: 10;
+  stroke-dasharray: 282.743;
+  stroke-dashoffset: 282.743;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+  filter: invert(100%);
+}
+
+.countdown-text {
+  font-family: 'Orbitron', Helvetica, sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 58px;
+  font-weight: bold;
+  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);
+  filter: invert(100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: flowing-gradient 3s linear infinite;
+  animation-play-state: paused;
+}
+
+.countdown-text.animate-gradient {
+  animation-play-state: running;
+}
+
+@keyframes flowing-gradient {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.controls {
+  text-align: center;
+}
+
+/* Button with Inverted Gradient */
+button {
+  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);   /* Gradient background */
+  background-size: 200% auto;   /* Creates the flowing gradient */
+  color: #FFFFFF;               /* Text color should contrast the gradient */
+  border: 1px solid #222222;
+  border-radius: 8px;
+  font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 13px 23px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  -webkit-background-clip: text;
+  color: #FFFFFF;  /* Text color on top of gradient */
+  animation: flowing-gradient 3s ease-in-out infinite; /* Animate gradient */
+}
+
+button:hover {
+  background-position: 200% center;    /* Shifts the gradient on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Nice elevated effect */
+}
+
+button:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+}
+
+button:active {
+  background-position: left;        /* Lock the gradient when pressed */
+  transform: scale(.96);
+}
+
+button:disabled {
+  background: linear-gradient(90deg, #DDDDDD, #F0F0F0, #DDDDDD);  /* Grayscale gradient when disabled */
+  color: #AAAAAA;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+input[type="range"] {
+    appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);  /* Gradient background */
+  background-size: 200% auto;
+  transition: background-position 0.5s;
+  outline: none;
+  cursor: pointer;
+    filter:invert(100%)
+
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FF8C00;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+    /* filter:invert(100%) */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #FF8C00;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  filter:invert(100%)
+}
+
+input[type="range"]:hover {
+  background-position: 200% center;   /* Animate gradient when hovered */
+}
+
+input[type="range"]:disabled {
+  background: linear-gradient(90deg, #DDDDDD, #F0F0F0, #DDDDDD); /* Disabled gradient */
+  cursor: not-allowed;
+}
