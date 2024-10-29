@@ -1,3 +1,16 @@
+:root {
+  --primary-color: #ff8c00; /* Pumpkin orange */
+  --secondary-color: #fffb7d; /* Candy corn yellow */
+  --text-color: #ffffff;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --invert-filter: invert(100%);
+}
+
+.header {
+  background-image: linear-gradient(#ff8c00, #fffb7d);
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -26,26 +39,31 @@
   stroke-dashoffset: 282.743;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.1s linear;
-  filter: invert(100%);
+  filter: var(--invert-filter);
 }
 
 .countdown-text {
-  font-family: 'Orbitron', Helvetica, sans-serif;
+  font-family: "Orbitron", Helvetica, sans-serif;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 58px;
   font-weight: bold;
-  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);
-  filter: invert(100%);
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color),
+    var(--primary-color)
+  );
+  filter: var(--invert-filter);
   background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   animation: flowing-gradient 3s linear infinite;
   animation-play-state: paused;
-    font-size: 4rem;
+  font-size: 4rem;
 }
 
 .countdown-text.animate-gradient {
@@ -67,15 +85,14 @@
   color: initial;
 }
 
-
 .controls {
   font-size: 2rem;
 }
 
-/* Button with Inverted Gradient */
 button {
-  border-radius: 8px;
-  font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+  border-radius: var(--border-radius);
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto,
+    "Helvetica Neue", sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 20px;
@@ -89,12 +106,12 @@ button {
   position: relative;
   background-clip: text;
   -webkit-background-clip: text;
-  animation: flowing-gradient 3s ease-in-out infinite; /* Animate gradient */
+  animation: flowing-gradient 3s ease-in-out infinite;
 }
 
 button:hover {
-  background-position: 200% center;    /* Shifts the gradient on hover */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Nice elevated effect */
+  background-position: 200% center;
+  box-shadow: var(--box-shadow);
 }
 
 button:focus-visible {
@@ -102,23 +119,22 @@ button:focus-visible {
 }
 
 button:active {
-  background-position: left;        /* Lock the gradient when pressed */
-  transform: scale(.96);
+  background-position: left;
+  transform: scale(0.96);
 }
 
 button:disabled {
-  background: linear-gradient(90deg, #DDDDDD, #F0F0F0, #DDDDDD);  /* Grayscale gradient when disabled */
-  color: #AAAAAA;
+  background: linear-gradient(90deg, #dddddd, #f0f0f0, #dddddd);
+  color: #aaaaaa;
   cursor: not-allowed;
   opacity: 1;
+  filter: var(--invert-filter);
 }
 
-/* Success Button */
 button.success {
-    background: #28a745;
-  background-color: #28a745;
+  background: #28a745;
   border-color: #28a745;
-  color: #fff;
+  color: var(--text-color);
 }
 
 button.success:hover {
@@ -129,7 +145,7 @@ button.success:hover {
 button.primary {
   background: #007bff;
   border-color: #007bff;
-  color: #fff;
+  color: var(--text-color);
 }
 
 button.primary:hover {
@@ -137,9 +153,30 @@ button.primary:hover {
   border-color: #004a9b;
 }
 
-/* Warning Button */
+button.success {
+  background: #28a745;
+  border-color: #28a745;
+  color: var(--text-color);
+}
+
+button.success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+button.primary {
+  background: #007bff;
+  border-color: #007bff;
+  color: var(--text-color);
+}
+
+button.primary:hover {
+  background-color: #0056b3;
+  border-color: #004a9b;
+}
+
 button.warning {
-    background: #ffc107;
+  background: #ffc107;
   border-color: #ffc107;
   color: #212529;
 }
@@ -149,11 +186,10 @@ button.warning:hover {
   border-color: #d39e00;
 }
 
-/* Danger Button */
 button.danger {
-    background: #dc3545;
+  background: #dc3545;
   border-color: #dc3545;
-  color: #fff;
+  color: var(--text-color);
 }
 
 button.danger:hover {
@@ -168,18 +204,22 @@ button.danger:hover {
 }
 
 input[type="range"] {
-    appearance: none;
+  appearance: none;
   -webkit-appearance: none;
   width: 100%;
   height: 8px;
   border-radius: 5px;
-  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);  /* Gradient background */
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color),
+    var(--primary-color)
+  );
   background-size: 200% auto;
   transition: background-position 0.5s;
   outline: none;
   cursor: pointer;
-    filter:invert(100%)
-
+  filter: var(--invert-filter);
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -188,33 +228,32 @@ input[type="range"]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #FF8C00;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-color);
+  box-shadow: var(--box-shadow);
   cursor: pointer;
-    /* filter:invert(100%) */
 }
 
 input[type="range"]::-moz-range-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #FF8C00;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-color);
+  box-shadow: var(--box-shadow);
   cursor: pointer;
-  filter:invert(100%)
+  filter: var(--invert-filter);
 }
 
 input[type="range"]:hover {
-  background-position: 200% center;   /* Animate gradient when hovered */
+  background-position: 200% center;
 }
 
 input[type="range"]:disabled {
-  background: linear-gradient(90deg, #DDDDDD, #F0F0F0, #DDDDDD); /* Disabled gradient */
+  background: linear-gradient(90deg, #dddddd, #f0f0f0, #dddddd);
   cursor: not-allowed;
 }
 
 .times-up {
-  font-size: .8em;
+  font-size: 0.8em;
 }
 
 .checkmark {
@@ -237,7 +276,7 @@ input[type="range"]:disabled {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  vertical-align: middle; /* Align the label vertically in the middle */
+  vertical-align: middle;
 }
 
 .checkmark {
@@ -250,7 +289,6 @@ input[type="range"]:disabled {
   background-color: #eee;
 }
 
-/* Hide the browser's default checkbox */
 .untimed-label input {
   position: absolute;
   opacity: 0;
@@ -259,8 +297,8 @@ input[type="range"]:disabled {
   width: 0;
 }
 
-/* Create a custom checkbox */
 .checkmark {
+  border: 1px solid black;
   position: absolute;
   top: 0;
   left: 0;
@@ -269,29 +307,24 @@ input[type="range"]:disabled {
   background-color: #eee;
 }
 
-/* On mouse-over, add a grey background color */
 .untimed-label:hover input ~ .checkmark {
   background-color: #ccc;
 }
 
-/* When the checkbox is checked, add a blue background */
 .untimed-label input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
-/* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
   content: "";
   position: absolute;
   display: none;
 }
 
-/* Show the checkmark when checked */
 .untimed-label input:checked ~ .checkmark:after {
   display: block;
 }
 
-/* Style the checkmark/indicator */
 .untimed-label .checkmark:after {
   left: 9px;
   top: 5px;
