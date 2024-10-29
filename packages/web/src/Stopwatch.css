@@ -10,8 +10,6 @@
   height: 220px;
   margin-bottom: 20px;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .countdown-svg {
@@ -47,6 +45,7 @@
   color: transparent;
   animation: flowing-gradient 3s linear infinite;
   animation-play-state: paused;
+    font-size: 4rem;
 }
 
 .countdown-text.animate-gradient {
@@ -62,16 +61,19 @@
   }
 }
 
+.choice-text {
+  text-align: left;
+  font-size: 1.5rem;
+  color: initial;
+}
+
+
 .controls {
-  text-align: center;
+  font-size: 2rem;
 }
 
 /* Button with Inverted Gradient */
 button {
-  background: linear-gradient(90deg, #FF8C00, #FFFB7D, #FF8C00);   /* Gradient background */
-  background-size: 200% auto;   /* Creates the flowing gradient */
-  color: #FFFFFF;               /* Text color should contrast the gradient */
-  border: 1px solid #222222;
   border-radius: 8px;
   font-family: Circular,-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
   font-size: 16px;
@@ -85,8 +87,8 @@ button {
   user-select: none;
   -webkit-user-select: none;
   position: relative;
+  background-clip: text;
   -webkit-background-clip: text;
-  color: #FFFFFF;  /* Text color on top of gradient */
   animation: flowing-gradient 3s ease-in-out infinite; /* Animate gradient */
 }
 
@@ -111,6 +113,60 @@ button:disabled {
   opacity: 1;
 }
 
+/* Success Button */
+button.success {
+    background: #28a745;
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+button.success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+button.primary {
+  background: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+button.primary:hover {
+  background-color: #0056b3;
+  border-color: #004a9b;
+}
+
+/* Warning Button */
+button.warning {
+    background: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+button.warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+}
+
+/* Danger Button */
+button.danger {
+    background: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+button.danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
 input[type="range"] {
     appearance: none;
   -webkit-appearance: none;
@@ -129,8 +185,8 @@ input[type="range"] {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: #FF8C00;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -139,8 +195,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: #FF8C00;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -155,4 +211,95 @@ input[type="range"]:hover {
 input[type="range"]:disabled {
   background: linear-gradient(90deg, #DDDDDD, #F0F0F0, #DDDDDD); /* Disabled gradient */
   cursor: not-allowed;
+}
+
+.times-up {
+  font-size: .8em;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+.untimed-label {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 42px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  vertical-align: middle; /* Align the label vertically in the middle */
+}
+
+.checkmark {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(50%);
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* Hide the browser's default checkbox */
+.untimed-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.untimed-label:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.untimed-label input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.untimed-label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.untimed-label .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }

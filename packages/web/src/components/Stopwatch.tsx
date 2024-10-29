@@ -96,6 +96,17 @@ const Stopwatch: React.FC = () => {
     }, 300);
   };
 
+  const getDisplayText = () => {
+    if (!isEnabled) return "";
+    if (!hasStarted && timeInput === 0)
+      return (
+        <span className="choice-text">
+          Choose a time on the slider or select untimed
+        </span>
+      );
+    return formatTime(remainingTime);
+  };
+
   return (
     <>
       <div className="container">
@@ -128,14 +139,15 @@ const Stopwatch: React.FC = () => {
                   isRunning ? "animate-gradient" : ""
                 }`}
               >
-                {hasStarted && remainingTime === 0
-                  ? "Time's Up ⌛️"
-                  : formatTime(remainingTime)}
+                {hasStarted && remainingTime === 0 ? (
+                  <div className="times-up">{"Time's Up"}</div>
+                ) : (
+                  getDisplayText()
+                )}
               </div>
             </>
           )}
         </div>
-
         <div className={`controls ${!isEnabled ? "ghosted" : ""}`}>
           <input
             type="range"
@@ -151,6 +163,7 @@ const Stopwatch: React.FC = () => {
           <div className="buttons">
             {!isRunning && remainingTime === 0 && timeInput > 0 && (
               <button
+                className="primary"
                 onClick={startCountdown}
                 disabled={!isEnabled || isTransitioning}
               >
@@ -158,13 +171,18 @@ const Stopwatch: React.FC = () => {
               </button>
             )}
             {isRunning && (
-              <button onClick={handlePause} disabled={!isEnabled || isTransitioning}>
+              <button
+                className="warning"
+                onClick={handlePause}
+                disabled={!isEnabled || isTransitioning}
+              >
                 Pause
               </button>
             )}
             {!isRunning && remainingTime > 0 && (
               <>
                 <button
+                  className="success"
                   onClick={() => {
                     setIsRunning(true);
                     setDisplayedProgress(
@@ -176,8 +194,11 @@ const Stopwatch: React.FC = () => {
                   Resume
                 </button>
                 <button
+                  className="danger"
                   onClick={handleReset}
-                  disabled={remainingTime === 0 || !isEnabled || isTransitioning}
+                  disabled={
+                    remainingTime === 0 || !isEnabled || isTransitioning
+                  }
                 >
                   Reset
                 </button>
@@ -193,6 +214,7 @@ const Stopwatch: React.FC = () => {
             onChange={toggleTimer}
             disabled={isTransitioning}
           />
+          <span className="checkmark"></span>
           Untimed
         </label>
       </div>
