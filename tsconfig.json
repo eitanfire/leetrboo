@@ -6,6 +6,8 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "esnext"]
   }
 }

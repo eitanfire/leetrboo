@@ -1,10 +1,15 @@
-/* Reset default margins and padding */
+/* * {
+  background: #000;
+  color: #0f0;
+  outline: solid #f00 1px;
+} */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
+ 
 html, body, #root {
   width: 100%;
   margin: 0;
@@ -12,29 +17,20 @@ html, body, #root {
   min-height: 100vh;
 }
 
-/* Override Bootstrap container max-width */
 .container-fluid {
-  max-width: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 100% !important;
-}
-
-/* Override Bootstrap row defaults */
-.row {
-  margin: 0 !important;
-  width: 100% !important;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .header {
-  background: rgb(255, 172, 28);
   border-bottom: 5px solid #000;
   width: 100%;
   padding: 5px 10px;
   display: flex;
   font-size: 3em;
-  line-height: 1em;
-  color: rgb(252, 250, 250);
+  line-height: 3rem;
   align-items: center;
   min-height: 30vh;
 }
@@ -73,20 +69,8 @@ html, body, #root {
 
 .stats {
   flex-grow: 1;
-  text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 100%;
-  padding-left: 10px;
-}
-
-.stopwatch {
-  flex-grow: 1;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
   padding-left: 10px;
 }
