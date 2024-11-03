@@ -7,12 +7,13 @@ const formatTime = (time: number): string => {
   return `${getMinutes}:${getSeconds}`;
 };
 
+type TimerState = "idle" | "running" | "paused" | "completed";
+
 const Stopwatch: React.FC = () => {
-  const [isRunning, setIsRunning] = useState(false);
+  const [timerState, setTimerState] = useState<TimerState>("idle");
   const [isEnabled, setIsEnabled] = useState(true);
   const [remainingTime, setRemainingTime] = useState(0);
   const [timeInput, setTimeInput] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
   const [savedRemainingTime, setSavedRemainingTime] = useState(0);
   const [savedTimeInput, setSavedTimeInput] = useState(0);
   const [displayedProgress, setDisplayedProgress] = useState(0);
@@ -20,59 +21,82 @@ const Stopwatch: React.FC = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const circumference = 282.743;
-  const progress =
-    timeInput > 0 ? (remainingTime / timeInput) * circumference : 0;
   const dashOffset = circumference - displayedProgress;
 
   useEffect(() => {
-    if (isRunning && remainingTime > 0) {
-      timerRef.current = setInterval(() => {
-        setRemainingTime((prev) => prev - 1);
-        setDisplayedProgress(((remainingTime - 1) / timeInput) * circumference);
-      }, 1000);
-    } else if (remainingTime === 0 && timerRef.current) {
-      clearInterval(timerRef.current);
-      setIsRunning(false);
-      setDisplayedProgress(0);
-    }
-
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
     };
-  }, [isRunning, remainingTime, timeInput]);
+  }, []);
 
-  const startCountdown = () => {
-    if (isEnabled && timeInput > 0) {
-      setRemainingTime(timeInput);
-      setDisplayedProgress(circumference);
-      setIsRunning(true);
-      setHasStarted(true);
+  useEffect(() => {
+    if (timeInput > 0) {
+      setDisplayedProgress((remainingTime / timeInput) * circumference);
     }
+  }, [remainingTime, timeInput, circumference]);
+
+  const startTimer = () => {
+    if (!timeInput || !isEnabled) return;
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    timerRef.current = setInterval(() => {
+      setRemainingTime((prev) => {
+        const newTime = prev - 1;
+        if (newTime <= 0) {
+          clearInterval(timerRef.current!);
+          setTimerState("completed");
+          setDisplayedProgress(0);
+          return 0;
+        }
+        return newTime;
+      });
+    }, 1000);
   };
 
-  const handlePause = () => {
-    setIsRunning(false);
+  const startCountdown = () => {
+    if (!isEnabled || timeInput <= 0) return;
+
+    setRemainingTime(timeInput);
+    setDisplayedProgress(circumference);
+    setTimerState("running");
+    startTimer();
+  };
+
+  const pauseTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    setTimerState("paused");
     setDisplayedProgress((remainingTime / timeInput) * circumference);
   };
 
-  const handleReset = () => {
-    if (timeInput > 0) {
-      setRemainingTime(timeInput);
-      setDisplayedProgress(circumference);
-      setIsRunning(false);
-      setHasStarted(true);
+  const resetTimer = () => {
+    if (timeInput <= 0) return;
+
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
     }
+    setRemainingTime(timeInput);
+    setDisplayedProgress(circumference);
+    setTimerState("idle");
   };
 
-  const toggleTimer = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target as HTMLInputElement;
-    const untimed = target.checked;
+  const resumeTimer = () => {
+    setTimerState("running");
+    startTimer();
+  };
+
+  const toggleTimer = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const untimed = event.target.checked;
     setIsTransitioning(true);
 
-    if (isRunning) {
-      handlePause();
+    if (timerState === "running") {
+      pauseTimer();
     }
 
     if (untimed) {
@@ -81,7 +105,7 @@ const Stopwatch: React.FC = () => {
       setRemainingTime(0);
       setTimeInput(0);
       setDisplayedProgress(0);
-      setHasStarted(false);
+      setTimerState("idle");
     } else {
       setRemainingTime(savedRemainingTime);
       setTimeInput(savedTimeInput);
@@ -99,12 +123,13 @@ const Stopwatch: React.FC = () => {
 
   const getDisplayText = () => {
     if (!isEnabled) return "";
-    if (!hasStarted && timeInput === 0)
+    if (timerState === "idle" && timeInput === 0) {
       return (
         <label className="choice-text">
           Choose a time on the slider or select untimed
         </label>
       );
+    }
     return formatTime(remainingTime);
   };
 
@@ -137,10 +162,10 @@ const Stopwatch: React.FC = () => {
               </svg>
               <div
                 className={`countdown-text ${
-                  isRunning ? "animate-gradient" : ""
+                  timerState === "running" ? "animate-gradient" : ""
                 }`}
               >
-                {hasStarted && remainingTime === 0 ? (
+                {timerState === "completed" ? (
                   <div className="times-up">{"Time's Up"}</div>
                 ) : (
                   getDisplayText()
@@ -162,7 +187,7 @@ const Stopwatch: React.FC = () => {
             {Math.floor(timeInput / 60)} minutes and {timeInput % 60} seconds
           </div>
           <div className="buttons">
-            {!isRunning && remainingTime === 0 && timeInput > 0 && (
+            {timerState === "idle" && timeInput > 0 && (
               <button
                 className="primary"
                 onClick={startCountdown}
@@ -171,35 +196,28 @@ const Stopwatch: React.FC = () => {
                 Start
               </button>
             )}
-            {isRunning && (
+            {timerState === "running" && (
               <button
                 className="warning"
-                onClick={handlePause}
+                onClick={pauseTimer}
                 disabled={!isEnabled || isTransitioning}
               >
                 Pause
               </button>
             )}
-            {!isRunning && remainingTime > 0 && (
+            {timerState === "paused" && (
               <>
                 <button
                   className="success"
-                  onClick={() => {
-                    setIsRunning(true);
-                    setDisplayedProgress(
-                      (remainingTime / timeInput) * circumference
-                    );
-                  }}
+                  onClick={resumeTimer}
                   disabled={!isEnabled || isTransitioning}
                 >
                   Resume
                 </button>
                 <button
                   className="danger"
-                  onClick={handleReset}
-                  disabled={
-                    remainingTime === 0 || !isEnabled || isTransitioning
-                  }
+                  onClick={resetTimer}
+                  disabled={!isEnabled || isTransitioning}
                 >
                   Reset
                 </button>
