@@ -66,35 +66,34 @@ const Stopwatch: React.FC = () => {
     }
   };
 
-  const toggleTimer = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const untimed = event.target.checked;
-    setIsTransitioning(true);
+const toggleTimer = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const target = event.target as HTMLInputElement;
+  const untimed = target.checked;
+  setIsTransitioning(true);
 
-    if (isRunning) {
-      handlePause();
-    }
+  if (isRunning) {
+    handlePause();
+  }
 
-    if (untimed) {
-      setSavedRemainingTime(remainingTime);
-      setSavedTimeInput(timeInput);
-      setRemainingTime(0);
-      setTimeInput(0);
-      setDisplayedProgress(0);
-      setHasStarted(false);
-    } else {
-      setRemainingTime(savedRemainingTime);
-      setTimeInput(savedTimeInput);
-      setDisplayedProgress(
-        (savedRemainingTime / savedTimeInput) * circumference
-      );
-    }
+  if (untimed) {
+    setSavedRemainingTime(remainingTime);
+    setSavedTimeInput(timeInput);
+    setRemainingTime(0);
+    setTimeInput(0);
+    setDisplayedProgress(0);
+    setHasStarted(false);
+  } else {
+    setRemainingTime(savedRemainingTime);
+    setTimeInput(savedTimeInput);
+    setDisplayedProgress((savedRemainingTime / savedTimeInput) * circumference);
+  }
 
-    setIsEnabled(!untimed);
+  setIsEnabled(!untimed);
 
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 300);
-  };
+  setTimeout(() => {
+    setIsTransitioning(false);
+  }, 300);
+};
 
   const getDisplayText = () => {
     if (!isEnabled) return "";
