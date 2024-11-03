@@ -44,6 +44,7 @@
 
 .countdown-text {
   font-family: "Orbitron", Helvetica, sans-serif;
+  font-family: "Orbitron", monospace;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -63,7 +64,6 @@
   color: transparent;
   animation: flowing-gradient 3s linear infinite;
   animation-play-state: paused;
-  font-size: 4rem;
 }
 
 .countdown-text.animate-gradient {
