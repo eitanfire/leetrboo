@@ -1,7 +1,7 @@
 /* * {
-  background: #000 !important;
-  color: #0f0 !important;
-  outline: solid #f00 1px !important;
+  background: #000;
+  color: #0f0;
+  outline: solid #f00 1px;
 } */
 
 * {
@@ -18,10 +18,10 @@ html, body, #root {
 }
 
 .container-fluid {
-  max-width: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 100% !important;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .header {

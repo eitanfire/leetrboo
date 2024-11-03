@@ -14,6 +14,9 @@ export default $config({
       command: "yarn run build",
       output: "dist",
     },
+    domain: {
+      name: 'leetr.boo'
+    }
   });},
 });
  
