@@ -11,7 +11,7 @@ export default $config({
   async run() {new sst.aws.StaticSite("Web", {
     path: 'packages/web',
     build: {
-      command: "yarn run build",
+      command: "npm run build",
       output: "dist",
     },
     domain: {
