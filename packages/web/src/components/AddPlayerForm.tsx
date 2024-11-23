@@ -68,6 +68,7 @@ const ParticipantForm = () => {
         />
       </div>
       <button type="submit">Add Participant</button>
+      <div>Total players: {players.length}</div>
     </form>
   );
 };
