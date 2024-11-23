@@ -4,6 +4,7 @@ import "./App.css";
 import React, { FC } from "react";
 import { Container } from "reactstrap";
 import { createClient } from "@supabase/supabase-js";
+import AddPlayerForm from "./components/AddPlayerForm";
 
 console.log(import.meta.env.VITE_APP_SUPABASE_URL);
 
@@ -26,6 +27,7 @@ const App: React.FC<Props> = ({}) => {
   return (
     <Container fluid className="p-0">
       <Header />
+      <AddPlayerForm />
       <div className="content-body"></div>
     </Container>
   );
