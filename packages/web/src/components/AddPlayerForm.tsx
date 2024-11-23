@@ -11,6 +11,9 @@ const ParticipantForm = () => {
     videoUrl: ''
   });
 
+  // Add a new state for storing all players
+  const [players, setPlayers] = useState<ParticipantFormData[]>([]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -19,11 +22,22 @@ const ParticipantForm = () => {
     }));
   };
 
+  // Create a separate function that will later become the callback
+  const addPlayer = (player: ParticipantFormData) => {
+    setPlayers(prevPlayers => [...prevPlayers, player]);
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the form from refreshing the page
-    console.log('New participant added:', formData);
+    e.preventDefault();
     
-    // Reset the form after submission
+    // Call addPlayer with the current form data
+    addPlayer(formData);
+    
+    // Log both the new player and the updated array
+    console.log('New player added:', formData);
+    console.log('All players:', [...players, formData]);
+    
+    // Reset the form
     setFormData({
       name: '',
       videoUrl: ''
