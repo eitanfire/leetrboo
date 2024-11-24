@@ -9,10 +9,11 @@
     "sst": "3.2.46"
   },
   "devDependencies": {
+    "@tsconfig/node18": "^18.2.4",
     "@types/aws-lambda": "8.10.145"
   },
   "scripts": {
     "dev": "sst dev",
-    "deploy": "sst deploy --stage production" 
+    "deploy": "sst deploy --stage production"
   }
 }
