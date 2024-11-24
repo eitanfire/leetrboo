@@ -1,6 +1,6 @@
 # leetrboo
 
-<a href="https://leetr.boo/" target="blank"><img align="right" src="https://www.flaticon.com/free-icon/microphone_2546204" height="100" width="auto" /></a>
+<a href="https://leetr.boo/" target="blank"><img align="right" src="https://djbrianc.us/wp-content/uploads/2022/03/video-fonda-karaoke-4647668.webp" height="100" width="auto" /></a>
 
 https://leetr.boo/
 
