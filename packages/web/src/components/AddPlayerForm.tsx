@@ -42,23 +42,23 @@ const ParticipantForm = () => {
   };
 
   // Extract video ID from URL (useful for future API integration)
-  const getYouTubeVideoId = (url: string): string | null => {
-    try {
-      const urlObj = new URL(url);
+  // const getYouTubeVideoId = (url: string): string | null => {
+  //   try {
+  //     const urlObj = new URL(url);
       
-      if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
-        return urlObj.searchParams.get('v');
-      }
+  //     if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
+  //       return urlObj.searchParams.get('v');
+  //     }
       
-      if (urlObj.hostname === 'youtu.be') {
-        return urlObj.pathname.slice(1);
-      }
+  //     if (urlObj.hostname === 'youtu.be') {
+  //       return urlObj.pathname.slice(1);
+  //     }
       
-      return null;
-    } catch {
-      return null;
-    }
-  };
+  //     return null;
+  //   } catch {
+  //     return null;
+  //   }
+  // };
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -94,8 +94,9 @@ const ParticipantForm = () => {
 
   const addPlayer = (player: ParticipantFormData) => {
     // You could store the video ID here for future API use
-    const videoId = getYouTubeVideoId(player.videoUrl);
-    console.log('Video ID:', videoId); // This will be useful for the YouTube API
+    // const videoId = getYouTubeVideoId(player.videoUrl);
+    // console.log('Video ID:', videoId); 
+    // This will be useful for the YouTube API
     setPlayers(prevPlayers => [...prevPlayers, player]);
   };
 
@@ -116,6 +117,7 @@ const ParticipantForm = () => {
   };
 
   return (
+    // add-player-form is currently unused
     <form onSubmit={handleSubmit} className='add-player-form hstack'>
       <span>Participant Information</span>
       <div>
