@@ -3,23 +3,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import React, { FC } from "react";
 import { Container } from "reactstrap";
-import { createClient } from "@supabase/supabase-js";
 import AddPlayerForm from "./components/AddPlayerForm";
+import ListPlayerEntries from "./components/ListPlayerEntries";
 
 console.log(import.meta.env.VITE_APP_SUPABASE_URL);
-
-const supabase = createClient(
-  import.meta.env.VITE_APP_SUPABASE_URL!,
-  import.meta.env.VITE_APP_SUPABASE_ANON_KEY!
-);
-
-supabase.from("test").select("*").then((res) => {
-  console.log(res);
-});
-
-supabase.from("test").insert({ name: "test", url: "https://leetr.boo" }).then((res) => {
-  console.log(res);
-});
 
 type Props = {};
 
@@ -28,6 +15,7 @@ const App: React.FC<Props> = ({}) => {
     <Container fluid className="p-0">
       <Header />
       <AddPlayerForm />
+      <ListPlayerEntries />
       <div className="content-body"></div>
     </Container>
   );

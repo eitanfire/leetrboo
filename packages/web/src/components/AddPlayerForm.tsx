@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { insertPlayerEntry } from '../services/playerEntry';
 
 type ParticipantFormData = {
   name: string;
@@ -105,6 +106,7 @@ const ParticipantForm = () => {
     
     if (validateForm()) {
       addPlayer(formData);
+      insertPlayerEntry({player_name:formData.name, video_url:formData.videoUrl})
       console.log('New player added:', formData);
       console.log('All players:', [...players, formData]);
       

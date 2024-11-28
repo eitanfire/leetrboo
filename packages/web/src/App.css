@@ -82,3 +82,9 @@ html, body, #root {
   margin: 0;
   padding: 0;
 }
+
+.add-player-form {
+  border-bottom: 2px solid #000;
+  font-size: .8rem;
+  align-items: center;
+}
