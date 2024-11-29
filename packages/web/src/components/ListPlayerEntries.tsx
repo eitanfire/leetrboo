@@ -11,7 +11,7 @@ const ListPlayerEntries = () => {
     return (
         <div>
             {list.map(item => {
-                return <div>{item.player_name}</div>
+                return <div>{item.player_name}{'  '}{item.video_url}</div>
             })}
         </div>
     )
