@@ -189,7 +189,7 @@ const Stopwatch: React.FC = () => {
           <div className="buttons">
             {timerState === "idle" && timeInput > 0 && (
               <button
-                className="primary"
+                className="secondary"
                 onClick={startCountdown}
                 disabled={!isEnabled || isTransitioning}
               >

@@ -137,11 +137,6 @@ button.success {
   color: var(--text-color);
 }
 
-button.success:hover {
-  background-color: #218838;
-  border-color: #1e7e34;
-}
-
 button.primary {
   background: #007bff;
   border-color: #007bff;
@@ -151,6 +146,17 @@ button.primary {
 button.primary:hover {
   background-color: #0056b3;
   border-color: #004a9b;
+}
+
+button.secondary {
+  background: grey;
+  border-color: rgb(138, 136, 136);
+  color: var(--text-color);
+}
+
+button.secondary:hover {
+  background-color: rgb(209, 209, 209);
+  border-color: rgb(243, 236, 236);
 }
 
 button.success {

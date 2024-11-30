@@ -146,7 +146,7 @@ const ParticipantForm = () => {
         />
         {errors.videoUrl && <div className="error-message">{errors.videoUrl}</div>}
       </div>
-      <button type="submit">Add Participant</button>
+      <button type="submit" className='primary'>Add Participant</button>
       <div>Total players: {players.length}</div>
     </form>
   );
