@@ -1,16 +1,26 @@
+/* * {
+  background: #000 !important;
+  color: #0f0 !important;
+  outline: solid #f00 1px !important;
+} */
+
 :root {
-  --primary-color: 255, 140, 0; /* RGB for primary */
-  --secondary-color: 255, 251, 125; /* RGB for secondary */
+  --primary-color: 255, 140, 0;
+  --secondary-color: 255, 251, 125;
   --text-color: #ffffff;
   --border-radius: 8px;
   --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   --invert-filter: invert(100%);
 }
 
+.banner {
+  width: 90dvw;
+}
+
 .header {
   background-image: linear-gradient(
-    rgba(var(--primary-color), 0.7),  /* Correct use of rgba */
-    rgba(var(--secondary-color), 0.7) /* Correct use of rgba */
+    rgba(var(--primary-color), 0.7),
+    rgba(var(--secondary-color), 0.7)
   );
 }
 
@@ -324,7 +334,7 @@ input[type="range"]:disabled {
   transform: rotate(45deg);
 }
 
-/* .add-player-form {
+.add-player-form {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
@@ -333,9 +343,11 @@ input[type="range"]:disabled {
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 0 1rem;
+  padding: 1rem 1rem;
+  background-color: rgba(var(--primary-color), 0.6);
+  font-size: large;
 }
 
 .add-player-form-title {
-  
-} */
+  font-size: x-large;
+}

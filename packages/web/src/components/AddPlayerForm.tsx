@@ -120,7 +120,7 @@ const ParticipantForm = () => {
   };
 
   return (
-    <Col className='d-flex justify-content-center'><form onSubmit={handleSubmit} className='add-player-form hstack'>
+    <Col><form onSubmit={handleSubmit} className='add-player-form hstack'>
       <span className='add-player-form-title'>Participant Information</span>
       <div>
         <label htmlFor="name">Name:&nbsp;</label>
