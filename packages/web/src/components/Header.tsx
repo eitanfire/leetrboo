@@ -1,5 +1,5 @@
 import React, {FC} from "react";
-import Stats from "./Stats";
+// import Stats from "./Stats";
 import Stopwatch from './Stopwatch';
 import { Col, Row } from "reactstrap";
 import bannerImage from "../assets/Halloween-costume-contest.png";
@@ -15,7 +15,7 @@ const Header: React.FC<Props> = ({}) => {
           <img src={bannerImage} className="banner" alt="banner" />
         </Col>
         <Col className="col-2">
-          <Stats />
+          {/* <Stats /> */}
         </Col>
         <Col className="col-4">
           <Stopwatch />
