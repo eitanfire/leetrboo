@@ -1,6 +1,6 @@
 :root {
-  --primary-color: #ff8c00; /* Pumpkin orange */
-  --secondary-color: #fffb7d; /* Candy corn yellow */
+  --primary-color: 255, 140, 0;
+  --secondary-color: 255, 251, 125;
   --text-color: #ffffff;
   --border-radius: 8px;
   --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -8,7 +8,10 @@
 }
 
 .header {
-  background-image: linear-gradient(#ff8c00, #fffb7d);
+  background-image: linear-gradient(
+    rgba(    rgba(var(--primary-color), 0.7), 0.7), 
+    rgba(    rgba(var(--secondary-color), 0.7), 0.7)
+  );
 }
 
 .container {
@@ -53,9 +56,9 @@
   font-weight: bold;
   background: linear-gradient(
     90deg,
-    var(--primary-color),
-    var(--secondary-color),
-    var(--primary-color)
+    rgba(    rgba(var(--primary-color), 0.7), 0.7), 
+    rgba(    rgba(var(--secondary-color), 0.7), 0.7),
+    rgba(    rgba(var(--primary-color), 0.7), 0.7)
   );
   filter: var(--invert-filter);
   background-size: 200% auto;
@@ -217,9 +220,9 @@ input[type="range"] {
   border-radius: 5px;
   background: linear-gradient(
     90deg,
-    var(--primary-color),
-    var(--secondary-color),
-    var(--primary-color)
+        rgba(var(--primary-color), 0.7),
+        rgba(var(--secondary-color), 0.7),
+        rgba(var(--primary-color), 0.7)
   );
   background-size: 200% auto;
   transition: background-position 0.5s;
@@ -234,7 +237,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color:     rgba(var(--primary-color), 0.7);
   box-shadow: var(--box-shadow);
   cursor: pointer;
 }
@@ -243,7 +246,7 @@ input[type="range"]::-moz-range-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: var(--primary-color);
+  background-color:     rgba(var(--primary-color), 0.7);
   box-shadow: var(--box-shadow);
   cursor: pointer;
   filter: var(--invert-filter);

@@ -6,6 +6,8 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "bootstrap": "^5.3.3",
+    "reactstrap": "^9.2.3",
     "sst": "3.2.46"
   },
   "devDependencies": {

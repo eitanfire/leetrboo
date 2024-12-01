@@ -1,3 +1,4 @@
+import { Col } from 'reactstrap';
 import { useState } from 'react';
 import { insertPlayerEntry } from '../services/playerEntry';
 
@@ -119,11 +120,10 @@ const ParticipantForm = () => {
   };
 
   return (
-    // add-player-form is currently unused
-    <form onSubmit={handleSubmit} className='add-player-form hstack'>
-      <span>Participant Information</span>
+    <Col className='d-flex justify-content-center'><form onSubmit={handleSubmit} className='add-player-form hstack'>
+      <span className='add-player-form-title'>Participant Information</span>
       <div>
-        <label htmlFor="name">Name:</label>
+        <label htmlFor="name">Name:&nbsp;</label>
         <input
           id="name"
           name="name"
@@ -135,7 +135,7 @@ const ParticipantForm = () => {
         {errors.name && <div className="error-message">{errors.name}</div>}
       </div>
       <div>
-        <label htmlFor="videoUrl">YouTube video URL:</label>
+        <label htmlFor="videoUrl">YouTube video URL:&nbsp;</label>
         <input
           id="videoUrl"
           name="videoUrl"
@@ -149,6 +149,7 @@ const ParticipantForm = () => {
       <button type="submit" className='primary'>Add Participant</button>
       <div>Total players: {players.length}</div>
     </form>
+    </Col>
   );
 };
 
