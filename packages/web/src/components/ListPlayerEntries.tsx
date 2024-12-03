@@ -9,7 +9,7 @@ const ListPlayerEntries = () => {
         result.then(setlist)
     }, [])
     return (
-        <div>
+        <div className="list-player-entries">
             {list.map(item => {
                 return <div>{item.player_name}{'  '}{item.video_url}</div>
             })}

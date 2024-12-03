@@ -351,3 +351,8 @@ input[type="range"]:disabled {
 .add-player-form-title {
   font-size: x-large;
 }
+
+.list-player-entries {
+  font-size: x-large;
+  border-bottom: 2px solid #000;
+}
