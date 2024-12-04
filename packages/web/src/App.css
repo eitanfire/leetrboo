@@ -193,6 +193,10 @@ button.danger:hover {
   border-color: #bd2130;
 }
 
+.error-message {
+color: #dc3545;
+}
+
 .buttons {
   display: flex;
   justify-content: center;
@@ -356,3 +360,4 @@ input[type="range"]:disabled {
   font-size: x-large;
   border-bottom: 2px solid #000;
 }
+ 
