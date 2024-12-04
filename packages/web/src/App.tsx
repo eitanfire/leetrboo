@@ -16,7 +16,6 @@ const App: React.FC<Props> = ({}) => {
       <Header />
       <AddPlayerForm />
       <ListPlayerEntries />
-      <div className="content-body"></div>
     </Container>
   );
 };

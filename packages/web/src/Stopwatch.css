@@ -7,13 +7,6 @@
   --invert-filter: invert(100%);
 }
 
-.header {
-  background-image: linear-gradient(
-    rgba(    rgba(var(--primary-color), 0.7), 0.7), 
-    rgba(    rgba(var(--secondary-color), 0.7), 0.7)
-  );
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -22,10 +15,11 @@
 
 .countdown-container {
   position: relative;
-  width: 220px;
+  /* width: 220px; */
   height: 220px;
   margin-bottom: 20px;
   display: flex;
+  /* margin-right: 35%; */
 }
 
 .countdown-svg {

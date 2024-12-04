@@ -14,10 +14,11 @@
 }
 
 .banner {
-  width: 90dvw;
+  max-width: 70dvw;
 }
 
 .header {
+  max-width: 100%;
   background-image: linear-gradient(
     rgba(var(--primary-color), 0.7),
     rgba(var(--secondary-color), 0.7)
@@ -342,11 +343,12 @@ input[type="range"]:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  border-top: 2px solid #000;
   border-bottom: 2px solid #000;
   font-size: .8rem;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  max-width: 98%;
   padding: 1rem 1rem;
   background-color: rgba(var(--primary-color), 0.6);
   font-size: large;

@@ -10,12 +10,11 @@ type Props = {
 
 const Header: React.FC<Props> = ({}) => {
     return (
-      <Row className="header">
+      <Row className="header hstack">
         <Col className="col-6">
           <img src={bannerImage} className="banner" alt="banner" />
         </Col>
         <Col className="col-2">
-          {/* <Stats /> */}
         </Col>
         <Col className="col-4">
           <Stopwatch />
