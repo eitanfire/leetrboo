@@ -11,7 +11,13 @@ const ListPlayerEntries = () => {
     return (
         <div className="list-player-entries">
             {list.map(item => {
-                return <div>{item.player_name}{'  '}{item.video_url}</div>
+                return <div>{item.player_name}{'  '}
+                    <a href={item.video_url} target="_blank"
+                        rel="noopener noreferrer">                    <button>
+                            🎤
+                        </button>
+                    </a>
+                </div>
             })}
         </div>
     )
