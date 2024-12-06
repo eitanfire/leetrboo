@@ -360,6 +360,11 @@ input[type="range"]:disabled {
 
 .list-player-entries {
   font-size: x-large;
-  border-bottom: 2px solid #000;
 }
  
+.list-player-entries > div {
+  padding: 10px;
+  background-color: rgb(235, 220, 220);
+  border: 1px solid black;
+  border-radius: 6px;
+}
