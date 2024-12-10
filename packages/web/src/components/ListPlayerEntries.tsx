@@ -14,7 +14,7 @@ const ListPlayerEntries = () => {
                 return <div>{item.player_name}{'  '}
                     <a href={item.video_url} target="_blank"
                         rel="noopener noreferrer">                    <button>
-                            🎤
+                            🎤{item.video_url}
                         </button>
                     </a>
                 </div>
