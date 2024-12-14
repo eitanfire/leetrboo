@@ -1,6 +1,6 @@
 import { Col } from 'reactstrap';
-import { useState } from 'react';
-import { insertPlayerEntry } from '../services/playerEntry';
+import { useState, useEffect } from 'react';
+import { insertPlayerEntry, countPlayerEntries } from '../services/playerEntry';
 
 type ParticipantFormData = {
   name: string;
@@ -18,8 +18,18 @@ const ParticipantForm = () => {
     videoUrl: ''
   });
 
-  const [players, setPlayers] = useState<ParticipantFormData[]>([]);
+  const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
+
+  // Fetch total players on component mount
+  useEffect(() => {
+    const fetchTotalPlayers = async () => {
+      const count = await countPlayerEntries();
+      setTotalPlayers(count);
+    };
+
+    fetchTotalPlayers();
+  }, []);
 
   const isValidYouTubeUrl = (url: string): boolean => {
     try {
@@ -42,25 +52,6 @@ const ParticipantForm = () => {
       return false;
     }
   };
-
-  // Extract video ID from URL (useful for future API integration)
-  // const getYouTubeVideoId = (url: string): string | null => {
-  //   try {
-  //     const urlObj = new URL(url);
-      
-  //     if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
-  //       return urlObj.searchParams.get('v');
-  //     }
-      
-  //     if (urlObj.hostname === 'youtu.be') {
-  //       return urlObj.pathname.slice(1);
-  //     }
-      
-  //     return null;
-  //   } catch {
-  //     return null;
-  //   }
-  // };
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -94,23 +85,20 @@ const ParticipantForm = () => {
     }
   };
 
-  const addPlayer = (player: ParticipantFormData) => {
-    // You could store the video ID here for future API use
-    // const videoId = getYouTubeVideoId(player.videoUrl);
-    // console.log('Video ID:', videoId); 
-    // This will be useful for the YouTube API
-    setPlayers(prevPlayers => [...prevPlayers, player]);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (validateForm()) {
-      addPlayer(formData);
-      insertPlayerEntry({player_name:formData.name, video_url:formData.videoUrl})
-      console.log('New player added:', formData);
-      console.log('All players:', [...players, formData]);
+      await insertPlayerEntry({
+        player_name: formData.name, 
+        video_url: formData.videoUrl
+      });
       
+      // Refresh total players count
+      const updatedCount = await countPlayerEntries();
+      setTotalPlayers(updatedCount);
+      
+      // Reset form
       setFormData({
         name: '',
         videoUrl: ''
@@ -120,35 +108,38 @@ const ParticipantForm = () => {
   };
 
   return (
-    <Col><form onSubmit={handleSubmit} className='add-player-form hstack'>
-      <span className='add-player-form-title'>Participant Information</span>
-      <div>
-        <label htmlFor="name">Name:&nbsp;</label>
-        <input
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Enter participant's name"
-          className={errors.name ? 'error' : ''}
-        />
-        {errors.name && <div className="error-message">{errors.name}</div>}
-      </div>
-      <div>
-        <label htmlFor="videoUrl">YouTube video URL:&nbsp;</label>
-        <input
-          id="videoUrl"
-          name="videoUrl"
-          value={formData.videoUrl}
-          onChange={handleChange}
-          placeholder="Enter YouTube URL"
-          className={errors.videoUrl ? 'error' : ''}
-        />
-        {errors.videoUrl && <div className="error-message">{errors.videoUrl}</div>}
-      </div>
-      <button type="submit" className='primary'>Add Participant</button>
-      <div>Total players: {players.length}</div>
-    </form>
+    <Col>
+      <form onSubmit={handleSubmit} className='add-player-form hstack'>
+        <span className='add-player-form-title'>Participant Information</span>
+        <div>
+          <label htmlFor="name">Name:&nbsp;</label>
+          <input
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Enter participant's name"
+            className={errors.name ? 'error' : ''}
+          />
+          {errors.name && <div className="error-message">{errors.name}</div>}
+        </div>
+        <div>
+          <label htmlFor="videoUrl">YouTube video URL:&nbsp;</label>
+          <input
+            id="videoUrl"
+            name="videoUrl"
+            value={formData.videoUrl}
+            onChange={handleChange}
+            placeholder="Enter YouTube URL"
+            className={errors.videoUrl ? 'error' : ''}
+          />
+          {errors.videoUrl && <div className="error-message">{errors.videoUrl}</div>}
+        </div>
+        <button type="submit" className='primary'>Add Participant</button>
+        <div>
+          Total players: {totalPlayers !== null ? totalPlayers : 'Loading...'}
+        </div>
+      </form>
     </Col>
   );
 };

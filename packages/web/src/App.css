@@ -364,7 +364,10 @@ input[type="range"]:disabled {
  
 .list-player-entries > div {
   padding: 10px;
-  background-color: rgb(235, 220, 220);
   border: 1px solid black;
   border-radius: 6px;
+}
+
+.player-name {
+  padding-left: 10%;
 }
