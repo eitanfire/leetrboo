@@ -20,8 +20,8 @@ const ParticipantForm = () => {
 
   const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // Fetch total players on component mount
   useEffect(() => {
     const fetchTotalPlayers = async () => {
       const count = await countPlayerEntries();
@@ -83,27 +83,45 @@ const ParticipantForm = () => {
         [name]: undefined
       }));
     }
+
+    // Clear submit error when user starts typing
+    if (submitError) {
+      setSubmitError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
+    // Reset any previous submit errors
+    setSubmitError(null);
+    
     if (validateForm()) {
-      await insertPlayerEntry({
-        player_name: formData.name, 
-        video_url: formData.videoUrl
-      });
-      
-      // Refresh total players count
-      const updatedCount = await countPlayerEntries();
-      setTotalPlayers(updatedCount);
-      
-      // Reset form
-      setFormData({
-        name: '',
-        videoUrl: ''
-      });
-      setErrors({});
+      try {
+        const newEntry = await insertPlayerEntry({
+          player_name: formData.name, 
+          video_url: formData.videoUrl
+        });
+        
+        // Check if the entry was successfully inserted
+        if (newEntry) {
+          // Refresh total players count
+          const updatedCount = await countPlayerEntries();
+          setTotalPlayers(updatedCount);
+          
+          // Reset form
+          setFormData({
+            name: '',
+            videoUrl: ''
+          });
+          setErrors({});
+        } else {
+          setSubmitError('Failed to add participant. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error submitting player entry:', error);
+        setSubmitError('An unexpected error occurred. Please try again.');
+      }
     }
   };
 
@@ -136,6 +154,7 @@ const ParticipantForm = () => {
           {errors.videoUrl && <div className="error-message">{errors.videoUrl}</div>}
         </div>
         <button type="submit" className='primary'>Add Participant</button>
+        {submitError && <div className="error-message">{submitError}</div>}
         <div>
           Total players: {totalPlayers !== null ? totalPlayers : 'Loading...'}
         </div>
