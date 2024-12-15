@@ -51,22 +51,27 @@ export const countPlayerEntries = async (): Promise<number | null> => {
   return count;
 };
 
-// Optional: Custom hook if you want to use it
+// Custom hook for managing player entries
 export const usePlayerEntries = () => {
   const [playerEntries, setPlayerEntries] = useState<PlayerEntryRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [totalCount, setTotalCount] = useState<number | null>(null);
 
-  // Fetch all player entries
+  // Fetch all player entries and update count
   const fetchPlayerEntries = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.from("player_entries").select("*");
+      const [entriesResult, countResult] = await Promise.all([
+        supabase.from("player_entries").select("*"),
+        supabase.from("player_entries").select("*", { count: "exact" })
+      ]);
 
-      if (error) throw error;
+      if (entriesResult.error) throw entriesResult.error;
+      if (countResult.error) throw countResult.error;
 
-      setPlayerEntries(data as PlayerEntryRow[]);
+      setPlayerEntries(entriesResult.data as PlayerEntryRow[]);
+      setTotalCount(countResult.count);
     } catch (err) {
       console.error("Error fetching player entries:", err);
       setError(err instanceof Error ? err : new Error('An unknown error occurred'));
@@ -86,7 +91,11 @@ export const usePlayerEntries = () => {
       if (error) throw error;
 
       const newEntry = insertedData[0] as PlayerEntryRow;
+      
+      // Optimistically update the state
       setPlayerEntries(prev => [...prev, newEntry]);
+      setTotalCount(prev => (prev !== null ? prev + 1 : 1));
+
       return newEntry;
     } catch (err) {
       console.error("Error inserting player entry:", err);
@@ -95,33 +104,34 @@ export const usePlayerEntries = () => {
     }
   };
 
-  // Count total player entries
-  const countPlayerEntries = async () => {
-    try {
-      const { count, error } = await supabase
-        .from("player_entries")
-        .select("*", { count: "exact" });
-
-      if (error) throw error;
-
-      setTotalCount(count);
-      return count;
-    } catch (err) {
-      console.error("Error counting player entries:", err);
-      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
-      return null;
-    }
-  };
-
-  // Fetch entries on component mount
+  // Fetch entries on component mount and set up real-time subscription
   useEffect(() => {
+    // Fetch initial entries
     fetchPlayerEntries();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('player_entries')
+      .on(
+        'postgres_changes', 
+        { event: 'INSERT', schema: 'public', table: 'player_entries' },
+        (payload) => {
+          // Add new entry when inserted
+          setPlayerEntries(prev => [...prev, payload.new as PlayerEntryRow]);
+          setTotalCount(prev => (prev !== null ? prev + 1 : 1));
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {
     playerEntries,
     insertPlayerEntry,
-    countPlayerEntries,
     fetchPlayerEntries,
     isLoading,
     error,

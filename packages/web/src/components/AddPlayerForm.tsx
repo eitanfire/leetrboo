@@ -1,35 +1,22 @@
+import React, { useState } from 'react';
 import { Col } from 'reactstrap';
-import { useState, useEffect } from 'react';
-import { insertPlayerEntry, countPlayerEntries } from '../services/playerEntry';
+import { usePlayerEntries } from '../services/playerEntry';
+import { PlayerEntry } from '../services/playerEntry';
 
-type ParticipantFormData = {
-  name: string;
-  videoUrl: string;
-}
-
-type FormErrors = {
-  name?: string;
-  videoUrl?: string;
-}
-
-const ParticipantForm = () => {
-  const [formData, setFormData] = useState<ParticipantFormData>({
-    name: '',
-    videoUrl: ''
+const ParticipantForm: React.FC = () => {
+  const { insertPlayerEntry, totalCount } = usePlayerEntries();
+  
+  const [formData, setFormData] = useState<PlayerEntry>({
+    player_name: '',
+    video_url: ''
   });
 
-  const [totalPlayers, setTotalPlayers] = useState<number | null>(null);
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<{
+    player_name?: string;
+    video_url?: string;
+  }>({});
+
   const [submitError, setSubmitError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchTotalPlayers = async () => {
-      const count = await countPlayerEntries();
-      setTotalPlayers(count);
-    };
-
-    fetchTotalPlayers();
-  }, []);
 
   const isValidYouTubeUrl = (url: string): boolean => {
     try {
@@ -53,36 +40,17 @@ const ParticipantForm = () => {
     }
   };
 
-  // Extract video ID from URL (useful for future API integration)
-  const getYouTubeVideoId = (url: string): string | null => {
-    try {
-      const urlObj = new URL(url);
-      
-      if (urlObj.hostname === 'www.youtube.com' || urlObj.hostname === 'youtube.com') {
-        return urlObj.searchParams.get('v');
-      }
-      
-      if (urlObj.hostname === 'youtu.be') {
-        return urlObj.pathname.slice(1);
-      }
-      
-      return null;
-    } catch {
-      return null;
-    }
-  };
-
   const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
+    const newErrors: typeof errors = {};
     
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+    if (!formData.player_name.trim()) {
+      newErrors.player_name = 'Name is required';
     }
 
-    if (!formData.videoUrl.trim()) {
-      newErrors.videoUrl = 'Video URL is required';
-    } else if (!isValidYouTubeUrl(formData.videoUrl)) {
-      newErrors.videoUrl = 'Please enter a valid YouTube URL';
+    if (!formData.video_url.trim()) {
+      newErrors.video_url = 'Video URL is required';
+    } else if (!isValidYouTubeUrl(formData.video_url)) {
+      newErrors.video_url = 'Please enter a valid YouTube URL';
     }
 
     setErrors(newErrors);
@@ -96,19 +64,17 @@ const ParticipantForm = () => {
       [name]: value
     }));
     
-    if (errors[name as keyof FormErrors]) {
+    if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
         [name]: undefined
       }));
     }
-  };
 
-  const addPlayer = (player: ParticipantFormData) => {
-    // You could store the video ID here for future API use
-    const videoId = getYouTubeVideoId(player.videoUrl);
-    console.log('Video ID:', videoId); // This will be useful for the YouTube API
-    setPlayers(prevPlayers => [...prevPlayers, player]);
+    // Clear submit error when user starts typing
+    if (submitError) {
+      setSubmitError(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -120,20 +86,16 @@ const ParticipantForm = () => {
     if (validateForm()) {
       try {
         const newEntry = await insertPlayerEntry({
-          player_name: formData.name, 
-          video_url: formData.videoUrl
+          player_name: formData.player_name,
+          video_url: formData.video_url
         });
         
         // Check if the entry was successfully inserted
         if (newEntry) {
-          // Refresh total players count
-          const updatedCount = await countPlayerEntries();
-          setTotalPlayers(updatedCount);
-          
           // Reset form
           setFormData({
-            name: '',
-            videoUrl: ''
+            player_name: '',
+            video_url: ''
           });
           setErrors({});
         } else {
@@ -147,35 +109,40 @@ const ParticipantForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='add-player-form hstack'>
-      <span>Participant Information</span>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Enter participant's name"
-          className={errors.name ? 'error' : ''}
-        />
-        {errors.name && <div className="error-message">{errors.name}</div>}
-      </div>
-      <div>
-        <label htmlFor="videoUrl">YouTube video URL:</label>
-        <input
-          id="videoUrl"
-          name="videoUrl"
-          value={formData.videoUrl}
-          onChange={handleChange}
-          placeholder="Enter YouTube URL"
-          className={errors.videoUrl ? 'error' : ''}
-        />
-        {errors.videoUrl && <div className="error-message">{errors.videoUrl}</div>}
-      </div>
-      <button type="submit">Add Participant</button>
-      <div>Total players: {players.length}</div>
-    </form>
+    <Col>
+      <form onSubmit={handleSubmit} className='add-player-form hstack'>
+        <span className='add-player-form-title'>Participant Information</span>
+        <div>
+          <label htmlFor="player_name">Name:&nbsp;</label>
+          <input
+            id="player_name"
+            name="player_name"
+            value={formData.player_name}
+            onChange={handleChange}
+            placeholder="Enter participant's name"
+            className={errors.player_name ? 'error' : ''}
+          />
+          {errors.player_name && <div className="error-message">{errors.player_name}</div>}
+        </div>
+        <div>
+          <label htmlFor="video_url">YouTube video URL:&nbsp;</label>
+          <input
+            id="video_url"
+            name="video_url"
+            value={formData.video_url}
+            onChange={handleChange}
+            placeholder="Enter YouTube URL"
+            className={errors.video_url ? 'error' : ''}
+          />
+          {errors.video_url && <div className="error-message">{errors.video_url}</div>}
+        </div>
+        <button type="submit" className='primary'>Add Participant</button>
+        {submitError && <div className="error-message">{submitError}</div>}
+        <div>
+          Total players: {totalCount !== null ? totalCount : 'Loading...'}
+        </div>
+      </form>
+    </Col>
   );
 };
 
