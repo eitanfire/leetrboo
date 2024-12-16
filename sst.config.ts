@@ -8,15 +8,16 @@ export default $config({
       home: "aws",
     };
   },
-  async run() {new sst.aws.StaticSite("Web", {
-    path: 'packages/web',
-    build: {
-      command: "npm run build",
-      output: "dist",
-    },
-    domain: {
-      name: 'leetr.boo'
-    }
-  });},
+  async run() {
+    new sst.aws.StaticSite("Web", {
+      path: 'packages/web',
+      build: {
+        command: "npm run build",
+        output: "dist",
+      },
+      domain: {
+        name: 'leetr.boo'
+      }
+    });
+  },
 });
- 
