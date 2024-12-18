@@ -1,10 +1,8 @@
 import Header from "./components/Header";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "reactstrap";
-import AddPlayerForm from "./components/AddPlayerForm";
-import ListPlayerEntries from "./components/ListPlayerEntries";
 import { supabase } from "./services/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 
@@ -24,7 +22,7 @@ const App: React.FC<Props> = ({ }) => {
 
   return (
     <Container fluid className="p-0">
-{user == null?<div>No user</div>:<div>user</div>}
+{user == null?<div>no user</div>:<div>user</div>}
     </Container>
   );
 };
