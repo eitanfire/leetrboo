@@ -4,8 +4,6 @@ import React from "react";
 import { Container } from "reactstrap";
 import { useAuth } from "./hooks/useAuth";
 
-console.log(import.meta.env.VITE_APP_SUPABASE_URL);
-
 type Props = {};
 
 const App: React.FC<Props> = ({ }) => {
