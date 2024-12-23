@@ -30,11 +30,15 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
+      if (!state.email || !state.password) {
+        throw new Error("Please enter both email and password");
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email: state.email,
         password: state.password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth`,
         },
       });
 
@@ -42,13 +46,16 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
       setState((s) => ({
         ...s,
-        message: "Check your email for the confirmation link!",
+        message: "Success! Please check your email for the confirmation link.",
       }));
       if (onSuccess) onSuccess();
     } catch (error) {
       setState((s) => ({
         ...s,
-        error: error instanceof Error ? error.message : "An error occurred",
+        error:
+          error instanceof Error
+            ? error.message
+            : "An error occurred during sign up",
       }));
     } finally {
       setState((s) => ({ ...s, loading: false }));
@@ -67,6 +74,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           type="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
+          placeholder="Enter your email"
           required
         />
       </FormGroup>
@@ -80,6 +88,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           onChange={(e) =>
             setState((s) => ({ ...s, password: e.target.value }))
           }
+          placeholder="Enter your password"
           required
           minLength={6}
         />
@@ -107,17 +116,28 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
+      if (!state.email || !state.password) {
+        throw new Error("Please enter both email and password");
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: state.email,
+        email: state.email.trim(),
         password: state.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message === "Invalid login credentials") {
+          throw new Error("Incorrect email or password");
+        }
+        throw error;
+      }
+
       if (onSuccess) onSuccess();
     } catch (error) {
+      console.error("Sign in error:", error);
       setState((s) => ({
         ...s,
-        error: error instanceof Error ? error.message : "An error occurred",
+        error: error instanceof Error ? error.message : "Failed to sign in",
       }));
     } finally {
       setState((s) => ({ ...s, loading: false }));
@@ -135,6 +155,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           type="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
+          placeholder="Enter your email"
           required
         />
       </FormGroup>
@@ -148,6 +169,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           onChange={(e) =>
             setState((s) => ({ ...s, password: e.target.value }))
           }
+          placeholder="Enter your password"
           required
         />
       </FormGroup>
@@ -174,21 +196,30 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(state.email, {
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      });
+      if (!state.email) {
+        throw new Error("Please enter your email address");
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        state.email.trim(),
+        {
+          redirectTo: `${window.location.origin}/auth/reset-password`,
+        }
+      );
 
       if (error) throw error;
 
       setState((s) => ({
         ...s,
-        message: "Check your email for the reset link!",
+        message:
+          "If an account exists with this email, you will receive a password reset link.",
       }));
       if (onSuccess) onSuccess();
     } catch (error) {
       setState((s) => ({
         ...s,
-        error: error instanceof Error ? error.message : "An error occurred",
+        error:
+          error instanceof Error ? error.message : "Failed to send reset email",
       }));
     } finally {
       setState((s) => ({ ...s, loading: false }));
@@ -207,6 +238,7 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           type="email"
           value={state.email}
           onChange={(e) => setState((s) => ({ ...s, email: e.target.value }))}
+          placeholder="Enter your email"
           required
         />
       </FormGroup>
