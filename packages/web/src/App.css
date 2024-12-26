@@ -66,9 +66,9 @@
   font-weight: bold;
   background: linear-gradient(
     90deg,
-    rgba(var(--primary-color), 0.7),  /* Correct use of rgba */
-    rgba(var(--secondary-color), 0.7), /* Correct use of rgba */
-    rgba(var(--primary-color), 0.7)   /* Correct use of rgba */
+    rgba(var(--primary-color), 0.7),
+    rgba(var(--secondary-color), 0.7),
+    rgba(var(--primary-color), 0.7)
   );
   filter: var(--invert-filter);
   background-size: 200% auto;
@@ -118,9 +118,9 @@ button {
   user-select: none;
   -webkit-user-select: none;
   position: relative;
-  background-clip: text;
+  /* background-clip: text;
   -webkit-background-clip: text;
-  animation: flowing-gradient 3s ease-in-out infinite;
+  animation: flowing-gradient 3s ease-in-out infinite; */
 }
 
 button:hover {
@@ -147,13 +147,6 @@ button:disabled {
 button.success {
   background: #28a745;
   border-color: #28a745;
-  color: var(--text-color);
-}
-
-.submit-btn:hover,
-button.primary {
-  background: #007bff;
-  border-color: #007bff;
   color: var(--text-color);
 }
 
@@ -373,7 +366,10 @@ input[type="range"]:disabled {
   padding-left: 10%;
 }
 
-.submit-btn {
+.auth-btns,
+.submit-btn,
+.sign-in-btn,
+.reset-btn{
   background-color: black;
   color: var(--primary-color);
   background-color: linear-gradient(
@@ -381,3 +377,21 @@ input[type="range"]:disabled {
     rgba(var(--secondary-color), 0.7)
   );
 }
+
+.sign-up-btn {
+  color: #007bff;
+}
+
+.reset-btn {
+  color: #dc3545;
+}
+.sign-in-btn {
+  color: #739e7d;
+  margin-right: 45%;
+}
+
+  .sign-up-btn:hover,
+  .sign-in-btn:hover,
+  .reset-btn:hover {
+  color: black;
+  }

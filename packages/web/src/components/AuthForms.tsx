@@ -94,8 +94,8 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button className="submit-btn" type="submit" disabled={state.loading} block>
-        {state.loading ? "Creating Account..." : "Sign Up"}
+      <Button className="auth-btns sign-up-btn" type="submit" disabled={state.loading} outline color="primary" block>
+        {state.loading ? "Signing Up..." : "Sign Up"}
       </Button>
     </Form>
   );
@@ -174,7 +174,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button type="submit" disabled={state.loading} >
+      <Button className="auth-btns sign-in-btn"  type="submit" disabled={state.loading} color="success" outline block>
         {state.loading ? "Signing In..." : "Sign In"}
       </Button>
     </Form>
@@ -243,7 +243,14 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button color="primary" type="submit" disabled={state.loading} block>
+      <Button
+        className="auth-btns reset-btn"
+        type="submit"
+        disabled={state.loading}
+        color="danger"
+        outline
+        block
+      >
         {state.loading ? "Sending Reset Link..." : "Reset Password"}
       </Button>
     </Form>
