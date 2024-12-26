@@ -150,6 +150,7 @@ button.success {
   color: var(--text-color);
 }
 
+.submit-btn:hover,
 button.primary {
   background: #007bff;
   border-color: #007bff;
@@ -370,4 +371,13 @@ input[type="range"]:disabled {
 
 .player-name {
   padding-left: 10%;
+}
+
+.submit-btn {
+  background-color: black;
+  color: var(--primary-color);
+  background-color: linear-gradient(
+    rgba(var(--primary-color), 0.7),
+    rgba(var(--secondary-color), 0.7)
+  );
 }

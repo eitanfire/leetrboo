@@ -94,7 +94,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button color="primary" type="submit" disabled={state.loading} block>
+      <Button className="submit-btn" type="submit" disabled={state.loading} block>
         {state.loading ? "Creating Account..." : "Sign Up"}
       </Button>
     </Form>
@@ -174,7 +174,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button color="primary" type="submit" disabled={state.loading} block>
+      <Button type="submit" disabled={state.loading} >
         {state.loading ? "Signing In..." : "Sign In"}
       </Button>
     </Form>
