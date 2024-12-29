@@ -10,6 +10,7 @@ interface AuthFormProps {
 interface AuthState {
   email: string;
   password: string;
+  confirmPassword?: string;
   loading: boolean;
   error: string | null;
   message: string | null;
@@ -34,7 +35,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         throw new Error("Please enter both email and password");
       }
 
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: state.email,
         password: state.password,
         options: {
@@ -90,11 +91,16 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           }
           placeholder="Enter your password"
           required
-          minLength={6}
         />
       </FormGroup>
 
-      <Button className="auth-btns sign-up-btn" type="submit" disabled={state.loading} outline color="primary" block>
+      <Button
+      className="sign-up-btn outline"
+        type="submit"
+        disabled={state.loading}
+        color="primary"
+        block
+      >
         {state.loading ? "Signing Up..." : "Sign Up"}
       </Button>
     </Form>
@@ -120,21 +126,15 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         throw new Error("Please enter both email and password");
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: state.email.trim(),
         password: state.password,
       });
 
-      if (error) {
-        if (error.message === "Invalid login credentials") {
-          throw new Error("Incorrect email or password");
-        }
-        throw error;
-      }
+      if (error) throw error;
 
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error("Sign in error:", error);
       setState((s) => ({
         ...s,
         error: error instanceof Error ? error.message : "Failed to sign in",
@@ -174,15 +174,23 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
-      <Button className="auth-btns sign-in-btn"  type="submit" disabled={state.loading} color="success" outline block>
+      <Button
+      className="sign-in-btn outline"
+        type="submit"
+        disabled={state.loading}
+        color="success"
+        block
+      >
         {state.loading ? "Signing In..." : "Sign In"}
       </Button>
     </Form>
   );
 };
 
-// Password Reset Form Component
-export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
+// Password Reset Request Form Component
+export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
+  onSuccess,
+}) => {
   const [state, setState] = useState<AuthState>({
     email: "",
     password: "",
@@ -191,7 +199,7 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     message: null,
   });
 
-  const handleReset = async (e: React.FormEvent) => {
+  const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     setState((s) => ({ ...s, loading: true, error: null }));
 
@@ -203,7 +211,7 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       const { error } = await supabase.auth.resetPasswordForEmail(
         state.email.trim(),
         {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+          redirectTo: `${window.location.origin}/auth?type=recovery`,
         }
       );
 
@@ -211,8 +219,7 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
       setState((s) => ({
         ...s,
-        message:
-          "If an account exists with this email, you will receive a password reset link.",
+        message: "Please check your email for the password reset link.",
       }));
       if (onSuccess) onSuccess();
     } catch (error) {
@@ -227,7 +234,7 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleReset}>
+    <Form onSubmit={handleResetRequest}>
       {state.error && <Alert color="danger">{state.error}</Alert>}
       {state.message && <Alert color="success">{state.message}</Alert>}
 
@@ -243,15 +250,145 @@ export const ResetPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
       </FormGroup>
 
+      <Button className="reset-btn outline" color="danger "type="submit" disabled={state.loading} block>
+        {state.loading ? "Sending..." : "Send Reset Link"}
+      </Button>
+    </Form>
+  );
+};
+
+// Set New Password Form Component
+export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
+  const [state, setState] = useState<AuthState>({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    loading: false,
+    error: null,
+    message: null,
+  });
+
+  const handleSetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setState((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      // Validate password and confirmation match
+      if (state.password !== state.confirmPassword) {
+        throw new Error("Passwords do not match");
+      }
+
+      if (!state.password) {
+        throw new Error("Please enter a new password");
+      }
+
+      // Minimum password requirements
+      if (state.password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+      }
+
+      // Get the current session
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        // If no session, try to exchange the recovery token for a session
+        const hashFragment = window.location.hash.substring(1);
+        const hashParams = new URLSearchParams(hashFragment);
+        const accessToken = hashParams.get("access_token");
+
+        if (!accessToken) {
+          throw new Error(
+            "No recovery token found. Please try resetting your password again."
+          );
+        }
+
+        // Set the access token
+        const { error: setSessionError } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: "",
+        });
+
+        if (setSessionError) {
+          throw setSessionError;
+        }
+      }
+
+      // Now update the password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: state.password,
+      });
+
+      if (updateError) throw updateError;
+
+      setState((s) => ({
+        ...s,
+        message: "Your password has been successfully updated!",
+        password: "",
+        confirmPassword: "",
+      }));
+
+      if (onSuccess) {
+        onSuccess();
+      }
+
+      // Sign out after successful password update
+      await supabase.auth.signOut();
+    } catch (error) {
+      setState((s) => ({
+        ...s,
+        error:
+          error instanceof Error ? error.message : "Failed to reset password",
+      }));
+    } finally {
+      setState((s) => ({ ...s, loading: false }));
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSetPassword}>
+      {state.error && <Alert color="danger">{state.error}</Alert>}
+      {state.message && <Alert color="success">{state.message}</Alert>}
+
+      <FormGroup>
+        <Label for="newPassword">New Password</Label>
+        <Input
+          id="newPassword"
+          type="password"
+          value={state.password}
+          onChange={(e) =>
+            setState((s) => ({ ...s, password: e.target.value }))
+          }
+          placeholder="Enter your new password"
+          required
+          minLength={6}
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <Label for="confirmPassword">Confirm New Password</Label>
+        <Input
+          id="confirmPassword"
+          type="password"
+          value={state.confirmPassword}
+          onChange={(e) =>
+            setState((s) => ({ ...s, confirmPassword: e.target.value }))
+          }
+          placeholder="Confirm your new password"
+          required
+          minLength={6}
+        />
+      </FormGroup>
+
       <Button
-        className="auth-btns reset-btn"
+        className="sign-in-btn outline"
         type="submit"
         disabled={state.loading}
-        color="danger"
-        outline
+        color="success"
         block
       >
-        {state.loading ? "Sending Reset Link..." : "Reset Password"}
+        {state.loading ? "Updating..." : "Update Password"}
       </Button>
     </Form>
   );
