@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import React, { useState } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import { Container, Row, Col, Button, Alert } from "reactstrap";
 import { useAuth } from "./hooks/useAuth";
 import LeetrbooApp from "./LeetrbooApp";
 import {
@@ -14,6 +14,9 @@ type AuthView = "signin" | "signup" | "reset";
 
 const App: React.FC = () => {
   const [view, setView] = useState<AuthView>("signin");
+  const [confirmationMessage, setConfirmationMessage] = useState<string | null>(
+    null
+  );
   const user = useAuth();
 
   const renderAuthContent = () => {
@@ -22,7 +25,14 @@ const App: React.FC = () => {
         return (
           <>
             <h2>Create an Account</h2>
-            <SignUpForm onSuccess={() => setView("signin")} />
+            <SignUpForm
+              onSuccess={() => {
+                setConfirmationMessage(
+                  "Please check your email to confirm your account."
+                );
+                setView("signin");
+              }}
+            />
             <Button
               color="link"
               className="mt-3"
@@ -50,6 +60,11 @@ const App: React.FC = () => {
         return (
           <>
             <h2>Sign In</h2>
+            {confirmationMessage && (
+              <Alert color="info" className="mt-3">
+                {confirmationMessage}
+              </Alert>
+            )}
             <SignInForm onSuccess={() => {}} />
             <div className="mt-3 d-flex justify-content-between">
               <Button color="link" onClick={() => setView("signup")}>
