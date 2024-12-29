@@ -370,4 +370,7 @@ input[type="range"]:disabled {
 
 .player-name {
   padding-left: 10%;
+  font-size: x-large;
+  border-bottom: 2px solid #000;
 }
+ 
