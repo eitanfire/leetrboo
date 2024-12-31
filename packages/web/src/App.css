@@ -189,7 +189,7 @@ button.danger:hover {
 }
 
 .error-message {
-color: #dc3545;
+  color: #dc3545;
 }
 
 .buttons {
@@ -206,9 +206,10 @@ input[type="range"] {
   border-radius: 5px;
   background: linear-gradient(
     90deg,
-    rgba(var(--primary-color), 0.7),  /* Correct use of rgba */
-    rgba(var(--secondary-color), 0.7), /* Correct use of rgba */
-    rgba(var(--primary-color), 0.7)    /* Correct use of rgba */
+    rgba(var(--primary-color), 0.7),
+    /* Correct use of rgba */ rgba(var(--secondary-color), 0.7),
+    /* Correct use of rgba */ rgba(var(--primary-color), 0.7)
+      /* Correct use of rgba */
   );
   background-size: 200% auto;
   transition: background-position 0.5s;
@@ -339,7 +340,7 @@ input[type="range"]:disabled {
   gap: 1rem;
   border-top: 2px solid #000;
   border-bottom: 2px solid #000;
-  font-size: .8rem;
+  font-size: 0.8rem;
   align-items: center;
   justify-content: center;
   max-width: 98%;
@@ -355,7 +356,7 @@ input[type="range"]:disabled {
 .list-player-entries {
   font-size: xx-large;
 }
- 
+
 .list-player-entries > div {
   padding: 10px;
   border: 1px solid black;
@@ -369,7 +370,7 @@ input[type="range"]:disabled {
 .auth-btns,
 .submit-btn,
 .sign-in-btn,
-.reset-btn{
+.reset-btn {
   background-color: black;
   color: var(--primary-color);
   background-color: linear-gradient(
@@ -378,6 +379,7 @@ input[type="range"]:disabled {
   );
 }
 
+.sign-out-btn,
 .sign-up-btn {
   color: #007bff;
 }
@@ -390,8 +392,18 @@ input[type="range"]:disabled {
   margin-right: 45%;
 }
 
-  .sign-up-btn:hover,
-  .sign-in-btn:hover,
-  .reset-btn:hover {
+.sign-out-btn:hover,
+.logout-btn:hover,
+.sign-up-btn:hover,
+.sign-in-btn:hover,
+.reset-btn:hover {
   color: black;
-  }
+}
+
+
+.logout-btn {
+  position: absolute;
+  max-width: 3.5rem;
+  top:0;
+  left: 0;
+}
