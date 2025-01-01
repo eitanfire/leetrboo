@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Modal, ModalHeader, ModalFooter } from "reactstrap";
 import { supabase } from "../services/supabaseClient";
 
 const LogoutButton: React.FC = () => {
@@ -29,14 +29,10 @@ const LogoutButton: React.FC = () => {
 
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Confirm Sign Out</ModalHeader>
-        <ModalBody>
-          Warning: If you sign out now, your current leaderboard progress will
-          not be saved. Are you sure you want to continue?
-        </ModalBody>
         <ModalFooter>
           <Button
-            className="sign-out-btn"
-            color="primary"
+            className="sign-in-btn"
+            color="success"
             onClick={() => {
               handleLogout();
               toggleModal();
@@ -44,7 +40,7 @@ const LogoutButton: React.FC = () => {
           >
             Yes, Sign Out
           </Button>{" "}
-          <Button className="sign-out-btn" color="secondary" onClick={toggleModal}>
+          <Button className="reset-btn" color="danger" onClick={toggleModal}>
             Cancel
           </Button>
         </ModalFooter>
