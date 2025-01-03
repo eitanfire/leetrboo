@@ -10,7 +10,7 @@ console.log(import.meta.env.VITE_APP_SUPABASE_URL);
 
 type Props = {};
 
-const LeetrbooApp: React.FC<Props> = ({ }) => {
+const LeetrbooApp: React.FC<Props> = ({}) => {
   return (
     <Container fluid className="p-0">
       <Header />
