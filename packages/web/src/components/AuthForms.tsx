@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 // Types
 interface AuthFormProps {
@@ -17,7 +17,106 @@ interface AuthState {
   message: string | null;
 }
 
-// Sign Up Form Component
+export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [state, setState] = useState<AuthState>({
+    email: "",
+    password: "",
+    loading: false,
+    error: null,
+    message: null,
+  });
+
+  useEffect(() => {
+    if (location.state?.message) {
+      setState((s) => ({ ...s, message: location.state.message }));
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setState((s) => ({ ...s, loading: true, error: null }));
+
+    try {
+      if (!state.email || !state.password) {
+        throw new Error("Please enter both email and password");
+      }
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: state.email.trim(),
+        password: state.password,
+      });
+
+      if (error) throw error;
+
+      if (onSuccess) onSuccess();
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      setState((s) => ({
+        ...s,
+        error: error instanceof Error ? error.message : "Failed to sign in",
+      }));
+    } finally {
+      setState((s) => ({ ...s, loading: false }));
+    }
+  };
+
+  return (
+    <Form onSubmit={handleSignIn}>
+      {state.error && (
+        <Alert color="danger" timeout={300}>
+          {state.error}
+        </Alert>
+      )}
+      {state.message && (
+        <Alert color="success" timeout={300}>
+          {state.message}
+        </Alert>
+      )}
+
+      <FormGroup>
+        <Label for="signinEmail">Email</Label>
+        <Input
+          id="signinEmail"
+          type="email"
+          value={state.email}
+          onChange={(e) =>
+            setState((s) => ({ ...s, email: e.target.value.trim() }))
+          }
+          placeholder="Enter your email"
+          required
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <Label for="signinPassword">Password</Label>
+        <Input
+          id="signinPassword"
+          type="password"
+          value={state.password}
+          onChange={(e) =>
+            setState((s) => ({ ...s, password: e.target.value }))
+          }
+          placeholder="Enter your password"
+          required
+        />
+      </FormGroup>
+
+      <Button
+        className="sign-in-btn outline"
+        type="submit"
+        disabled={state.loading}
+        color="primary"
+        block
+      >
+        {state.loading ? "Signing In..." : "Sign In"}
+      </Button>
+    </Form>
+  );
+};
+
 export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const [state, setState] = useState<AuthState>({
@@ -74,8 +173,16 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   return (
     <Form onSubmit={handleSignUp}>
-      {state.error && <Alert color="danger">{state.error}</Alert>}
-      {state.message && <Alert color="success">{state.message}</Alert>}
+      {state.error && (
+        <Alert color="danger" timeout={300}>
+          {state.error}
+        </Alert>
+      )}
+      {state.message && (
+        <Alert color="success" timeout={300}>
+          {state.message}
+        </Alert>
+      )}
 
       <FormGroup>
         <Label for="signupEmail">Email</Label>
@@ -119,94 +226,6 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   );
 };
 
-
-// Sign In Form Component
-export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
-  const navigate = useNavigate();
-  const [state, setState] = useState<AuthState>({
-    email: "",
-    password: "",
-    loading: false,
-    error: null,
-    message: null,
-  });
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
-
-    try {
-      if (!state.email || !state.password) {
-        throw new Error("Please enter both email and password");
-      }
-
-      const { error, data } = await supabase.auth.signInWithPassword({
-        email: state.email.trim(),
-        password: state.password,
-      });
-
-      if (error) throw error;
-
-      if (onSuccess) onSuccess();
-      // The ProtectedRoute component will handle the navigation once the auth state changes
-    } catch (error) {
-      setState((s) => ({
-        ...s,
-        error: error instanceof Error ? error.message : "Failed to sign in",
-      }));
-    } finally {
-      setState((s) => ({ ...s, loading: false }));
-    }
-  };
-
-  return (
-    <Form onSubmit={handleSignIn}>
-      {state.error && <Alert color="danger">{state.error}</Alert>}
-      {state.message && <Alert color="success">{state.message}</Alert>}
-
-      <FormGroup>
-        <Label for="signinEmail">Email</Label>
-        <Input
-          id="signinEmail"
-          type="email"
-          value={state.email}
-          onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
-          }
-          placeholder="Enter your email"
-          required
-        />
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="signinPassword">Password</Label>
-        <Input
-          id="signinPassword"
-          type="password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your password"
-          required
-          minLength={6}
-        />
-      </FormGroup>
-
-      <Button
-        className="sign-in-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="primary"
-        block
-      >
-        {state.loading ? "Signing In..." : "Sign In"}
-      </Button>
-    </Form>
-  );
-};
-
-// Password Reset Request Form Component
 export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
   onSuccess,
 }) => {
@@ -224,10 +243,6 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
     setState((s) => ({ ...s, loading: true, error: null }));
 
     try {
-      if (!state.email) {
-        throw new Error("Please enter your email address");
-      }
-
       const { error } = await supabase.auth.resetPasswordForEmail(
         state.email.trim(),
         {
@@ -241,14 +256,6 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
         ...s,
         message: "Please check your email for the password reset link.",
       }));
-
-      if (onSuccess) onSuccess();
-      navigate("/signin", {
-        replace: true,
-        state: {
-          message: "Please check your email for the password reset link.",
-        },
-      });
     } catch (error) {
       setState((s) => ({
         ...s,
@@ -262,8 +269,16 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
 
   return (
     <Form onSubmit={handleResetRequest}>
-      {state.error && <Alert color="danger">{state.error}</Alert>}
-      {state.message && <Alert color="success">{state.message}</Alert>}
+      {state.error && (
+        <Alert color="danger" timeout={300}>
+          {state.error}
+        </Alert>
+      )}
+      {state.message && (
+        <Alert color="success" timeout={300}>
+          {state.message}
+        </Alert>
+      )}
 
       <FormGroup>
         <Label for="resetEmail">Email</Label>
@@ -281,7 +296,7 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
 
       <Button
         className="reset-btn outline"
-        color="danger"
+        color="primary"
         type="submit"
         disabled={state.loading}
         block
@@ -292,7 +307,6 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
   );
 };
 
-// Set New Password Form Component
 export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const [state, setState] = useState<AuthState>({
@@ -303,6 +317,24 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     error: null,
     message: null,
   });
+
+  // Add session check
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
+        setState((s) => ({
+          ...s,
+          error:
+            "Auth session missing! Please use the reset link from your email.",
+        }));
+      }
+    };
+
+    checkSession();
+  }, []);
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -321,42 +353,47 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         throw new Error("Password must be at least 6 characters long");
       }
 
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
+      // First try to get the token from the URL parameters
+      const params = new URLSearchParams(window.location.search);
+      let token = params.get("token");
 
-      if (sessionError) throw sessionError;
+      // If no token in URL params, try the hash
+      if (!token) {
+        const hash = window.location.hash;
+        token = new URLSearchParams(hash.substring(1)).get("access_token");
+      }
 
-      if (!session) {
+      if (!token) {
         throw new Error(
-          "No active session found. Please try resetting your password again."
+          "No reset token found. Please use the reset link from your email."
         );
       }
 
+      // Try updating with the token
       const { error: updateError } = await supabase.auth.updateUser({
         password: state.password,
       });
-
-      if (updateError) throw updateError;
 
       setState((s) => ({
         ...s,
         message: "Your password has been successfully updated!",
       }));
 
-      if (onSuccess) onSuccess();
+      // Sign out and redirect to signin page after a short delay
+      setTimeout(async () => {
+        await supabase.auth.signOut();
+        navigate("/signin", {
+          replace: true,
+          state: {
+            message:
+              "Your password has been updated! Please sign in with your new password.",
+          },
+        });
+      }, 2000);
 
-      // Sign out and redirect to signin page
-      await supabase.auth.signOut();
-      navigate("/signin", {
-        replace: true,
-        state: {
-          message:
-            "Your password has been updated! Please sign in with your new password.",
-        },
-      });
+      if (onSuccess) onSuccess();
     } catch (error) {
+      console.error("Password reset error:", error);
       setState((s) => ({
         ...s,
         error:
@@ -369,8 +406,16 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   return (
     <Form onSubmit={handleSetPassword}>
-      {state.error && <Alert color="danger">{state.error}</Alert>}
-      {state.message && <Alert color="success">{state.message}</Alert>}
+      {state.error && (
+        <Alert color="danger" timeout={300}>
+          {state.error}
+        </Alert>
+      )}
+      {state.message && (
+        <Alert color="success" timeout={300}>
+          {state.message}
+        </Alert>
+      )}
 
       <FormGroup>
         <Label for="newPassword">New Password</Label>
@@ -403,7 +448,7 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       </FormGroup>
 
       <Button
-        className="sign-in-btn outline"
+        className="reset-btn outline"
         type="submit"
         disabled={state.loading}
         color="success"

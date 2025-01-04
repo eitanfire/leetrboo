@@ -1,7 +1,9 @@
-// App.tsx
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
+  Route,
+  Routes,
   Navigate,
   Outlet,
 } from "react-router-dom";
@@ -12,8 +14,15 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import ResetPassword from "./ResetPassword";
 import SetNewPassword from "./SetNewPassword";
+import { AuthRedirect } from "./AuthRedirect";
 
-// Protected Route wrapper
+    <Routes>
+      <Route path="/auth/callback" element={<AuthRedirect />} />;
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/set-new-password" element={<SetNewPassword />} />
+      <Route path="/auth/callback" element={<AuthRedirect />} />
+    </Routes>;
+    
 const ProtectedRoute = () => {
   const { user, loading } = useAuth();
 
@@ -50,7 +59,9 @@ const AuthLayout = () => {
     );
   }
 
-  if (user) {
+  // Modify this check to allow access to set-new-password route even with a session
+  const isPasswordResetRoute = window.location.pathname === "/set-new-password";
+  if (user && !isPasswordResetRoute) {
     return <Navigate to="/" replace />;
   }
 
@@ -97,6 +108,11 @@ const router = createBrowserRouter([
         element: <SetNewPassword />,
       },
     ],
+  },
+  // route for auth callback
+  {
+    path: "/auth/callback",
+    element: <AuthRedirect />,
   },
 ]);
 
