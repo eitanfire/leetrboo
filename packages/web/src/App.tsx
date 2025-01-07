@@ -78,6 +78,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <LeetrbooApp />,
       },
+            {
+        path: "set-new-password",
+        element: <SetNewPassword />,
+      },
     ],
   },
   {
@@ -95,10 +99,6 @@ const router = createBrowserRouter([
       {
         path: "reset-password",
         element: <ResetPassword />,
-      },
-      {
-        path: "set-new-password",
-        element: <SetNewPassword />,
       },
     ],
   },

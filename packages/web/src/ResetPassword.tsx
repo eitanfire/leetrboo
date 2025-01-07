@@ -5,7 +5,6 @@ import {
   RequestPasswordResetForm,
   SetNewPasswordForm,
 } from "./components/AuthForms";
-import { supabase } from "../src/services/supabaseClient";
 
 const ResetPassword: React.FC = () => {
   const [isResetMode, setIsResetMode] = useState(false);
