@@ -20,7 +20,6 @@ import { AuthRedirect } from "./AuthRedirect";
       <Route path="/auth/callback" element={<AuthRedirect />} />;
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/set-new-password" element={<SetNewPassword />} />
-      <Route path="/auth/callback" element={<AuthRedirect />} />
     </Routes>;
     
 const ProtectedRoute = () => {
@@ -108,11 +107,6 @@ const router = createBrowserRouter([
         element: <SetNewPassword />,
       },
     ],
-  },
-  // route for auth callback
-  {
-    path: "/auth/callback",
-    element: <AuthRedirect />,
   },
 ]);
 
