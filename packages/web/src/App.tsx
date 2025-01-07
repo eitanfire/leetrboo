@@ -27,10 +27,7 @@ const ProtectedRoute = () => {
 
   if (loading) {
     return (
-      <Container
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
+      <Container className="d-flex justify-content-center align-items-center vh-100">
         <Spinner />
       </Container>
     );
@@ -49,10 +46,7 @@ const AuthLayout = () => {
 
   if (loading) {
     return (
-      <Container
-        className="d-flex justify-content-center align-items-center"
-        style={{ height: "100vh" }}
-      >
+      <Container className="d-flex justify-content-center align-items-center vh-100">
         <Spinner />
       </Container>
     );
