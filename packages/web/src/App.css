@@ -409,3 +409,15 @@ input[type="range"]:disabled {
   top:0;
   left: 0;
 }
+
+.redirect-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.redirect-container p {
+  font-size: 1.1rem;
+  color: #333;
+}
