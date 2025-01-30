@@ -1,18 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Col } from "reactstrap";
 import { usePlayerEntries, PlayerEntry } from "../services/playerEntry";
-import { useCompetitions } from "../services/competitionService";
+import { useCompetitions, Competition } from "../services/competitionService";
 
-const ParticipantForm: React.FC = () => {
-  const [selectedCompetition, setSelectedCompetition] = useState<number | null>(
-    null
-  );
+interface ParticipantFormProps {
+  selectedCompetition: Competition | null;
+  onCompetitionSelect: (competition: Competition) => void;
+}
 
+const ParticipantForm: React.FC<ParticipantFormProps> = ({
+  selectedCompetition,
+  onCompetitionSelect,
+}) => {
   const {
     playerEntries,
     isLoading: entriesLoading,
     insertPlayerEntry,
-  } = usePlayerEntries(selectedCompetition || undefined);
+  } = usePlayerEntries(selectedCompetition?.id);
 
   const {
     competitions,
@@ -33,13 +37,6 @@ const ParticipantForm: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showNewCompetitionForm, setShowNewCompetitionForm] = useState(false);
   const [newCompetitionName, setNewCompetitionName] = useState("");
-
-  // Set the first competition as selected when competitions load
-  useEffect(() => {
-    if (competitions.length > 0 && !selectedCompetition) {
-      setSelectedCompetition(competitions[0].id);
-    }
-  }, [competitions]);
 
   const isValidYouTubeUrl = (url: string): boolean => {
     try {
@@ -85,7 +82,7 @@ const ParticipantForm: React.FC = () => {
       try {
         const entryData: PlayerEntry = {
           ...formData,
-          competition_id: selectedCompetition,
+          competition_id: selectedCompetition.id,
         };
 
         await insertPlayerEntry(entryData);
@@ -106,12 +103,19 @@ const ParticipantForm: React.FC = () => {
     }
   };
 
+  const handleCompetitionChange = (competitionId: number) => {
+    const competition = competitions.find((c) => c.id === competitionId);
+    if (competition) {
+      onCompetitionSelect(competition);
+    }
+  };
+
   const handleCreateCompetition = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const newCompetition = await createCompetition(newCompetitionName);
       if (newCompetition) {
-        setSelectedCompetition(newCompetition.id);
+        onCompetitionSelect(newCompetition);
       }
       setShowNewCompetitionForm(false);
       setNewCompetitionName("");
@@ -174,18 +178,14 @@ const ParticipantForm: React.FC = () => {
     );
   }
 
-  const currentCompetition = competitions.find(
-    (c) => c.id === selectedCompetition
-  );
-
   return (
     <Col>
       <div className="mb-4">
         <h2>Manage Competitions</h2>
         <div className="competition-selector mb-3">
           <select
-            value={selectedCompetition || ""}
-            onChange={(e) => setSelectedCompetition(Number(e.target.value))}
+            value={selectedCompetition?.id || ""}
+            onChange={(e) => handleCompetitionChange(Number(e.target.value))}
             className="mr-2"
           >
             {competitions.map((comp) => (
@@ -203,10 +203,10 @@ const ParticipantForm: React.FC = () => {
         </div>
       </div>
 
-      {currentCompetition && (
+      {selectedCompetition && (
         <form onSubmit={handleSubmit} className="add-player-form hstack">
           <span className="add-player-form-title">
-            Add Participant to {currentCompetition.name}
+            Add Participant to {selectedCompetition.name}
           </span>
           <div>
             <label htmlFor="player_name">Name:&nbsp;</label>

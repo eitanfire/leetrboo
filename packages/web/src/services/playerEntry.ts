@@ -19,14 +19,27 @@ export function usePlayerEntries(competitionId?: number) {
       setIsLoading(true);
       setError(null);
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setError("No authenticated user found");
+        return;
+      }
+
       let query = supabase
         .from("player_entries")
         .select("*")
         .order("created_at", { ascending: false });
 
-      // If competitionId is provided, filter by it
+      // Only fetch entries for the selected competition
       if (competitionId) {
         query = query.eq("competition_id", competitionId);
+      } else {
+        // If no competition is selected, don't fetch any entries
+        setPlayerEntries([]);
+        setIsLoading(false);
+        return;
       }
 
       const { data, error: supabaseError } = await query;

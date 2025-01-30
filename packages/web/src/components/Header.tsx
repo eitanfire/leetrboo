@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import Stopwatch from "./Stopwatch";
 import { Col, Row } from "reactstrap";
 import bannerImage from "../assets/Halloween-costume-contest.png";
-import LogoutButton from "./LogoutButton"; // Add this import
+import LogoutButton from "./LogoutButton";
 
 type Props = {};
 

@@ -1,21 +1,77 @@
-import Header from "./components/Header";
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col, Alert } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import React, { FC } from "react";
-import { Container } from "reactstrap";
-import AddPlayerForm from "./components/AddPlayerForm";
+
+import Header from "./components/Header";
+import ParticipantForm from "./components/AddPlayerForm";
 import ListPlayerEntries from "./components/ListPlayerEntries";
+import { Competition, useCompetitions } from "./services/competitionService";
 
-console.log(import.meta.env.VITE_APP_SUPABASE_URL);
+const LeetrbooApp: React.FC = () => {
+  const [selectedCompetition, setSelectedCompetition] =
+    useState<Competition | null>(null);
+  const { competitions, isLoading, error } = useCompetitions();
 
-type Props = {};
+  // Automatically select the first competition when data loads
+  useEffect(() => {
+    if (competitions.length > 0 && !selectedCompetition) {
+      setSelectedCompetition(competitions[0]);
+    }
+  }, [competitions, selectedCompetition]);
 
-const LeetrbooApp: React.FC<Props> = ({}) => {
+  if (isLoading) {
+    return (
+      <Container fluid className="p-0">
+        <Header />
+        <Container className="mt-4">
+          <Row>
+            <Col>
+              <div className="text-center">Loading competitions...</div>
+            </Col>
+          </Row>
+        </Container>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container fluid className="p-0">
+        <Header />
+        <Container className="mt-4">
+          <Row>
+            <Col>
+              <Alert color="danger">
+                Error loading competitions: {error}
+              </Alert>
+            </Col>
+          </Row>
+        </Container>
+      </Container>
+    );
+  }
+
   return (
     <Container fluid className="p-0">
       <Header />
-      <AddPlayerForm />
-      <ListPlayerEntries />
+      <Container className="mt-4">
+        <Row>
+          <Col>
+            <ParticipantForm
+              selectedCompetition={selectedCompetition}
+              onCompetitionSelect={setSelectedCompetition}
+            />
+          </Col>
+        </Row>
+        {selectedCompetition && (
+          <Row className="mt-4">
+            <Col>
+              <ListPlayerEntries selectedCompetition={selectedCompetition} />
+            </Col>
+          </Row>
+        )}
+      </Container>
     </Container>
   );
 };

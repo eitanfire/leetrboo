@@ -3,7 +3,6 @@ import { supabase } from "../services/supabaseClient";
 import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 
-// Types
 interface AuthFormProps {
   onSuccess?: () => void;
 }
