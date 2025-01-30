@@ -27,25 +27,37 @@ export function usePlayerEntries(competitionId?: number) {
         return;
       }
 
-      let query = supabase
-        .from("player_entries")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      // Only fetch entries for the selected competition
-      if (competitionId) {
-        query = query.eq("competition_id", competitionId);
-      } else {
-        // If no competition is selected, don't fetch any entries
+      // If no competition is selected, don't fetch any entries
+      if (!competitionId) {
         setPlayerEntries([]);
-        setIsLoading(false);
         return;
       }
 
-      const { data, error: supabaseError } = await query;
+      // First verify the competition belongs to the current user
+      const { data: competition, error: compError } = await supabase
+        .from("competitions")
+        .select("id")
+        .eq("id", competitionId)
+        .eq("created_by", user.id)
+        .maybeSingle();
 
-      if (supabaseError) {
-        throw supabaseError;
+      if (compError) {
+        throw compError;
+      }
+
+      if (!competition) {
+        setError("You don't have access to this competition");
+        return;
+      }
+
+      const { data, error: entriesError } = await supabase
+        .from("player_entries")
+        .select("*")
+        .eq("competition_id", competitionId)
+        .order("created_at", { ascending: false });
+
+      if (entriesError) {
+        throw entriesError;
       }
 
       setPlayerEntries(data || []);
@@ -59,7 +71,7 @@ export function usePlayerEntries(competitionId?: number) {
 
   const insertPlayerEntry = async (
     entry: PlayerEntry
-  ): Promise<PlayerEntry | null> => {
+  ): Promise<PlayerEntry> => {
     try {
       setError(null);
 
@@ -67,24 +79,42 @@ export function usePlayerEntries(competitionId?: number) {
         throw new Error("Competition ID is required");
       }
 
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("No authenticated user found");
+      }
+
+      // Verify the competition belongs to the current user
+      const { data: competition, error: compError } = await supabase
+        .from("competitions")
+        .select("id")
+        .eq("id", entry.competition_id)
+        .eq("created_by", user.id)
+        .maybeSingle();
+
+      if (compError || !competition) {
+        throw new Error("You don't have access to this competition");
+      }
+
       const { data, error: insertError } = await supabase
         .from("player_entries")
         .insert([entry])
         .select()
-        .single();
+        .maybeSingle();
 
-      if (insertError) {
-        throw insertError;
+      if (insertError || !data) {
+        throw insertError || new Error("Failed to insert player entry");
       }
 
-      // Update the local state with the new entry
       setPlayerEntries((prev) => [data, ...prev]);
       return data;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Error inserting player entry";
       setError(errorMessage);
-      throw err;
+      throw new Error(errorMessage);
     }
   };
 
