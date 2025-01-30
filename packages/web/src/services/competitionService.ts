@@ -1,3 +1,4 @@
+// competitionService.ts
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -8,12 +9,12 @@ export interface Competition {
   created_at: string;
 }
 
-export function useCompetition() {
-  const [competition, setCompetition] = useState<Competition | null>(null);
+export function useCompetitions() {
+  const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchCompetition = async () => {
+  const fetchCompetitions = async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -29,22 +30,16 @@ export function useCompetition() {
       const { data, error: supabaseError } = await supabase
         .from("competitions")
         .select("*")
-        .eq("created_by", user.id)
-        .single();
+        .order("created_at", { ascending: false });
 
-      if (supabaseError && supabaseError.code !== "PGRST116") {
-        // PGRST116 is the "no rows returned" error
-        setError(supabaseError.message);
-        console.error("Error fetching competition:", supabaseError);
-        return;
+      if (supabaseError) {
+        throw supabaseError;
       }
 
-      setCompetition(data);
+      setCompetitions(data || []);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "An error occurred";
-      setError(errorMessage);
-      console.error("Error fetching competition:", err);
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error fetching competitions:", err);
     } finally {
       setIsLoading(false);
     }
@@ -60,25 +55,7 @@ export function useCompetition() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        setError("No authenticated user found");
-        return null;
-      }
-
-      // Check if user already has a competition
-      const { data: existingCompetition, error: checkError } = await supabase
-        .from("competitions")
-        .select("*")
-        .eq("created_by", user.id)
-        .single();
-
-      if (checkError && checkError.code !== "PGRST116") {
-        setError(checkError.message);
-        return null;
-      }
-
-      if (existingCompetition) {
-        setError("You already have a competition created");
-        return null;
+        throw new Error("No authenticated user found");
       }
 
       const { data, error: createError } = await supabase
@@ -93,11 +70,10 @@ export function useCompetition() {
         .single();
 
       if (createError) {
-        setError(createError.message);
-        return null;
+        throw createError;
       }
 
-      setCompetition(data);
+      setCompetitions((prev) => [data, ...prev]);
       return data;
     } catch (err) {
       const errorMessage =
@@ -108,14 +84,124 @@ export function useCompetition() {
   };
 
   useEffect(() => {
-    fetchCompetition();
+    fetchCompetitions();
   }, []);
 
   return {
-    competition,
+    competitions,
     isLoading,
     error,
     createCompetition,
-    refreshCompetition: fetchCompetition,
+    refreshCompetitions: fetchCompetitions,
+  };
+}
+
+export interface PlayerEntry {
+  id: number;
+  competition_id: number;
+  player_name: string;
+  score: number;
+}
+
+// playerEntry.ts
+export function usePlayerEntries(competitionId?: number) {
+  const [playerEntries, setPlayerEntries] = useState<PlayerEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchPlayerEntries = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setError("No authenticated user found");
+        return;
+      }
+
+      let query = supabase
+        .from("player_entries")
+        .select("*, competitions!inner(created_by)")
+        .eq("competitions.created_by", user.id);
+
+      if (competitionId) {
+        query = query.eq("competition_id", competitionId);
+      }
+
+      const { data, error: supabaseError } = await query;
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      setPlayerEntries(data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error fetching player entries:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const insertPlayerEntry = async (
+    entry: PlayerEntry
+  ): Promise<PlayerEntry | null> => {
+    try {
+      setError(null);
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error("No authenticated user found");
+      }
+
+      // Verify the competition belongs to the current user
+      const { data: competition, error: compError } = await supabase
+        .from("competitions")
+        .select("id")
+        .eq("id", entry.competition_id)
+        .eq("created_by", user.id)
+        .single();
+
+      if (compError || !competition) {
+        throw new Error(
+          "No competition found. Please create a competition first"
+        );
+      }
+
+      const { data, error: insertError } = await supabase
+        .from("player_entries")
+        .insert([entry])
+        .select()
+        .single();
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      setPlayerEntries((prev) => [data, ...prev]);
+      return data;
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error inserting player entry";
+      setError(errorMessage);
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    fetchPlayerEntries();
+  }, [competitionId]);
+
+  return {
+    playerEntries,
+    isLoading,
+    error,
+    insertPlayerEntry,
+    refreshPlayerEntries: fetchPlayerEntries,
   };
 }

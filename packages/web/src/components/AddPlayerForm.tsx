@@ -1,20 +1,24 @@
-// ParticipantForm.tsx
 import React, { useState, useEffect } from "react";
 import { Col } from "reactstrap";
 import { usePlayerEntries, PlayerEntry } from "../services/playerEntry";
-import { useCompetition } from "../services/competitionService";
+import { useCompetitions } from "../services/competitionService";
 
 const ParticipantForm: React.FC = () => {
+  const [selectedCompetition, setSelectedCompetition] = useState<number | null>(
+    null
+  );
+
   const {
     playerEntries,
     isLoading: entriesLoading,
     insertPlayerEntry,
-  } = usePlayerEntries();
+  } = usePlayerEntries(selectedCompetition || undefined);
+
   const {
-    competition,
-    isLoading: competitionLoading,
+    competitions,
+    isLoading: competitionsLoading,
     createCompetition,
-  } = useCompetition();
+  } = useCompetitions();
 
   const [formData, setFormData] = useState<PlayerEntry>({
     player_name: "",
@@ -29,6 +33,13 @@ const ParticipantForm: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showNewCompetitionForm, setShowNewCompetitionForm] = useState(false);
   const [newCompetitionName, setNewCompetitionName] = useState("");
+
+  // Set the first competition as selected when competitions load
+  useEffect(() => {
+    if (competitions.length > 0 && !selectedCompetition) {
+      setSelectedCompetition(competitions[0].id);
+    }
+  }, [competitions]);
 
   const isValidYouTubeUrl = (url: string): boolean => {
     try {
@@ -65,17 +76,19 @@ const ParticipantForm: React.FC = () => {
     e.preventDefault();
     setSubmitError(null);
 
-    if (!competition) {
-      setSubmitError("Please create a competition first");
+    if (!selectedCompetition) {
+      setSubmitError("Please select a competition first");
       return;
     }
 
     if (validateForm()) {
       try {
-        await insertPlayerEntry({
+        const entryData: PlayerEntry = {
           ...formData,
-          competition_id: competition.id,
-        });
+          competition_id: selectedCompetition,
+        };
+
+        await insertPlayerEntry(entryData);
 
         setFormData({
           player_name: "",
@@ -96,7 +109,10 @@ const ParticipantForm: React.FC = () => {
   const handleCreateCompetition = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await createCompetition(newCompetitionName);
+      const newCompetition = await createCompetition(newCompetitionName);
+      if (newCompetition) {
+        setSelectedCompetition(newCompetition.id);
+      }
       setShowNewCompetitionForm(false);
       setNewCompetitionName("");
     } catch (error) {
@@ -106,15 +122,15 @@ const ParticipantForm: React.FC = () => {
     }
   };
 
-  if (competitionLoading) {
+  if (competitionsLoading) {
     return <div>Loading competition data...</div>;
   }
 
-  if (!competition && !showNewCompetitionForm) {
+  if (competitions.length === 0 && !showNewCompetitionForm) {
     return (
       <Col>
         <div className="mb-4">
-          <h2>Create Your Competition</h2>
+          <h2>Create Your First Competition</h2>
           <p>You need to create a competition before adding participants.</p>
           <button
             onClick={() => setShowNewCompetitionForm(true)}
@@ -145,60 +161,98 @@ const ParticipantForm: React.FC = () => {
           <button type="submit" className="primary">
             Create Competition
           </button>
+          <button
+            type="button"
+            onClick={() => setShowNewCompetitionForm(false)}
+            className="secondary ml-2"
+          >
+            Cancel
+          </button>
           {submitError && <div className="error-message">{submitError}</div>}
         </form>
       </Col>
     );
   }
 
+  const currentCompetition = competitions.find(
+    (c) => c.id === selectedCompetition
+  );
+
   return (
     <Col>
       <div className="mb-4">
-        <h2>{competition?.name}</h2>
+        <h2>Manage Competitions</h2>
+        <div className="competition-selector mb-3">
+          <select
+            value={selectedCompetition || ""}
+            onChange={(e) => setSelectedCompetition(Number(e.target.value))}
+            className="mr-2"
+          >
+            {competitions.map((comp) => (
+              <option key={comp.id} value={comp.id}>
+                {comp.name}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => setShowNewCompetitionForm(true)}
+            className="secondary"
+          >
+            Create New Competition
+          </button>
+        </div>
       </div>
-      <form onSubmit={handleSubmit} className="add-player-form hstack">
-        <span className="add-player-form-title">Add Participant</span>
-        <div>
-          <label htmlFor="player_name">Name:&nbsp;</label>
-          <input
-            id="player_name"
-            name="player_name"
-            value={formData.player_name}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, player_name: e.target.value }))
-            }
-            placeholder="Enter participant's name"
-            className={errors.player_name ? "error" : ""}
-          />
-          {errors.player_name && (
-            <div className="error-message">{errors.player_name}</div>
-          )}
-        </div>
-        <div>
-          <label htmlFor="video_url">YouTube video URL:&nbsp;</label>
-          <input
-            id="video_url"
-            name="video_url"
-            value={formData.video_url}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, video_url: e.target.value }))
-            }
-            placeholder="Enter YouTube URL"
-            className={errors.video_url ? "error" : ""}
-          />
-          {errors.video_url && (
-            <div className="error-message">{errors.video_url}</div>
-          )}
-        </div>
-        <button type="submit" className="primary">
-          Add Participant
-        </button>
-        {submitError && <div className="error-message">{submitError}</div>}
-        <div>
-          Total participants:{" "}
-          {entriesLoading ? "Loading..." : playerEntries.length}
-        </div>
-      </form>
+
+      {currentCompetition && (
+        <form onSubmit={handleSubmit} className="add-player-form hstack">
+          <span className="add-player-form-title">
+            Add Participant to {currentCompetition.name}
+          </span>
+          <div>
+            <label htmlFor="player_name">Name:&nbsp;</label>
+            <input
+              id="player_name"
+              name="player_name"
+              value={formData.player_name}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  player_name: e.target.value,
+                }))
+              }
+              placeholder="Enter participant's name"
+              className={errors.player_name ? "error" : ""}
+            />
+            {errors.player_name && (
+              <div className="error-message">{errors.player_name}</div>
+            )}
+          </div>
+          <div>
+            <label htmlFor="video_url">YouTube video URL:&nbsp;</label>
+            <input
+              id="video_url"
+              name="video_url"
+              value={formData.video_url}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, video_url: e.target.value }))
+              }
+              placeholder="Enter YouTube URL"
+              className={errors.video_url ? "error" : ""}
+            />
+            {errors.video_url && (
+              <div className="error-message">{errors.video_url}</div>
+            )}
+          </div>
+          <button type="submit" className="primary">
+            Add Participant
+          </button>
+          {submitError && <div className="error-message">{submitError}</div>}
+          <div>
+            Total participants:{" "}
+            {entriesLoading ? "Loading..." : playerEntries.length}
+          </div>
+        </form>
+      )}
     </Col>
   );
 };
