@@ -12,16 +12,13 @@ const ResetPassword: React.FC = () => {
 
   useEffect(() => {
     const checkResetSession = async () => {
-      // Check if we're accessing this page with a recovery token
       const hash = window.location.hash;
       const params = new URLSearchParams(hash.replace("#", ""));
       const type = params.get("type");
 
-      // If we have a recovery token, show the password reset form
       if (type === "recovery") {
         setIsResetMode(true);
       } else {
-        // If accessed directly without token, show the request reset form
         setIsResetMode(false);
       }
     };
