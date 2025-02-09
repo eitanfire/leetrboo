@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
 import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 interface AuthFormProps {
   onSuccess?: () => void;
@@ -19,6 +20,7 @@ interface AuthState {
 export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const [state, setState] = useState<AuthState>({
     email: "",
     password: "",
@@ -26,6 +28,13 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     error: null,
     message: null,
   });
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate("/", { replace: true });
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     if (location.state?.message) {
@@ -50,8 +59,8 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
       if (error) throw error;
 
+      // Don't navigate here - let the auth context handle it
       if (onSuccess) onSuccess();
-      navigate("/dashboard", { replace: true });
     } catch (error) {
       setState((s) => ({
         ...s,

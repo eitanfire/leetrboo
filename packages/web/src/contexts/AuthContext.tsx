@@ -46,28 +46,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth event:", event);
+      setLoading(true);
 
-      switch (event) {
-        case "PASSWORD_RECOVERY":
-          await supabase.auth.signOut();
-          setUser(null);
-          setSession(null);
-          navigate("/set-new-password", { replace: true });
-          break;
-        case "SIGNED_IN":
-          setSession(session);
-          setUser(session?.user ?? null);
-          navigate("/", { replace: true });
-          break;
-        case "SIGNED_OUT":
-          setSession(null);
-          setUser(null);
-          navigate("/signin", { replace: true });
-          break;
-        case "USER_UPDATED":
-          setSession(session);
-          setUser(session?.user ?? null);
-          break;
+      try {
+        switch (event) {
+          case "PASSWORD_RECOVERY":
+            await supabase.auth.signOut();
+            setUser(null);
+            setSession(null);
+            navigate("/set-new-password", { replace: true });
+            break;
+          case "SIGNED_IN":
+            setSession(session);
+            setUser(session?.user ?? null);
+            navigate("/", { replace: true });
+            break;
+          case "SIGNED_OUT":
+            setSession(null);
+            setUser(null);
+            navigate("/signin", { replace: true });
+            break;
+          case "USER_UPDATED":
+            setSession(session);
+            setUser(session?.user ?? null);
+            break;
+        }
+      } finally {
+        setLoading(false);
       }
     });
 
@@ -77,7 +82,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [navigate]);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setLoading(true);
+    try {
+      await supabase.auth.signOut();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value = {
@@ -93,5 +103,3 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     </AuthContext.Provider>
   );
 };
-
-

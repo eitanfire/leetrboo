@@ -7,12 +7,6 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("Full URL:", window.location.href);
-    console.log("URL Hash:", window.location.hash);
-    console.log("URL Search (query params):", window.location.search);
-  }, []);
-  
-  useEffect(() => {
     // Get initial auth state
     supabase.auth.getSession().then(({ data: { session } }) => {
       // Don't set the user if we're in a password reset flow
@@ -28,6 +22,7 @@ export const useAuth = () => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setLoading(true);
       if (event === "PASSWORD_RECOVERY") {
         // Sign out the user if we're in password recovery mode
         await supabase.auth.signOut();
@@ -35,6 +30,7 @@ export const useAuth = () => {
       } else {
         setUser(session?.user ?? null);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -42,5 +38,3 @@ export const useAuth = () => {
 
   return { user, loading };
 };
-
-console.log("URL Hash:", window.location.hash);

@@ -1,6 +1,5 @@
-// src/App.tsx
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthRedirect } from "./AuthRedirect";
@@ -15,17 +14,15 @@ const App: React.FC = () => {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* Auth routes */}
           <Route path="/auth/callback" element={<AuthRedirect />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/set-new-password" element={<SetNewPassword />} />
-
-          {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<LeetrbooApp />} />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
