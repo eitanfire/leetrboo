@@ -12,19 +12,19 @@ export interface Competition {
 export function useCompetitions() {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchCompetitions = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      setCompetitions([]); // Reset competitions when starting a new fetch
 
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        setError("No authenticated user found");
-        return;
+        throw new Error("No authenticated user found");
       }
 
       const { data, error: supabaseError } = await supabase
@@ -38,7 +38,8 @@ export function useCompetitions() {
 
       setCompetitions(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setCompetitions([]); // Reset competitions on error
+      setError(err instanceof Error ? err : new Error("An error occurred"));
       console.error("Error fetching competitions:", err);
     } finally {
       setIsLoading(false);
@@ -73,12 +74,15 @@ export function useCompetitions() {
         throw createError;
       }
 
-      setCompetitions((prev) => [data, ...prev]);
-      return data;
+      if (data) {
+        setCompetitions((prev) => [data, ...prev]);
+        return data;
+      }
+      throw new Error("No data returned from competition creation");
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Error creating competition";
-      setError(errorMessage);
+      setError(
+        err instanceof Error ? err : new Error("Error creating competition")
+      );
       return null;
     }
   };
@@ -103,23 +107,22 @@ export interface PlayerEntry {
   score: number;
 }
 
-// playerEntry.ts
 export function usePlayerEntries(competitionId?: number) {
   const [playerEntries, setPlayerEntries] = useState<PlayerEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchPlayerEntries = async () => {
     try {
       setIsLoading(true);
       setError(null);
+      setPlayerEntries([]); // Reset entries when starting a new fetch
 
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) {
-        setError("No authenticated user found");
-        return;
+        throw new Error("No authenticated user found");
       }
 
       let query = supabase
@@ -139,7 +142,8 @@ export function usePlayerEntries(competitionId?: number) {
 
       setPlayerEntries(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setPlayerEntries([]); // Reset entries on error
+      setError(err instanceof Error ? err : new Error("An error occurred"));
       console.error("Error fetching player entries:", err);
     } finally {
       setIsLoading(false);
@@ -167,7 +171,11 @@ export function usePlayerEntries(competitionId?: number) {
         .eq("created_by", user.id)
         .single();
 
-      if (compError || !competition) {
+      if (compError) {
+        throw compError;
+      }
+
+      if (!competition) {
         throw new Error(
           "No competition found. Please create a competition first"
         );
@@ -183,13 +191,17 @@ export function usePlayerEntries(competitionId?: number) {
         throw insertError;
       }
 
+      if (!data) {
+        throw new Error("No data returned from player entry creation");
+      }
+
       setPlayerEntries((prev) => [data, ...prev]);
       return data;
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Error inserting player entry";
-      setError(errorMessage);
-      throw err;
+      setError(
+        err instanceof Error ? err : new Error("Error inserting player entry")
+      );
+      return null;
     }
   };
 
