@@ -1,4 +1,3 @@
-// src/components/AuthRedirect.tsx
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./services/supabaseClient";

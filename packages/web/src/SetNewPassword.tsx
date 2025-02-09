@@ -1,4 +1,3 @@
-// SetNewPassword.tsx
 import React from "react";
 import { SetNewPasswordForm } from "./components/AuthForms";
 

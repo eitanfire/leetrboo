@@ -43,7 +43,7 @@ const LeetrbooApp: React.FC = () => {
           <Row>
             <Col>
               <Alert color="danger">
-                Error loading competitions: {error}
+                Error loading competitions: {error.message}
               </Alert>
             </Col>
           </Row>
