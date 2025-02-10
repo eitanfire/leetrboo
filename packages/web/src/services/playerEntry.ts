@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { RealtimeChannel } from "@supabase/supabase-js";
 import { supabase } from "./supabaseClient";
 
 export interface PlayerEntry {
@@ -13,8 +14,11 @@ export function usePlayerEntries(competitionId?: number) {
   const [playerEntries, setPlayerEntries] = useState<PlayerEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [subscription, setSubscription] = useState<RealtimeChannel | null>(
+    null
+  );
 
-  const fetchPlayerEntries = async () => {
+  const fetchPlayerEntries = async (): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);
@@ -27,13 +31,11 @@ export function usePlayerEntries(competitionId?: number) {
         return;
       }
 
-      // If no competition is selected, don't fetch any entries
       if (!competitionId) {
         setPlayerEntries([]);
         return;
       }
 
-      // First verify the competition belongs to the current user
       const { data: competition, error: compError } = await supabase
         .from("competitions")
         .select("id")
@@ -41,10 +43,7 @@ export function usePlayerEntries(competitionId?: number) {
         .eq("created_by", user.id)
         .maybeSingle();
 
-      if (compError) {
-        throw compError;
-      }
-
+      if (compError) throw compError;
       if (!competition) {
         setError("You don't have access to this competition");
         return;
@@ -56,10 +55,7 @@ export function usePlayerEntries(competitionId?: number) {
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
 
-      if (entriesError) {
-        throw entriesError;
-      }
-
+      if (entriesError) throw entriesError;
       setPlayerEntries(data || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -67,6 +63,30 @@ export function usePlayerEntries(competitionId?: number) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const setupSubscription = () => {
+    if (!competitionId) return;
+
+    const channel = supabase
+      .channel(`player_entries_${competitionId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "player_entries",
+          filter: `competition_id=eq.${competitionId}`,
+        },
+        (payload) => {
+          console.log("Real-time update received:", payload);
+          fetchPlayerEntries();
+        }
+      )
+      .subscribe();
+
+    setSubscription(channel);
+    return channel;
   };
 
   const insertPlayerEntry = async (
@@ -86,7 +106,6 @@ export function usePlayerEntries(competitionId?: number) {
         throw new Error("No authenticated user found");
       }
 
-      // Verify the competition belongs to the current user
       const { data: competition, error: compError } = await supabase
         .from("competitions")
         .select("id")
@@ -108,7 +127,6 @@ export function usePlayerEntries(competitionId?: number) {
         throw insertError || new Error("Failed to insert player entry");
       }
 
-      setPlayerEntries((prev) => [data, ...prev]);
       return data;
     } catch (err) {
       const errorMessage =
@@ -118,9 +136,15 @@ export function usePlayerEntries(competitionId?: number) {
     }
   };
 
-  // Fetch entries when competitionId changes
   useEffect(() => {
     fetchPlayerEntries();
+    const channel = setupSubscription();
+
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
   }, [competitionId]);
 
   return {
