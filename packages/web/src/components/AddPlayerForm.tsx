@@ -155,7 +155,7 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
           className="add-player-form d-flex align-items-center gap-3"
         >
           <span className="add-player-form-title">
-            Add Participant to {selectedCompetition.name}
+            Add Participant to {selectedCompetition?.name ?? "Unknown Competition"}
           </span>
           <div>
             <label htmlFor="player_name">Name:&nbsp;</label>
