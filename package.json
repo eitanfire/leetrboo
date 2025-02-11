@@ -6,7 +6,11 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@mantine/core": "^7.16.3",
+    "@mantine/hooks": "^7.16.3",
     "@supabase/supabase-js": "^2.47.10",
+    "@tabler/icons-react": "^3.30.0",
     "bootstrap": "^5.3.3",
     "react-router-dom": "^7.1.1",
     "reactstrap": "^9.2.3",

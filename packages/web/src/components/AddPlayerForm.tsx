@@ -150,29 +150,56 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
   if (showNewCompetitionForm) {
     return (
       <Col>
-        <form onSubmit={handleCreateCompetition} className="mb-4">
-          <h2>Create Competition</h2>
+        <form
+          onSubmit={handleSubmit}
+          className="add-player-form d-flex align-items-center gap-3"
+        >
+          <span className="add-player-form-title">
+            Add Participant to {selectedCompetition.name}
+          </span>
           <div>
-            <label htmlFor="competition_name">Competition Name:&nbsp;</label>
+            <label htmlFor="player_name">Name:&nbsp;</label>
             <input
-              id="competition_name"
-              value={newCompetitionName}
-              onChange={(e) => setNewCompetitionName(e.target.value)}
-              placeholder="Enter competition name"
-              required
+              id="player_name"
+              name="player_name"
+              value={formData.player_name}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  player_name: e.target.value,
+                }))
+              }
+              placeholder="Enter participant's name"
+              className={errors.player_name ? "error" : ""}
             />
+            {errors.player_name && (
+              <div className="error-message">{errors.player_name}</div>
+            )}
+          </div>
+          <div>
+            <label htmlFor="video_url">YouTube video URL:&nbsp;</label>
+            <input
+              id="video_url"
+              name="video_url"
+              value={formData.video_url}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, video_url: e.target.value }))
+              }
+              placeholder="Enter YouTube URL"
+              className={errors.video_url ? "error" : ""}
+            />
+            {errors.video_url && (
+              <div className="error-message">{errors.video_url}</div>
+            )}
           </div>
           <button type="submit" className="primary">
-            Create Competition
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowNewCompetitionForm(false)}
-            className="secondary ml-2"
-          >
-            Cancel
+            Add Participant
           </button>
           {submitError && <div className="error-message">{submitError}</div>}
+          <div className="ms-auto">
+            Total participants:{" "}
+            {entriesLoading ? "Loading..." : playerEntries.length}
+          </div>
         </form>
       </Col>
     );

@@ -73,9 +73,9 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
                   href={item.video_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-outline-primary btn-sm"
+                  className="btn btn-outline-primary btn-lg"
                 >
-                  🎤 View Entry
+                  🎤 {item.video_url}
                 </a>
               </Col>
             </Row>

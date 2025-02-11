@@ -136,7 +136,11 @@ const Stopwatch: React.FC = () => {
   return (
     <>
       <time className="container">
-        <div className={`countdown-container ${!isEnabled ? "ghosted" : ""}`}>
+        <div
+          className={`countdown-container ms-auto ${
+            !isEnabled ? "ghosted" : ""
+          }`}
+        >
           {isEnabled && (
             <>
               <svg className="countdown-svg" viewBox="0 0 100 100">
