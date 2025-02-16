@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Col } from "reactstrap";
 import { usePlayerEntries, PlayerEntry } from "../services/playerEntry";
-import { useCompetitions, Competition } from "../services/competitionService";
+import type { Competition } from "../services/competitionService";
+import { useCompetitions } from "../services/competitionService";
 
 interface ParticipantFormProps {
   selectedCompetition: Competition | null;
   onCompetitionSelect: (competition: Competition) => void;
 }
+
+type PlayerEntryFormData = Pick<PlayerEntry, "player_name" | "video_url">;
 
 const ParticipantForm: React.FC<ParticipantFormProps> = ({
   selectedCompetition,
@@ -16,7 +19,7 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
     playerEntries,
     isLoading: entriesLoading,
     insertPlayerEntry,
-  } = usePlayerEntries(selectedCompetition?.id);
+  } = usePlayerEntries(selectedCompetition?.id?.toString());
 
   const {
     competitions,
@@ -24,7 +27,7 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
     createCompetition,
   } = useCompetitions();
 
-  const [formData, setFormData] = useState<PlayerEntry>({
+  const [formData, setFormData] = useState<PlayerEntryFormData>({
     player_name: "",
     video_url: "",
   });
@@ -80,13 +83,13 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
 
     if (validateForm()) {
       try {
-        const entryData: PlayerEntry = {
-          ...formData,
-          competition_id: selectedCompetition.id,
-        };
+        await insertPlayerEntry({
+          player_name: formData.player_name,
+          video_url: formData.video_url,
+          competition_id: selectedCompetition.id.toString(),
+        });
 
-        await insertPlayerEntry(entryData);
-
+        // Clear form after successful submission
         setFormData({
           player_name: "",
           video_url: "",
@@ -103,8 +106,10 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
     }
   };
 
-  const handleCompetitionChange = (competitionId: number) => {
-    const competition = competitions.find((c) => c.id === competitionId);
+  const handleCompetitionChange = (competitionId: string) => {
+    const competition = competitions.find(
+      (c) => c.id === Number(competitionId)
+    );
     if (competition) {
       onCompetitionSelect(competition);
     }
@@ -150,55 +155,26 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
   if (showNewCompetitionForm) {
     return (
       <Col>
-        <form
-          onSubmit={handleSubmit}
-          className="add-player-form d-flex align-items-center gap-3"
-        >
-          <span className="add-player-form-title">
-            Add Participant to {selectedCompetition?.name ?? "Unknown Competition"}
-          </span>
-          <div>
-            <label htmlFor="player_name">Name:&nbsp;</label>
+        <form onSubmit={handleCreateCompetition} className="mb-4">
+          <h3>Create New Competition</h3>
+          <div className="d-flex gap-3 align-items-center">
             <input
-              id="player_name"
-              name="player_name"
-              value={formData.player_name}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  player_name: e.target.value,
-                }))
-              }
-              placeholder="Enter participant's name"
-              className={errors.player_name ? "error" : ""}
+              type="text"
+              value={newCompetitionName}
+              onChange={(e) => setNewCompetitionName(e.target.value)}
+              placeholder="Competition name"
+              required
             />
-            {errors.player_name && (
-              <div className="error-message">{errors.player_name}</div>
-            )}
-          </div>
-          <div>
-            <label htmlFor="video_url">YouTube video URL:&nbsp;</label>
-            <input
-              id="video_url"
-              name="video_url"
-              value={formData.video_url}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, video_url: e.target.value }))
-              }
-              placeholder="Enter YouTube URL"
-              className={errors.video_url ? "error" : ""}
-            />
-            {errors.video_url && (
-              <div className="error-message">{errors.video_url}</div>
-            )}
-          </div>
-          <button type="submit" className="primary">
-            Add Participant
-          </button>
-          {submitError && <div className="error-message">{submitError}</div>}
-          <div className="ms-auto">
-            Total participants:{" "}
-            {entriesLoading ? "Loading..." : playerEntries.length}
+            <button type="submit" className="primary">
+              Create
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setShowNewCompetitionForm(false)}
+            >
+              Cancel
+            </button>
           </div>
         </form>
       </Col>
@@ -212,7 +188,7 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
         <div className="competition-selector mb-3">
           <select
             value={selectedCompetition?.id || ""}
-            onChange={(e) => handleCompetitionChange(Number(e.target.value))}
+            onChange={(e) => handleCompetitionChange(e.target.value)}
             className="mr-2"
           >
             {competitions.map((comp) => (
