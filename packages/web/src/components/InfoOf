@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+This file ensures that the total number of participants renders without an automatic refresh:
+
+import React, { useState, useEffect } from "react";
 import { Col } from "reactstrap";
 import { usePlayerEntries, PlayerEntry } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
@@ -19,6 +21,7 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
     playerEntries,
     isLoading: entriesLoading,
     insertPlayerEntry,
+    subscribeToEntries,
   } = usePlayerEntries(selectedCompetition?.id?.toString());
 
   const {
@@ -40,6 +43,26 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showNewCompetitionForm, setShowNewCompetitionForm] = useState(false);
   const [newCompetitionName, setNewCompetitionName] = useState("");
+  const [participantCount, setParticipantCount] = useState(0);
+
+  // Effect to update participant count whenever playerEntries changes
+  useEffect(() => {
+    if (playerEntries) {
+      setParticipantCount(playerEntries.length);
+    }
+  }, [playerEntries]);
+
+  // Effect to subscribe to real-time updates when competition changes
+  useEffect(() => {
+    if (selectedCompetition?.id && subscribeToEntries) {
+      const unsubscribe = subscribeToEntries(selectedCompetition.id.toString());
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [selectedCompetition?.id, subscribeToEntries]);
 
   const isValidYouTubeUrl = (url: string): boolean => {
     try {
@@ -251,9 +274,10 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
           </button>
           {submitError && <div className="error-message">{submitError}</div>}
           <div className="participant-count">
-            {/* //TODO - Ensure that this renders without manually refreshing  */}
             <strong>Total Participants:</strong>{" "}
-            <span className="count">{playerEntries.length}</span>
+            <span className="count">
+              {entriesLoading ? "Loading..." : participantCount}
+            </span>
           </div>
         </form>
       )}

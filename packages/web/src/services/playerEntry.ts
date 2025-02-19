@@ -12,12 +12,14 @@ export interface PlayerEntry {
 
 export function usePlayerEntries(competitionId?: string) {
   const [playerEntries, setPlayerEntries] = useState<PlayerEntry[]>([]);
+  const [participantCount, setParticipantCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPlayerEntries = async () => {
     if (!competitionId) {
       setPlayerEntries([]);
+      setParticipantCount(0);
       setIsLoading(false);
       return;
     }
@@ -35,6 +37,7 @@ export function usePlayerEntries(competitionId?: string) {
       if (supabaseError) throw supabaseError;
 
       setPlayerEntries(data as PlayerEntry[]);
+      setParticipantCount(data.length);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
@@ -65,34 +68,62 @@ export function usePlayerEntries(competitionId?: string) {
   };
 
   useEffect(() => {
-    // Initial fetch of player entries
     fetchPlayerEntries();
 
-    // Set up real-time subscription for this competition
     if (competitionId) {
       const subscription = supabase
         .channel(`public:player_entries:competition_id=eq.${competitionId}`)
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "player_entries", filter: `competition_id=eq.${competitionId}` }, (payload) => {
-          setPlayerEntries((current) => [
-            payload.new as PlayerEntry,
-            ...current,
-          ]);
-        })
-        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "player_entries", filter: `competition_id=eq.${competitionId}` }, (payload) => {
-          setPlayerEntries((current) =>
-            current.map((entry) =>
-              entry.id === payload.new.id ? (payload.new as PlayerEntry) : entry
-            )
-          );
-        })
-        .on("postgres_changes", { event: "DELETE", schema: "public", table: "player_entries", filter: `competition_id=eq.${competitionId}` }, (payload) => {
-          setPlayerEntries((current) =>
-            current.filter((entry) => entry.id !== payload.old.id)
-          );
-        })
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "player_entries",
+            filter: `competition_id=eq.${competitionId}`,
+          },
+          (payload) => {
+            setPlayerEntries((current) => [
+              ...current,
+              payload.new as PlayerEntry,
+            ]);
+            setParticipantCount((currentCount) => currentCount + 1);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "player_entries",
+            filter: `competition_id=eq.${competitionId}`,
+          },
+          (payload) => {
+            setPlayerEntries((current) =>
+              current.map((entry) =>
+                entry.id === payload.new.id
+                  ? (payload.new as PlayerEntry)
+                  : entry
+              )
+            );
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "DELETE",
+            schema: "public",
+            table: "player_entries",
+            filter: `competition_id=eq.${competitionId}`,
+          },
+          (payload) => {
+            setPlayerEntries((current) =>
+              current.filter((entry) => entry.id !== payload.old.id)
+            );
+            setParticipantCount((currentCount) => currentCount - 1);
+          }
+        )
         .subscribe();
 
-      // Clean up subscription when component unmounts or competitionId changes
       return () => {
         subscription.unsubscribe();
       };
@@ -101,6 +132,7 @@ export function usePlayerEntries(competitionId?: string) {
 
   return {
     playerEntries,
+    participantCount,
     isLoading,
     error,
     refreshPlayerEntries: fetchPlayerEntries,

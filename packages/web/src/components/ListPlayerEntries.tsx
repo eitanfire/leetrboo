@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Table, Spinner, Alert } from "reactstrap";
 import { usePlayerEntries } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
@@ -14,6 +14,38 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
   const { playerEntries, isLoading, error } = usePlayerEntries(
     selectedCompetition.id.toString()
   );
+
+  // Sort entries: scored entries first (highest to lowest), then unscored entries
+  const sortedEntries = useMemo(() => {
+    if (!playerEntries) return [];
+
+    return [...playerEntries].sort((a, b) => {
+      // If both entries have scores, sort by score (highest first)
+      if (
+        a.score !== null &&
+        a.score !== undefined &&
+        b.score !== null &&
+        b.score !== undefined
+      ) {
+        return b.score - a.score;
+      }
+
+      // If only a has a score, it comes first
+      if (a.score !== null && a.score !== undefined) {
+        return -1;
+      }
+
+      // If only b has a score, it comes first
+      if (b.score !== null && b.score !== undefined) {
+        return 1;
+      }
+
+      // If neither has a score, sort by created_at (most recent first)
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    });
+  }, [playerEntries]);
 
   if (isLoading) {
     return (
@@ -47,7 +79,7 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
           </tr>
         </thead>
         <tbody>
-          {playerEntries.map((entry) => (
+          {sortedEntries.map((entry) => (
             <tr key={entry.id}>
               <td>{entry.player_name}</td>
               <td>
@@ -56,7 +88,7 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Watch Video
+                  <button> 🎤 Watch Video</button>
                 </a>
               </td>
               <td>
