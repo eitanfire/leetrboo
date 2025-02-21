@@ -373,8 +373,7 @@ input[type="range"]:disabled {
   padding: 10px;
   border: 1px solid black;
   border-radius: 6px;
-    width: 100dvw;
-
+  width: 100dvw;
 }
 
 .player-name {
@@ -387,7 +386,7 @@ input[type="range"]:disabled {
 .submit-btn,
 .sign-in-btn,
 .reset-btn {
-    text-align: center;
+  text-align: center;
 
   background-color: black;
   color: var(--primary-color);
@@ -418,11 +417,10 @@ input[type="range"]:disabled {
   color: black;
 }
 
-
 .logout-btn {
   position: absolute;
   max-width: 3.5rem;
-  top:0;
+  top: 0;
   left: 0;
 }
 
@@ -439,11 +437,12 @@ input[type="range"]:disabled {
 }
 
 .auth-container {
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;  /* Center horizontally */
-  justify-content: center;  /* Center vertically */
-  height: 100vh;  /* Ensure the container takes up the full height */
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
   padding: 2rem;
 }
 

@@ -9,6 +9,7 @@ import {
   Stack,
   Alert,
   Paper,
+  Center,
 } from "@mantine/core";
 
 import {
@@ -213,6 +214,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           label="Email"
           type="email"
           value={state.email}
+          className="ta-center"
           onChange={(e) =>
             setState((s) => ({ ...s, email: e.target.value.trim() }))
           }
