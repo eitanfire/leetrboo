@@ -5,7 +5,7 @@ import { SignInForm } from "./components/AuthForms";
 
 const SignIn: React.FC = () => {
   return (
-    <>
+    <div className='auth-container'>
       <h2>Sign In</h2>
       <SignInForm />
       <div className="mt-3 d-flex justify-content-between">
@@ -16,7 +16,7 @@ const SignIn: React.FC = () => {
           Forgot Password?
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 

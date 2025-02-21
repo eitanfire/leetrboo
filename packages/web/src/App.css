@@ -24,10 +24,25 @@
   );
 }
 
+h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  text-align: center;
+  margin-top: 1rem;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 /* .countdown-container {
@@ -372,6 +387,8 @@ input[type="range"]:disabled {
 .submit-btn,
 .sign-in-btn,
 .reset-btn {
+    text-align: center;
+
   background-color: black;
   color: var(--primary-color);
   background-color: linear-gradient(
@@ -420,3 +437,21 @@ input[type="range"]:disabled {
   font-size: 1.1rem;
   color: #333;
 }
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Center horizontally */
+  justify-content: center;  /* Center vertically */
+  height: 100vh;  /* Ensure the container takes up the full height */
+  padding: 2rem;
+}
+
+/* .auth-container btn {
+  text-align: center;
+} */
+
+/* .mantine-PasswordInput-wrapper {
+white-space: nowrap; 
+background-color: aquamarine;
+} */

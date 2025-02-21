@@ -1,87 +1,104 @@
-import React, { useEffect } from "react";
-import { Row, Col, Spinner } from "reactstrap";
-import { usePlayerEntries as usePlayerEntriesService } from "../services/playerEntry";
-import { Competition } from "../services/competitionService";
+import React, { useMemo } from "react";
+import { Table, Spinner, Alert } from "reactstrap";
+import { usePlayerEntries } from "../services/playerEntry";
+import type { Competition } from "../services/competitionService";
+import Score from "./Score";
 
 interface ListPlayerEntriesProps {
-  selectedCompetition?: Competition | null;
+  selectedCompetition: Competition;
 }
 
 const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
   selectedCompetition,
 }) => {
-  const {
-    playerEntries: list,
-    isLoading,
-    error,
-    refreshPlayerEntries,
-  } = usePlayerEntriesService(selectedCompetition?.id);
+  const { playerEntries, isLoading, error } = usePlayerEntries(
+    selectedCompetition.id.toString()
+  );
 
-  useEffect(() => {
-    console.log(
-      "ListPlayerEntries - Competition changed:",
-      selectedCompetition?.id
-    );
-  }, [selectedCompetition]);
+  // Sort entries: scored entries first (highest to lowest), then unscored entries
+  const sortedEntries = useMemo(() => {
+    if (!playerEntries) return [];
 
-  useEffect(() => {
-    console.log("ListPlayerEntries - Entries updated:", list.length);
-  }, [list]);
+    return [...playerEntries].sort((a, b) => {
+      // If both entries have scores, sort by score (highest first)
+      if (
+        a.score !== null &&
+        a.score !== undefined &&
+        b.score !== null &&
+        b.score !== undefined
+      ) {
+        return b.score - a.score;
+      }
+
+      // If only a has a score, it comes first
+      if (a.score !== null && a.score !== undefined) {
+        return -1;
+      }
+
+      // If only b has a score, it comes first
+      if (b.score !== null && b.score !== undefined) {
+        return 1;
+      }
+
+      // If neither has a score, sort by created_at (most recent first)
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    });
+  }, [playerEntries]);
 
   if (isLoading) {
     return (
       <div className="text-center p-4">
         <Spinner color="primary" />
-        <div className="mt-2">Loading player entries...</div>
+        <div className="mt-2">Loading entries...</div>
       </div>
     );
   }
 
   if (error) {
-    return (
-      <div className="alert alert-danger">
-        Error: {error}
-        <button className="btn btn-link" onClick={() => refreshPlayerEntries()}>
-          Retry
-        </button>
-      </div>
-    );
+    return <Alert color="danger">Error loading player entries: {error}</Alert>;
   }
 
-  if (!selectedCompetition) {
+  if (playerEntries.length === 0) {
     return (
-      <div className="alert alert-info">
-        Please select a competition to view entries.
-      </div>
+      <Alert color="info">No entries yet for {selectedCompetition.name}</Alert>
     );
   }
 
   return (
-    <div className="list-player-entries">
+    <div>
       <h3>Entries for {selectedCompetition.name}</h3>
-      {list.length === 0 ? (
-        <div className="alert alert-info">No player entries found.</div>
-      ) : (
-        <div className="mt-3">
-          {list.map((item) => (
-            <Row key={item.id} className="mb-2 p-2 border-bottom">
-              <Col md={4} className="player-name">
-                {item.player_name}
-              </Col>
-              <Col md={8}>
+      <Table striped responsive>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Video</th>
+            <th>Score</th>
+            <th>Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedEntries.map((entry) => (
+            <tr key={entry.id}>
+              <td>{entry.player_name}</td>
+              <td>
                 <a
-                  href={item.video_url}
+                  href={entry.video_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="btn btn-outline-primary btn-lg"
                 >
-                  🎤 {item.video_url}
+                  <button> 🎤 Watch Video</button>
                 </a>
-              </Col>
-            </Row>
+              </td>
+              <td>
+                <Score entryId={entry.id} initialScore={entry.score} />
+              </td>
+              <td>{new Date(entry.created_at).toLocaleDateString()}</td>
+            </tr>
           ))}
-        </div>
-      )}
+        </tbody>
+      </Table>
     </div>
   );
 };

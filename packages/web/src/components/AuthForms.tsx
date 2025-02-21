@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
-import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Stack,
+  Alert,
+  Paper,
+} from "@mantine/core";
+
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconEyeCheck,
+  IconEyeOff,
+} from "@tabler/icons-react";
 
 interface AuthFormProps {
   onSuccess?: () => void;
@@ -29,7 +43,6 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     message: null,
   });
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
@@ -58,8 +71,6 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       });
 
       if (error) throw error;
-
-      // Don't navigate here - let the auth context handle it
       if (onSuccess) onSuccess();
     } catch (error) {
       setState((s) => ({
@@ -72,22 +83,21 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSignIn}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleSignIn} p="md">
+      <Stack>
+        {state.error && (
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="signinEmail">Email</Label>
-        <Input
-          id="signinEmail"
+        <TextInput
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
@@ -96,32 +106,38 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your email"
           required
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label for="signinPassword">Password</Label>
-        <Input
-          id="signinPassword"
-          type="password"
+        <PasswordInput
+          label="Password"
           value={state.password}
           onChange={(e) =>
             setState((s) => ({ ...s, password: e.target.value }))
           }
           placeholder="Enter your password"
           required
+          visibilityToggleIcon={({ reveal }) => (
+            <span
+              style={{
+                position: "absolute",
+                right: 12,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              {reveal ? (
+                <IconEyeOff style={{ width: 20, height: 20 }} />
+              ) : (
+                <IconEyeCheck style={{ width: 20, height: 20 }} />
+              )}
+            </span>
+          )}
         />
-      </FormGroup>
 
-      <Button
-        className="sign-in-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="primary"
-        block
-      >
-        {state.loading ? "Signing In..." : "Sign In"}
-      </Button>
-    </Form>
+        <Button type="submit" loading={state.loading} fullWidth>
+          {state.loading ? "Signing In..." : "Sign In"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -180,22 +196,21 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSignUp}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleSignUp} p="md">
+      <Stack>
+        {state.error && (
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="signupEmail">Email</Label>
-        <Input
-          id="signupEmail"
+        <TextInput
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
@@ -204,13 +219,9 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your email"
           required
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label for="signupPassword">Password</Label>
-        <Input
-          id="signupPassword"
-          type="password"
+        <PasswordInput
+          label="Password"
           value={state.password}
           onChange={(e) =>
             setState((s) => ({ ...s, password: e.target.value }))
@@ -218,19 +229,29 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your password"
           required
           minLength={6}
+          visibilityToggleIcon={({ reveal }) => (
+            <div
+              style={{
+                position: "absolute",
+                right: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              {reveal ? (
+                <IconEyeOff style={{ width: 20, height: 20 }} />
+              ) : (
+                <IconEyeCheck style={{ width: 20, height: 20 }} />
+              )}
+            </div>
+          )}
         />
-      </FormGroup>
 
-      <Button
-        className="sign-up-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="primary"
-        block
-      >
-        {state.loading ? "Signing Up..." : "Sign Up"}
-      </Button>
-    </Form>
+        <Button type="submit" loading={state.loading} fullWidth>
+          {state.loading ? "Signing Up..." : "Sign Up"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -276,22 +297,21 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleResetRequest}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleResetRequest} p="md">
+      <Stack>
+        {state.error && (
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="resetEmail">Email</Label>
-        <Input
-          id="resetEmail"
+        <TextInput
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
@@ -300,18 +320,12 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
           placeholder="Enter your email"
           required
         />
-      </FormGroup>
 
-      <Button
-        className="reset-btn outline"
-        color="primary"
-        type="submit"
-        disabled={state.loading}
-        block
-      >
-        {state.loading ? "Sending..." : "Send Reset Link"}
-      </Button>
-    </Form>
+        <Button type="submit" loading={state.loading} fullWidth>
+          {state.loading ? "Sending..." : "Send Reset Link"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -326,7 +340,6 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     message: null,
   });
 
-  // Add session check
   useEffect(() => {
     const checkSession = async () => {
       const {
@@ -361,11 +374,9 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         throw new Error("Password must be at least 6 characters long");
       }
 
-      // First try to get the token from the URL parameters
       const params = new URLSearchParams(window.location.search);
       let token = params.get("token");
 
-      // If no token in URL params, try the hash
       if (!token) {
         const hash = window.location.hash;
         token = new URLSearchParams(hash.substring(1)).get("access_token");
@@ -377,7 +388,6 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         );
       }
 
-      // Try updating with the token
       const { error: updateError } = await supabase.auth.updateUser({
         password: state.password,
       });
@@ -387,7 +397,6 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         message: "Your password has been successfully updated!",
       }));
 
-      // Sign out and redirect to signin page after a short delay
       setTimeout(async () => {
         await supabase.auth.signOut();
         navigate("/signin", {
@@ -413,23 +422,21 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSetPassword}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleSetPassword} p="md">
+      <Stack>
+        {state.error && (
+          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="newPassword">New Password</Label>
-        <Input
-          id="newPassword"
-          type="password"
+        <PasswordInput
+          label="New Password"
           value={state.password}
           onChange={(e) =>
             setState((s) => ({ ...s, password: e.target.value }))
@@ -437,14 +444,26 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your new password"
           required
           minLength={6}
+          visibilityToggleIcon={({ reveal }) => (
+            <div
+              style={{
+                position: "absolute",
+                right: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              {reveal ? (
+                <IconEyeOff style={{ width: 20, height: 20 }} />
+              ) : (
+                <IconEyeCheck style={{ width: 20, height: 20 }} />
+              )}
+            </div>
+          )}
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label for="confirmPassword">Confirm New Password</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
+        <PasswordInput
+          label="Confirm New Password"
           value={state.confirmPassword}
           onChange={(e) =>
             setState((s) => ({ ...s, confirmPassword: e.target.value }))
@@ -452,18 +471,28 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Confirm your new password"
           required
           minLength={6}
+          visibilityToggleIcon={({ reveal }) => (
+            <div
+              style={{
+                position: "absolute",
+                right: 10,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              {reveal ? (
+                <IconEyeOff style={{ width: 20, height: 20 }} />
+              ) : (
+                <IconEyeCheck style={{ width: 20, height: 20 }} />
+              )}
+            </div>
+          )}
         />
-      </FormGroup>
 
-      <Button
-        className="reset-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="success"
-        block
-      >
-        {state.loading ? "Updating..." : "Update Password"}
-      </Button>
-    </Form>
+        <Button type="submit" loading={state.loading} fullWidth color="green">
+          {state.loading ? "Updating..." : "Update Password"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
