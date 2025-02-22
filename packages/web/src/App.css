@@ -28,7 +28,7 @@ h2 {
   font-size: 2rem;
   color: var(--primary-color);
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 .container {
@@ -42,7 +42,7 @@ form {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
 }
 
 /* .countdown-container {
@@ -386,8 +386,8 @@ input[type="range"]:disabled {
 .submit-btn,
 .sign-in-btn,
 .reset-btn {
+  /* max-width: 30rem; */
   text-align: center;
-
   background-color: black;
   color: var(--primary-color);
   background-color: linear-gradient(
@@ -404,6 +404,7 @@ input[type="range"]:disabled {
 .reset-btn {
   color: #dc3545;
 }
+
 .sign-in-btn {
   color: #739e7d;
   margin-right: 45%;
@@ -445,10 +446,6 @@ input[type="range"]:disabled {
   height: 100vh;
   padding: 2rem;
 }
-
-/* .auth-container btn {
-  text-align: center;
-} */
 
 /* .mantine-PasswordInput-wrapper {
 white-space: nowrap; 

@@ -10,6 +10,8 @@ import {
   Alert,
   Paper,
   Center,
+  Image,
+  BackgroundImage,
 } from "@mantine/core";
 
 import {
@@ -96,7 +98,6 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             {state.message}
           </Alert>
         )}
-
         <TextInput
           label="Email"
           type="email"
@@ -107,33 +108,31 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your email"
           required
         />
-
-        <PasswordInput
-          label="Password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your password"
-          required
-          visibilityToggleIcon={({ reveal }) => (
-            <span
-              style={{
-                position: "absolute",
-                right: 12,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            >
-              {reveal ? (
-                <IconEyeOff style={{ width: 20, height: 20 }} />
-              ) : (
-                <IconEyeCheck style={{ width: 20, height: 20 }} />
-              )}
-            </span>
-          )}
-        />
-
+          <PasswordInput
+            label="Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({ ...s, password: e.target.value }))
+            }
+            placeholder="Enter your password"
+            required
+            visibilityToggleIcon={({ reveal }) => (
+              <span
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                }}
+              >
+                {reveal ? (
+                  <IconEyeOff style={{ width: 20, height: 20 }} />
+                ) : (
+                  <IconEyeCheck style={{ width: 20, height: 20 }} />
+                )}
+              </span>
+            )}
+          />
         <Button type="submit" loading={state.loading} fullWidth>
           {state.loading ? "Signing In..." : "Sign In"}
         </Button>
