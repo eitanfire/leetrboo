@@ -12,6 +12,7 @@ import {
   Center,
   Image,
   BackgroundImage,
+  Box,
 } from "@mantine/core";
 
 import {
@@ -108,7 +109,8 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your email"
           required
         />
-          <PasswordInput
+        <Box className="mt-4">
+          <TextInput
             label="Password"
             value={state.password}
             onChange={(e) =>
@@ -116,24 +118,30 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             }
             placeholder="Enter your password"
             required
-            visibilityToggleIcon={({ reveal }) => (
-              <span
-                style={{
-                  position: "absolute",
-                  right: 12,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                }}
-              >
-                {reveal ? (
-                  <IconEyeOff style={{ width: 20, height: 20 }} />
-                ) : (
-                  <IconEyeCheck style={{ width: 20, height: 20 }} />
-                )}
-              </span>
-            )}
+            // visibilityToggleIcon={({ reveal }) => (
+            //   <span
+            //     style={{
+            //       position: "absolute",
+            //       right: 12,
+            //       top: "50%",
+            //       transform: "translateY(-50%)",
+            //     }}
+            //   >
+            //     {reveal ? (
+            //       <IconEyeOff style={{ width: 20, height: 20 }} />
+            //     ) : (
+            //       <IconEyeCheck style={{ width: 20, height: 20 }} />
+            //     )}
+            //   </span>
+            // )}
           />
-        <Button type="submit" loading={state.loading} fullWidth>
+        </Box>
+        <Button
+          className="sign-in-btn primary mt-4"
+          type="submit"
+          loading={state.loading}
+          // fullWidth
+        >
           {state.loading ? "Signing In..." : "Sign In"}
         </Button>
       </Stack>
@@ -213,7 +221,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           label="Email"
           type="email"
           value={state.email}
-          className="ta-center"
+          // className="ta-center"
           onChange={(e) =>
             setState((s) => ({ ...s, email: e.target.value.trim() }))
           }

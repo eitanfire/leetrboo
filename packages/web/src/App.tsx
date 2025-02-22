@@ -6,6 +6,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthRedirect } from "./AuthRedirect";
 import LeetrbooApp from "./LeetrbooApp";
 import SignIn from "./SignIn";
+import SignInPage from "./pages/SignInPage";
 import SignUp from "./SignUp";
 import ResetPassword from "./ResetPassword";
 import SetNewPassword from "./SetNewPassword";
@@ -17,11 +18,12 @@ const App: React.FC = () => {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-              <Route path="/auth/callback" element={<AuthRedirect />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/set-new-password" element={<SetNewPassword />} />
+            <Route path="/auth/callback" element={<AuthRedirect />} />
+            {/* <Route path="/signin" element={<SignIn />} /> */}
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/set-new-password" element={<SetNewPassword />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<LeetrbooApp />} />
             </Route>

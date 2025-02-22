@@ -382,11 +382,10 @@ input[type="range"]:disabled {
   border-bottom: 2px solid #000;
 }
 
-.auth-btns,
+/* .auth-btns,
 .submit-btn,
 .sign-in-btn,
 .reset-btn {
-  /* max-width: 30rem; */
   text-align: center;
   background-color: black;
   color: var(--primary-color);
@@ -394,11 +393,17 @@ input[type="range"]:disabled {
     rgba(var(--primary-color), 0.7),
     rgba(var(--secondary-color), 0.7)
   );
-}
+} */
 
-.sign-out-btn,
+/* .sign-out-btn,
 .sign-up-btn {
   color: #007bff;
+} */
+
+/* .sign-up-btn {
+  max-width: 50%;
+    align-items: center;
+  justify-content: center;
 }
 
 .reset-btn {
@@ -423,8 +428,16 @@ input[type="range"]:disabled {
   max-width: 3.5rem;
   top: 0;
   left: 0;
+} */
+
+.sign-in-btn {
+  width: 100%;
+  padding: 10px;
 }
 
+.sign-up-btn {
+text-align: center;
+}
 .redirect-container {
   display: flex;
   align-items: center;
@@ -438,7 +451,7 @@ input[type="range"]:disabled {
 }
 
 .auth-container {
-  text-align: center;
+  /* text-align: center; */
   display: flex;
   flex-direction: column;
   align-items: center;

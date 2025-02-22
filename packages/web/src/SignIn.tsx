@@ -2,39 +2,43 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
 import { SignInForm } from "./components/AuthForms";
-import Brand from "../../web/src/assets/leetrboo_brand_bg.png";
-import {
-  Image, Text,
-} from "@mantine/core";
+import { Text, Center, Grid } from "@mantine/core";
 
 const SignIn: React.FC = () => {
   return (
-    <div className="auth-container">
-      <h1>
-        <Text fw={900}>leetrboo</Text>
-      </h1>
-      <Image radius="md" height={180} src={Brand} alt="boo!" />
+    <Grid className="auth-container">
+      <Grid.Col span={8}></Grid.Col>
+
       <h2>
-        <Text mt="4" className="signin-btn">
+        <Text mt="4" >
           Sign In
         </Text>
       </h2>
       <SignInForm />
-      <div className="mt-3 d-flex">
-        <Button className="submit-btn" color="primary" tag={Link} to="/signup">
-          Sign up
-        </Button>
+      <div className="vstack mt-3 d-flex">
+        {/* <Center> */}
+          <Button
+            // className="sign-up-btn"
+            // className="submit-btn"
+            color="primary"
+            tag={Link}
+            to="/signup"
+          >
+            Sign up
+          </Button>
+        {/* </Center> */}
         <Button
-          className="reset-btn mt-3"
-          color="danger"
-          outline
+          className="
+           mt-3
+           "
+          color="link"
           tag={Link}
           to="/reset-password"
         >
           Forgot Password
         </Button>
       </div>
-    </div>
+    </Grid>
   );
 };
 
