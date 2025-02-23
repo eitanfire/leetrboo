@@ -218,6 +218,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         )}
 
         <TextInput
+          className="mb-4"
           label="Email"
           type="email"
           value={state.email}
@@ -229,7 +230,9 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           required
         />
 
-        <PasswordInput
+        <TextInput
+          className="mb-4"
+          type="password"
           label="Password"
           value={state.password}
           onChange={(e) =>
@@ -238,25 +241,29 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your password"
           required
           minLength={6}
-          visibilityToggleIcon={({ reveal }) => (
-            <div
-              style={{
-                position: "absolute",
-                right: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            >
-              {reveal ? (
-                <IconEyeOff style={{ width: 20, height: 20 }} />
-              ) : (
-                <IconEyeCheck style={{ width: 20, height: 20 }} />
-              )}
-            </div>
-          )}
+          // visibilityToggleIcon={({ reveal }) => (
+          //   <div
+          //     style={{
+          //       position: "absolute",
+          //       right: 10,
+          //       top: "50%",
+          //       transform: "translateY(-50%)",
+          //     }}
+          //   >
+          //     {reveal ? (
+          //       <IconEyeOff style={{ width: 20, height: 20 }} />
+          //     ) : (
+          //       <IconEyeCheck style={{ width: 20, height: 20 }} />
+          //     )}
+          //   </div>
+          // )}
         />
 
-        <Button type="submit" loading={state.loading} fullWidth>
+        <Button
+          className="sign-up-btn primary"
+          type="submit"
+          loading={state.loading}
+        >
           {state.loading ? "Signing Up..." : "Sign Up"}
         </Button>
       </Stack>
@@ -320,6 +327,7 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
         )}
 
         <TextInput
+          className="mb-4"
           label="Email"
           type="email"
           value={state.email}
@@ -330,7 +338,7 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
           required
         />
 
-        <Button type="submit" loading={state.loading} fullWidth>
+        <Button className="primary reset-btn" type="submit" loading={state.loading}>
           {state.loading ? "Sending..." : "Send Reset Link"}
         </Button>
       </Stack>

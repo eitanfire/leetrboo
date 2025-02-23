@@ -16,7 +16,10 @@ const SignInPage: React.FC = () => {
         <Col className="col">
           <Image radius="md" height={300} src={Brand} alt="boo!" />
         </Col>
-        <Col className="col">
+        <Col className="col mb-4">
+          <Text>
+            <h2>Sign In</h2>
+          </Text>
           <SignInForm />
         </Col>
       </Row>

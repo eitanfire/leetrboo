@@ -430,6 +430,8 @@ input[type="range"]:disabled {
   left: 0;
 } */
 
+.reset-btn,
+.sign-up-btn,
 .sign-in-btn {
   width: 100%;
   padding: 10px;
