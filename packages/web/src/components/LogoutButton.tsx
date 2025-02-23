@@ -19,9 +19,8 @@ const LogoutButton: React.FC = () => {
   return (
     <>
       <Button
-        color="outline-danger"
         size="sm"
-        className="logout-btn"
+        className="danger logout-btn"
         onClick={toggleModal}
       >
         Sign Out

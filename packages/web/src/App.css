@@ -422,14 +422,16 @@ input[type="range"]:disabled {
 .reset-btn:hover {
   color: black;
 }
+  */
 
 .logout-btn {
   position: absolute;
-  max-width: 3.5rem;
+  max-width: 10%;
   top: 0;
   left: 0;
-} */
+} 
 
+.logout-btn,
 .reset-btn,
 .sign-up-btn,
 .sign-in-btn {
