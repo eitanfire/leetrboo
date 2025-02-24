@@ -67,18 +67,20 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
   }
 
   return (
-    <div>
-      <h3>Entries for {selectedCompetition.name}</h3>
-      <Table striped responsive>
+    <div className="add-player-form">
+      <h3 className="add-player-form-title">
+        Entries for {selectedCompetition.name}
+      </h3>
+      <Table striped>
         <thead>
           <tr>
             <th>Name</th>
             <th>Video</th>
             <th>Score</th>
-            <th>Submitted</th>
+            {/* <th>Submitted</th> */}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="list-player-entries">
           {sortedEntries.map((entry) => (
             <tr key={entry.id}>
               <td>{entry.player_name}</td>
@@ -94,7 +96,7 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
               <td>
                 <Score entryId={entry.id} initialScore={entry.score} />
               </td>
-              <td>{new Date(entry.created_at).toLocaleDateString()}</td>
+              {/* <td>{new Date(entry.created_at).toLocaleDateString()}</td> */}
             </tr>
           ))}
         </tbody>
