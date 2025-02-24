@@ -387,6 +387,11 @@ input[type="range"]:disabled {
   gap: 1rem;
   margin-top: 2rem;
 }
+
+.confirm-sign-out-title {
+  margin-left: 30%;
+}
+
 /* .auth-btns,
 .submit-btn,
 .sign-in-btn,
