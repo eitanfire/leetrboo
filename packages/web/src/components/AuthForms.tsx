@@ -33,6 +33,9 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   message: string | null;
+  emailError?: string | null;
+  passwordError?: string | null;
+  confirmPasswordError?: string | null;
 }
 
 export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
@@ -45,6 +48,8 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    emailError: null,
+    passwordError: null,
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -63,10 +68,22 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+      passwordError: null,
+    }));
 
     try {
-      if (!state.email || !state.password) {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
+        throw new Error("Please enter both email and password");
+      }
+
+      if (!state.password) {
+        setState((s) => ({ ...s, passwordError: "Password is required" }));
         throw new Error("Please enter both email and password");
       }
 
@@ -75,7 +92,17 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         password: state.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.toLowerCase().includes("email")) {
+          setState((s) => ({ ...s, emailError: error.message }));
+        } else if (error.message.toLowerCase().includes("password")) {
+          setState((s) => ({ ...s, passwordError: error.message }));
+        } else {
+          setState((s) => ({ ...s, error: error.message }));
+        }
+        throw error;
+      }
+
       if (onSuccess) onSuccess();
     } catch (error) {
       setState((s) => ({
@@ -114,10 +141,15 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
         <Box className="mt-4" style={{ position: "relative" }}>
           <TextInput
@@ -125,11 +157,16 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             label="Password"
             value={state.password}
             onChange={(e) =>
-              setState((s) => ({ ...s, password: e.target.value }))
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
             }
             placeholder="Enter your password"
             required
             type={showPassword ? "text" : "password"}
+            error={state.passwordError}
           />
           {/* Add a separate clickable eye icon element */}
           <div
@@ -175,16 +212,38 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    emailError: null,
+    passwordError: null,
   });
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+      passwordError: null,
+    }));
 
     try {
-      if (!state.email || !state.password) {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
         throw new Error("Please enter both email and password");
+      }
+
+      if (!state.password) {
+        setState((s) => ({ ...s, passwordError: "Password is required" }));
+        throw new Error("Please enter both email and password");
+      }
+
+      if (state.password.length < 6) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Password must be at least 6 characters long",
+        }));
+        throw new Error("Password must be at least 6 characters long");
       }
 
       const { error } = await supabase.auth.signUp({
@@ -195,7 +254,16 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.toLowerCase().includes("email")) {
+          setState((s) => ({ ...s, emailError: error.message }));
+        } else if (error.message.toLowerCase().includes("password")) {
+          setState((s) => ({ ...s, passwordError: error.message }));
+        } else {
+          setState((s) => ({ ...s, error: error.message }));
+        }
+        throw error;
+      }
 
       setState((s) => ({
         ...s,
@@ -250,10 +318,15 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
 
         <Box style={{ position: "relative" }} className="mb-4">
@@ -262,12 +335,17 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             label="Password"
             value={state.password}
             onChange={(e) =>
-              setState((s) => ({ ...s, password: e.target.value }))
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
             }
             placeholder="Enter your password"
             required
             minLength={6}
             type={showPassword ? "text" : "password"}
+            error={state.passwordError}
           />
           <div
             style={{
@@ -315,13 +393,24 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
     loading: false,
     error: null,
     message: null,
+    emailError: null,
   });
 
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+    }));
 
     try {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
+        throw new Error("Please enter your email address");
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(
         state.email.trim(),
         {
@@ -329,7 +418,10 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
         }
       );
 
-      if (error) throw error;
+      if (error) {
+        setState((s) => ({ ...s, emailError: error.message }));
+        throw error;
+      }
 
       setState((s) => ({
         ...s,
@@ -374,10 +466,15 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
 
         <Button
@@ -401,6 +498,8 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    passwordError: null,
+    confirmPasswordError: null,
   });
 
   // Add state for password visibility
@@ -426,19 +525,37 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      passwordError: null,
+      confirmPasswordError: null,
+    }));
 
     try {
-      if (state.password !== state.confirmPassword) {
-        throw new Error("Passwords do not match");
-      }
-
       if (!state.password) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Please enter a new password",
+        }));
         throw new Error("Please enter a new password");
       }
 
       if (state.password.length < 6) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Password must be at least 6 characters long",
+        }));
         throw new Error("Password must be at least 6 characters long");
+      }
+
+      if (state.password !== state.confirmPassword) {
+        setState((s) => ({
+          ...s,
+          confirmPasswordError: "Passwords do not match",
+        }));
+        throw new Error("Passwords do not match");
       }
 
       const params = new URLSearchParams(window.location.search);
@@ -458,6 +575,11 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
       const { error: updateError } = await supabase.auth.updateUser({
         password: state.password,
       });
+
+      if (updateError) {
+        setState((s) => ({ ...s, passwordError: updateError.message }));
+        throw updateError;
+      }
 
       setState((s) => ({
         ...s,
@@ -522,12 +644,17 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             label="New Password"
             value={state.password}
             onChange={(e) =>
-              setState((s) => ({ ...s, password: e.target.value }))
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
             }
             placeholder="Enter your new password"
             required
             minLength={6}
             type={showPassword ? "text" : "password"}
+            error={state.passwordError}
           />
           <div
             style={{
@@ -559,12 +686,17 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             label="Confirm New Password"
             value={state.confirmPassword}
             onChange={(e) =>
-              setState((s) => ({ ...s, confirmPassword: e.target.value }))
+              setState((s) => ({
+                ...s,
+                confirmPassword: e.target.value,
+                confirmPasswordError: null,
+              }))
             }
             placeholder="Confirm your new password"
             required
             minLength={6}
             type={showConfirmPassword ? "text" : "password"}
+            error={state.confirmPasswordError}
           />
           <div
             style={{

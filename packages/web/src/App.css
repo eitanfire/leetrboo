@@ -478,15 +478,32 @@ text-align: center;
 white-space: nowrap; 
 background-color: aquamarine;
 } */
+/* This targets the actual input element inside your component */
+.input-field:focus {
+color: #004a9b;}
 
- .input-field {
-  color: dark-gray;
-  font-size: 1rem;}
+.input-field input:focus {
+  border-color: #4a90e2;
+  background-color: #f0f8ff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.input-field input:focus::placeholder {
+  color: #4a90e2;
+}
 
 .error {
   color: red;
   font-size: 0.8rem;
   margin-top: 0.5rem;
+}
+
+.input-field input:valid {
+  border-color: green;
+}
+.input-field input:focus:invalid {
+  border-color: red;
 }
 
 .success {
