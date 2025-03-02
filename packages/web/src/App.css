@@ -478,3 +478,27 @@ text-align: center;
 white-space: nowrap; 
 background-color: aquamarine;
 } */
+
+.icon-eye,
+ .input-field {
+  color: dark-gray;
+  font-size: 1rem;}
+
+.icon-eye {
+position: absolute; 
+left: 400%;    
+top: 80%;
+transform: translateY(-220%);
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.success {
+  color: green;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}

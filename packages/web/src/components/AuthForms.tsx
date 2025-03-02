@@ -90,16 +90,25 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     <Paper component="form" onSubmit={handleSignIn} p="md">
       <Stack>
         {state.error && (
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
             {state.error}
           </Alert>
         )}
         {state.message && (
-          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
             {state.message}
           </Alert>
         )}
         <TextInput
+          className="input-field"
           label="Email"
           type="email"
           value={state.email}
@@ -111,6 +120,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
         <Box className="mt-4">
           <TextInput
+            className="input-field"
             label="Password"
             value={state.password}
             onChange={(e) =>
@@ -118,29 +128,12 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             }
             placeholder="Enter your password"
             required
-            // visibilityToggleIcon={({ reveal }) => (
-            //   <span
-            //     style={{
-            //       position: "absolute",
-            //       right: 12,
-            //       top: "50%",
-            //       transform: "translateY(-50%)",
-            //     }}
-            //   >
-            //     {reveal ? (
-            //       <IconEyeOff style={{ width: 20, height: 20 }} />
-            //     ) : (
-            //       <IconEyeCheck style={{ width: 20, height: 20 }} />
-            //     )}
-            //   </span>
-            // )}
           />
         </Box>
         <Button
           className="sign-in-btn primary mt-4"
           type="submit"
           loading={state.loading}
-          // fullWidth
         >
           {state.loading ? "Signing In..." : "Sign In"}
         </Button>
@@ -207,18 +200,26 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     <Paper component="form" onSubmit={handleSignUp} p="md">
       <Stack>
         {state.error && (
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
             {state.error}
           </Alert>
         )}
         {state.message && (
-          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
             {state.message}
           </Alert>
         )}
 
         <TextInput
-          className="mb-4"
+          className="input-field mb-4"
           label="Email"
           type="email"
           value={state.email}
@@ -231,7 +232,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         />
 
         <TextInput
-          className="mb-4"
+          className="input-field mb-4"
           type="password"
           label="Password"
           value={state.password}
@@ -316,18 +317,26 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
     <Paper component="form" onSubmit={handleResetRequest} p="md">
       <Stack>
         {state.error && (
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
             {state.error}
           </Alert>
         )}
         {state.message && (
-          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
             {state.message}
           </Alert>
         )}
 
         <TextInput
-          className="mb-4"
+          className="input-field mb-4"
           label="Email"
           type="email"
           value={state.email}
@@ -338,7 +347,11 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
           required
         />
 
-        <Button className="primary reset-btn" type="submit" loading={state.loading}>
+        <Button
+          className="primary reset-btn"
+          type="submit"
+          loading={state.loading}
+        >
           {state.loading ? "Sending..." : "Send Reset Link"}
         </Button>
       </Stack>
@@ -442,17 +455,26 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     <Paper component="form" onSubmit={handleSetPassword} p="md">
       <Stack>
         {state.error && (
-          <Alert icon={<IconAlertCircle size={16} />} color="red" title="Error">
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
             {state.error}
           </Alert>
         )}
         {state.message && (
-          <Alert icon={<IconCheck size={16} />} color="green" title="Success">
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
             {state.message}
           </Alert>
         )}
 
         <PasswordInput
+          className="input-field"
           label="New Password"
           value={state.password}
           onChange={(e) =>
@@ -462,24 +484,14 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           required
           minLength={6}
           visibilityToggleIcon={({ reveal }) => (
-            <div
-              style={{
-                position: "absolute",
-                right: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            >
-              {reveal ? (
-                <IconEyeOff style={{ width: 20, height: 20 }} />
-              ) : (
-                <IconEyeCheck style={{ width: 20, height: 20 }} />
-              )}
+            <div className="icon-eye">
+              {reveal ? <IconEyeOff /> : <IconEyeCheck />}
             </div>
           )}
         />
 
         <PasswordInput
+          className="input-field"
           label="Confirm New Password"
           value={state.confirmPassword}
           onChange={(e) =>
@@ -489,24 +501,13 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           required
           minLength={6}
           visibilityToggleIcon={({ reveal }) => (
-            <div
-              style={{
-                position: "absolute",
-                right: 10,
-                top: "50%",
-                transform: "translateY(-50%)",
-              }}
-            >
-              {reveal ? (
-                <IconEyeOff style={{ width: 20, height: 20 }} />
-              ) : (
-                <IconEyeCheck style={{ width: 20, height: 20 }} />
-              )}
+            <div className="icon-eye">
+              {reveal ? <IconEyeOff /> : <IconEyeCheck />}
             </div>
           )}
         />
 
-        <Button type="submit" loading={state.loading} fullWidth color="green">
+        <Button className="primary" type="submit" loading={state.loading}>
           {state.loading ? "Updating..." : "Update Password"}
         </Button>
       </Stack>
