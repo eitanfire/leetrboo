@@ -46,6 +46,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     error: null,
     message: null,
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -118,7 +119,7 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           placeholder="Enter your email"
           required
         />
-        <Box className="mt-4">
+        <Box className="mt-4" style={{ position: "relative" }}>
           <TextInput
             className="input-field"
             label="Password"
@@ -128,7 +129,31 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
             }
             placeholder="Enter your password"
             required
+            type={showPassword ? "text" : "password"}
           />
+          {/* Add a separate clickable eye icon element */}
+          <div
+            style={{
+              position: "absolute",
+              right: "4px",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
         </Box>
         <Button
           className="sign-in-btn primary mt-4"
@@ -151,6 +176,7 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     error: null,
     message: null,
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,7 +249,6 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           label="Email"
           type="email"
           value={state.email}
-          // className="ta-center"
           onChange={(e) =>
             setState((s) => ({ ...s, email: e.target.value.trim() }))
           }
@@ -231,34 +256,42 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           required
         />
 
-        <TextInput
-          className="input-field mb-4"
-          type="password"
-          label="Password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your password"
-          required
-          minLength={6}
-          // visibilityToggleIcon={({ reveal }) => (
-          //   <div
-          //     style={{
-          //       position: "absolute",
-          //       right: 10,
-          //       top: "50%",
-          //       transform: "translateY(-50%)",
-          //     }}
-          //   >
-          //     {reveal ? (
-          //       <IconEyeOff style={{ width: 20, height: 20 }} />
-          //     ) : (
-          //       <IconEyeCheck style={{ width: 20, height: 20 }} />
-          //     )}
-          //   </div>
-          // )}
-        />
+        <Box style={{ position: "relative" }} className="mb-4">
+          <TextInput
+            className="input-field"
+            label="Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({ ...s, password: e.target.value }))
+            }
+            placeholder="Enter your password"
+            required
+            minLength={6}
+            type={showPassword ? "text" : "password"}
+          />
+          <div
+            style={{
+              position: "absolute",
+              right: "4px",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
         <Button
           className="sign-up-btn primary"
@@ -370,6 +403,10 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     message: null,
   });
 
+  // Add state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const {
@@ -473,39 +510,85 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
           </Alert>
         )}
 
-        <PasswordInput
-          className="input-field"
-          label="New Password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your new password"
-          required
-          minLength={6}
-          visibilityToggleIcon={({ reveal }) => (
-            <div className="icon-eye">
-              {reveal ? <IconEyeOff /> : <IconEyeCheck />}
-            </div>
-          )}
-        />
+        <Box
+          style={{ position: "relative" }}
+          p="md"
+          w="100%"
+          maw="500px"
+          className="mb-4"
+        >
+          <TextInput
+            className="input-field"
+            label="New Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({ ...s, password: e.target.value }))
+            }
+            placeholder="Enter your new password"
+            required
+            minLength={6}
+            type={showPassword ? "text" : "password"}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-7%",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
-        <PasswordInput
-          className="input-field"
-          label="Confirm New Password"
-          value={state.confirmPassword}
-          onChange={(e) =>
-            setState((s) => ({ ...s, confirmPassword: e.target.value }))
-          }
-          placeholder="Confirm your new password"
-          required
-          minLength={6}
-          visibilityToggleIcon={({ reveal }) => (
-            <div className="icon-eye">
-              {reveal ? <IconEyeOff /> : <IconEyeCheck />}
-            </div>
-          )}
-        />
+        <Box style={{ position: "relative" }} className="mb-4">
+          <TextInput
+            className="input-field"
+            label="Confirm New Password"
+            value={state.confirmPassword}
+            onChange={(e) =>
+              setState((s) => ({ ...s, confirmPassword: e.target.value }))
+            }
+            placeholder="Confirm your new password"
+            required
+            minLength={6}
+            type={showConfirmPassword ? "text" : "password"}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-7%",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
         <Button className="primary" type="submit" loading={state.loading}>
           {state.loading ? "Updating..." : "Update Password"}
