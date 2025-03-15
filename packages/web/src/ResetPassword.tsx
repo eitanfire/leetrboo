@@ -27,7 +27,7 @@ const ResetPassword: React.FC = () => {
   }, [navigate]);
 
   return (
-    <>
+    <div className='auth-container'>
       <h2>{isResetMode ? "Set New Password" : "Reset Password"}</h2>
       {isResetMode ? (
         <SetNewPasswordForm />
@@ -39,7 +39,7 @@ const ResetPassword: React.FC = () => {
           </Button>
         </>
       )}
-    </>
+    </div>
   );
 };
 

@@ -17,11 +17,19 @@
   max-width: 70dvw;
 }
 
+.add-player-form,
 .header {
   background-image: linear-gradient(
     rgba(var(--primary-color), 0.7),
     rgba(var(--secondary-color), 0.7)
   );
+}
+
+h2 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  text-align: center;
+  margin-top: 3rem;
 }
 
 .container {
@@ -30,13 +38,23 @@
   align-items: center;
 }
 
-/* .countdown-container {
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  /* margin-top: 2rem; */
+}
+
+.countdown-container {
   position: relative;
-  height: 220px;
-  margin-bottom: 20px;
-} */
+  /* margin-top: 0%; */
+  margin-right: 20%;
+}
 
 /* .countdown-svg {
+  position: absolute;
+  margin-right: 10%;
   width: 100%;
   height: 100%;
   transform: rotate(-90deg);
@@ -259,7 +277,7 @@ input[type="range"]:disabled {
   background-color: #eee;
 }
 
-.untimed-label {
+/* .untimed-label {
   display: inline-block;
   position: relative;
   padding-left: 35px;
@@ -271,7 +289,7 @@ input[type="range"]:disabled {
   -ms-user-select: none;
   user-select: none;
   vertical-align: middle;
-}
+} */
 
 .checkmark {
   position: absolute;
@@ -341,7 +359,7 @@ input[type="range"]:disabled {
   align-items: center;
   justify-content: center;
   padding: 1rem 1rem;
-  background-color: rgba(var(--primary-color), 0.6);
+  /* background-color: rgba(var(--primary-color), 0.6); */
   font-size: large;
   width: 100dvw;
 }
@@ -358,36 +376,50 @@ input[type="range"]:disabled {
   padding: 10px;
   border: 1px solid black;
   border-radius: 6px;
-    width: 100dvw;
-
+  width: 100dvw;
 }
 
-.player-name {
-  padding-left: 10%;
-  font-size: x-large;
-  border-bottom: 2px solid #000;
+.competition-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.auth-btns,
+.confirm-sign-out-title {
+  margin-left: 30%;
+}
+
+/* .auth-btns,
 .submit-btn,
 .sign-in-btn,
 .reset-btn {
+  text-align: center;
   background-color: black;
   color: var(--primary-color);
   background-color: linear-gradient(
     rgba(var(--primary-color), 0.7),
     rgba(var(--secondary-color), 0.7)
   );
-}
+} */
 
-.sign-out-btn,
+/* .sign-out-btn,
 .sign-up-btn {
   color: #007bff;
+} */
+
+/* .sign-up-btn {
+  max-width: 50%;
+    align-items: center;
+  justify-content: center;
 }
 
 .reset-btn {
   color: #dc3545;
 }
+
 .sign-in-btn {
   color: #739e7d;
   margin-right: 45%;
@@ -400,15 +432,26 @@ input[type="range"]:disabled {
 .reset-btn:hover {
   color: black;
 }
-
+  */
 
 .logout-btn {
   position: absolute;
-  max-width: 3.5rem;
-  top:0;
+  max-width: 10%;
+  top: 0;
   left: 0;
+} 
+
+.logout-btn,
+.reset-btn,
+.sign-up-btn,
+.sign-in-btn {
+  width: 100%;
+  padding: 10px;
 }
 
+.sign-up-btn {
+text-align: center;
+}
 .redirect-container {
   display: flex;
   align-items: center;
@@ -419,4 +462,52 @@ input[type="range"]:disabled {
 .redirect-container p {
   font-size: 1.1rem;
   color: #333;
+}
+
+.auth-container {
+  /* text-align: center; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 2rem;
+}
+
+/* .mantine-PasswordInput-wrapper {
+white-space: nowrap; 
+background-color: aquamarine;
+} */
+/* This targets the actual input element inside your component */
+.input-field:focus {
+color: #004a9b;}
+
+.input-field input:focus {
+  border-color: #4a90e2;
+  background-color: #f0f8ff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.input-field input:focus::placeholder {
+  color: #4a90e2;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.input-field input:valid {
+  border-color: green;
+}
+.input-field input:focus:invalid {
+  border-color: red;
+}
+
+.success {
+  color: green;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }

@@ -1,8 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../services/supabaseClient";
-import { Button, Form, FormGroup, Label, Input, Alert } from "reactstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import {
+  TextInput,
+  PasswordInput,
+  Button,
+  Stack,
+  Alert,
+  Paper,
+  Center,
+  Image,
+  BackgroundImage,
+  Box,
+} from "@mantine/core";
+
+import {
+  IconAlertCircle,
+  IconCheck,
+  IconEyeCheck,
+  IconEyeOff,
+} from "@tabler/icons-react";
 
 interface AuthFormProps {
   onSuccess?: () => void;
@@ -15,6 +33,9 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   message: string | null;
+  emailError?: string | null;
+  passwordError?: string | null;
+  confirmPasswordError?: string | null;
 }
 
 export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
@@ -27,9 +48,11 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    emailError: null,
+    passwordError: null,
   });
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
@@ -45,10 +68,22 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+      passwordError: null,
+    }));
 
     try {
-      if (!state.email || !state.password) {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
+        throw new Error("Please enter both email and password");
+      }
+
+      if (!state.password) {
+        setState((s) => ({ ...s, passwordError: "Password is required" }));
         throw new Error("Please enter both email and password");
       }
 
@@ -57,9 +92,17 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         password: state.password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.toLowerCase().includes("email")) {
+          setState((s) => ({ ...s, emailError: error.message }));
+        } else if (error.message.toLowerCase().includes("password")) {
+          setState((s) => ({ ...s, passwordError: error.message }));
+        } else {
+          setState((s) => ({ ...s, error: error.message }));
+        }
+        throw error;
+      }
 
-      // Don't navigate here - let the auth context handle it
       if (onSuccess) onSuccess();
     } catch (error) {
       setState((s) => ({
@@ -72,56 +115,92 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSignIn}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
-
-      <FormGroup>
-        <Label for="signinEmail">Email</Label>
-        <Input
-          id="signinEmail"
+    <Paper component="form" onSubmit={handleSignIn} p="md">
+      <Stack>
+        {state.error && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
+            {state.message}
+          </Alert>
+        )}
+        <TextInput
+          className="input-field"
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
-      </FormGroup>
-
-      <FormGroup>
-        <Label for="signinPassword">Password</Label>
-        <Input
-          id="signinPassword"
-          type="password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your password"
-          required
-        />
-      </FormGroup>
-
-      <Button
-        className="sign-in-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="primary"
-        block
-      >
-        {state.loading ? "Signing In..." : "Sign In"}
-      </Button>
-    </Form>
+        <Box className="mt-4" style={{ position: "relative" }}>
+          <TextInput
+            className="input-field"
+            label="Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
+            }
+            placeholder="Enter your password"
+            required
+            type={showPassword ? "text" : "password"}
+            error={state.passwordError}
+          />
+          {/* Add a separate clickable eye icon element */}
+          <div
+            style={{
+              position: "absolute",
+              right: "4px",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
+        <Button
+          className="sign-in-btn primary mt-4"
+          type="submit"
+          loading={state.loading}
+        >
+          {state.loading ? "Signing In..." : "Sign In"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -133,15 +212,38 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    emailError: null,
+    passwordError: null,
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+      passwordError: null,
+    }));
 
     try {
-      if (!state.email || !state.password) {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
         throw new Error("Please enter both email and password");
+      }
+
+      if (!state.password) {
+        setState((s) => ({ ...s, passwordError: "Password is required" }));
+        throw new Error("Please enter both email and password");
+      }
+
+      if (state.password.length < 6) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Password must be at least 6 characters long",
+        }));
+        throw new Error("Password must be at least 6 characters long");
       }
 
       const { error } = await supabase.auth.signUp({
@@ -152,7 +254,16 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.toLowerCase().includes("email")) {
+          setState((s) => ({ ...s, emailError: error.message }));
+        } else if (error.message.toLowerCase().includes("password")) {
+          setState((s) => ({ ...s, passwordError: error.message }));
+        } else {
+          setState((s) => ({ ...s, error: error.message }));
+        }
+        throw error;
+      }
 
       setState((s) => ({
         ...s,
@@ -180,57 +291,95 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSignUp}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleSignUp} p="md">
+      <Stack>
+        {state.error && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="signupEmail">Email</Label>
-        <Input
-          id="signupEmail"
+        <TextInput
+          className="input-field mb-4"
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label for="signupPassword">Password</Label>
-        <Input
-          id="signupPassword"
-          type="password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your password"
-          required
-          minLength={6}
-        />
-      </FormGroup>
+        <Box style={{ position: "relative" }} className="mb-4">
+          <TextInput
+            className="input-field"
+            label="Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
+            }
+            placeholder="Enter your password"
+            required
+            minLength={6}
+            type={showPassword ? "text" : "password"}
+            error={state.passwordError}
+          />
+          <div
+            style={{
+              position: "absolute",
+              right: "4px",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
-      <Button
-        className="sign-up-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="primary"
-        block
-      >
-        {state.loading ? "Signing Up..." : "Sign Up"}
-      </Button>
-    </Form>
+        <Button
+          className="sign-up-btn primary"
+          type="submit"
+          loading={state.loading}
+        >
+          {state.loading ? "Signing Up..." : "Sign Up"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -244,13 +393,24 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
     loading: false,
     error: null,
     message: null,
+    emailError: null,
   });
 
   const handleResetRequest = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      emailError: null,
+    }));
 
     try {
+      if (!state.email) {
+        setState((s) => ({ ...s, emailError: "Email is required" }));
+        throw new Error("Please enter your email address");
+      }
+
       const { error } = await supabase.auth.resetPasswordForEmail(
         state.email.trim(),
         {
@@ -258,7 +418,10 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
         }
       );
 
-      if (error) throw error;
+      if (error) {
+        setState((s) => ({ ...s, emailError: error.message }));
+        throw error;
+      }
 
       setState((s) => ({
         ...s,
@@ -276,42 +439,53 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
   };
 
   return (
-    <Form onSubmit={handleResetRequest}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleResetRequest} p="md">
+      <Stack>
+        {state.error && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="resetEmail">Email</Label>
-        <Input
-          id="resetEmail"
+        <TextInput
+          className="input-field mb-4"
+          label="Email"
           type="email"
           value={state.email}
           onChange={(e) =>
-            setState((s) => ({ ...s, email: e.target.value.trim() }))
+            setState((s) => ({
+              ...s,
+              email: e.target.value.trim(),
+              emailError: null,
+            }))
           }
           placeholder="Enter your email"
           required
+          error={state.emailError}
         />
-      </FormGroup>
 
-      <Button
-        className="reset-btn outline"
-        color="primary"
-        type="submit"
-        disabled={state.loading}
-        block
-      >
-        {state.loading ? "Sending..." : "Send Reset Link"}
-      </Button>
-    </Form>
+        <Button
+          className="primary reset-btn"
+          type="submit"
+          loading={state.loading}
+        >
+          {state.loading ? "Sending..." : "Send Reset Link"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };
 
@@ -324,9 +498,14 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     loading: false,
     error: null,
     message: null,
+    passwordError: null,
+    confirmPasswordError: null,
   });
 
-  // Add session check
+  // Add state for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   useEffect(() => {
     const checkSession = async () => {
       const {
@@ -346,26 +525,42 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    setState((s) => ({ ...s, loading: true, error: null }));
+    setState((s) => ({
+      ...s,
+      loading: true,
+      error: null,
+      passwordError: null,
+      confirmPasswordError: null,
+    }));
 
     try {
-      if (state.password !== state.confirmPassword) {
-        throw new Error("Passwords do not match");
-      }
-
       if (!state.password) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Please enter a new password",
+        }));
         throw new Error("Please enter a new password");
       }
 
       if (state.password.length < 6) {
+        setState((s) => ({
+          ...s,
+          passwordError: "Password must be at least 6 characters long",
+        }));
         throw new Error("Password must be at least 6 characters long");
       }
 
-      // First try to get the token from the URL parameters
+      if (state.password !== state.confirmPassword) {
+        setState((s) => ({
+          ...s,
+          confirmPasswordError: "Passwords do not match",
+        }));
+        throw new Error("Passwords do not match");
+      }
+
       const params = new URLSearchParams(window.location.search);
       let token = params.get("token");
 
-      // If no token in URL params, try the hash
       if (!token) {
         const hash = window.location.hash;
         token = new URLSearchParams(hash.substring(1)).get("access_token");
@@ -377,17 +572,20 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
         );
       }
 
-      // Try updating with the token
       const { error: updateError } = await supabase.auth.updateUser({
         password: state.password,
       });
+
+      if (updateError) {
+        setState((s) => ({ ...s, passwordError: updateError.message }));
+        throw updateError;
+      }
 
       setState((s) => ({
         ...s,
         message: "Your password has been successfully updated!",
       }));
 
-      // Sign out and redirect to signin page after a short delay
       setTimeout(async () => {
         await supabase.auth.signOut();
         navigate("/signin", {
@@ -413,57 +611,121 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={handleSetPassword}>
-      {state.error && (
-        <Alert color="danger" timeout={300}>
-          {state.error}
-        </Alert>
-      )}
-      {state.message && (
-        <Alert color="success" timeout={300}>
-          {state.message}
-        </Alert>
-      )}
+    <Paper component="form" onSubmit={handleSetPassword} p="md">
+      <Stack>
+        {state.error && (
+          <Alert
+            icon={<IconAlertCircle size={16} />}
+            className="error danger"
+            title="Error"
+          >
+            {state.error}
+          </Alert>
+        )}
+        {state.message && (
+          <Alert
+            icon={<IconCheck size={16} />}
+            className="success"
+            title="Success"
+          >
+            {state.message}
+          </Alert>
+        )}
 
-      <FormGroup>
-        <Label for="newPassword">New Password</Label>
-        <Input
-          id="newPassword"
-          type="password"
-          value={state.password}
-          onChange={(e) =>
-            setState((s) => ({ ...s, password: e.target.value }))
-          }
-          placeholder="Enter your new password"
-          required
-          minLength={6}
-        />
-      </FormGroup>
+        <Box
+          style={{ position: "relative" }}
+          p="md"
+          w="100%"
+          maw="500px"
+          className="mb-4"
+        >
+          <TextInput
+            className="input-field"
+            label="New Password"
+            value={state.password}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                password: e.target.value,
+                passwordError: null,
+              }))
+            }
+            placeholder="Enter your new password"
+            required
+            minLength={6}
+            type={showPassword ? "text" : "password"}
+            error={state.passwordError}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-7%",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
-      <FormGroup>
-        <Label for="confirmPassword">Confirm New Password</Label>
-        <Input
-          id="confirmPassword"
-          type="password"
-          value={state.confirmPassword}
-          onChange={(e) =>
-            setState((s) => ({ ...s, confirmPassword: e.target.value }))
-          }
-          placeholder="Confirm your new password"
-          required
-          minLength={6}
-        />
-      </FormGroup>
+        <Box style={{ position: "relative" }} className="mb-4">
+          <TextInput
+            className="input-field"
+            label="Confirm New Password"
+            value={state.confirmPassword}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                confirmPassword: e.target.value,
+                confirmPasswordError: null,
+              }))
+            }
+            placeholder="Confirm your new password"
+            required
+            minLength={6}
+            type={showConfirmPassword ? "text" : "password"}
+            error={state.confirmPasswordError}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-7%",
+              top: "75%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "30px",
+              width: "30px",
+            }}
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            {showConfirmPassword ? (
+              <IconEyeOff size={16} />
+            ) : (
+              <IconEyeCheck size={16} />
+            )}
+          </div>
+        </Box>
 
-      <Button
-        className="reset-btn outline"
-        type="submit"
-        disabled={state.loading}
-        color="success"
-        block
-      >
-        {state.loading ? "Updating..." : "Update Password"}
-      </Button>
-    </Form>
+        <Button className="primary" type="submit" loading={state.loading}>
+          {state.loading ? "Updating..." : "Update Password"}
+        </Button>
+      </Stack>
+    </Paper>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../Stopwatch.css";
+import { Text, Button, Center, Box } from "@mantine/core";
 
 const formatTime = (time: number): string => {
   const getSeconds = `0${time % 60}`.slice(-2);
@@ -121,35 +122,38 @@ const Stopwatch: React.FC = () => {
     }, 300);
   };
 
+  const handleTimeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = Number(e.target.value);
+    setTimeInput(newTime);
+    setRemainingTime(newTime);
+    setDisplayedProgress(circumference);
+  };
+
   const getDisplayText = () => {
     if (!isEnabled) return "";
     if (timerState === "idle" && timeInput === 0) {
-      return (
-        <label className="choice-text">
-          Choose a time on the slider or select untimed
-        </label>
-      );
+      return "0:00";
     }
-    return formatTime(remainingTime);
+    return formatTime(timerState === "idle" ? timeInput : remainingTime);
   };
 
   return (
     <>
       <time className="container">
-        <div
+        <Box
           className={`countdown-container ms-auto ${
             !isEnabled ? "ghosted" : ""
           }`}
         >
           {isEnabled && (
-            <>
+            <Center>
               <svg className="countdown-svg" viewBox="0 0 100 100">
                 <defs>
                   <linearGradient
                     id="warm-gradient"
-                    x1="0%"
+                    x1="20%"
                     y1="0%"
-                    x2="100%"
+                    x2="90%"
                     y2="0%"
                   >
                     <stop offset="0%" stopColor="#FF8C00" />
@@ -175,60 +179,56 @@ const Stopwatch: React.FC = () => {
                   getDisplayText()
                 )}
               </div>
-            </>
+            </Center>
           )}
-        </div>
-        <div className={`controls ${!isEnabled ? "ghosted" : ""}`}>
+        <Text className={`controls ${!isEnabled ? "ghosted" : ""}`}>
           <input
             type="range"
             min="1"
             max="600"
             value={timeInput}
-            onChange={(e) => setTimeInput(Number(e.target.value))}
+            onChange={handleTimeInputChange}
             disabled={!isEnabled || isTransitioning}
           />
-          <div className="time-display">
-            {Math.floor(timeInput / 60)} minutes and {timeInput % 60} seconds
-          </div>
           <div className="buttons">
             {timerState === "idle" && timeInput > 0 && (
-              <button
+              <Button
                 className="secondary"
                 onClick={startCountdown}
                 disabled={!isEnabled || isTransitioning}
               >
                 Start
-              </button>
+              </Button>
             )}
             {timerState === "running" && (
-              <button
+              <Button
                 className="warning"
                 onClick={pauseTimer}
                 disabled={!isEnabled || isTransitioning}
               >
                 Pause
-              </button>
+              </Button>
             )}
             {timerState === "paused" && (
               <>
-                <button
+                <Button
                   className="success"
                   onClick={resumeTimer}
                   disabled={!isEnabled || isTransitioning}
                 >
                   Resume
-                </button>
-                <button
+                </Button>
+                <Button
                   className="danger"
                   onClick={resetTimer}
                   disabled={!isEnabled || isTransitioning}
                 >
                   Reset
-                </button>
+                </Button>
               </>
             )}
           </div>
-        </div>
+        </Text>
 
         <label className="untimed-label">
           <input
@@ -240,6 +240,8 @@ const Stopwatch: React.FC = () => {
           <span className="checkmark"></span>
           Untimed
         </label>
+                </Box>
+
       </time>
     </>
   );

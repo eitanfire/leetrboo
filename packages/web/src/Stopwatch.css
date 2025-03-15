@@ -9,14 +9,14 @@
 
 .container {
   display: flex;
-    justify-content: flex-end;
+  justify-content: flex-end;
   width: 100%;
 }
 
 .countdown-container {
   position: relative;
   height: 220px;
-   width: 220px;
+  width: 220px;
   margin-bottom: 20px;
 }
 
@@ -74,10 +74,12 @@
 }
 
 .choice-text {
-  margin-top: 2rem;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   text-align: left;
   font-size: 1rem;
-  color: initial;
+  margin-top: 2rem;
 }
 
 .controls {
@@ -198,6 +200,9 @@ button.danger:hover {
 }
 
 .buttons {
+  position: relative;
+  left: 1.45rem;
+  margin-right: 20%;
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -211,9 +216,9 @@ input[type="range"] {
   border-radius: 5px;
   background: linear-gradient(
     90deg,
-        rgba(var(--primary-color), 0.7),
-        rgba(var(--secondary-color), 0.7),
-        rgba(var(--primary-color), 0.7)
+    rgba(var(--primary-color), 0.7),
+    rgba(var(--secondary-color), 0.7),
+    rgba(var(--primary-color), 0.7)
   );
   background-size: 200% auto;
   transition: background-position 0.5s;
@@ -228,7 +233,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color:     rgba(var(--primary-color), 0.7);
+  background-color: rgba(var(--primary-color), 0.7);
   box-shadow: var(--box-shadow);
   cursor: pointer;
 }
@@ -237,7 +242,7 @@ input[type="range"]::-moz-range-thumb {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color:     rgba(var(--primary-color), 0.7);
+  background-color: rgba(var(--primary-color), 0.7);
   box-shadow: var(--box-shadow);
   cursor: pointer;
   filter: var(--invert-filter);
@@ -268,11 +273,12 @@ input[type="range"]:disabled {
 
 .untimed-label {
   display: inline-block;
-  position: relative;
+  position: absolute;
+  top: 5;
   padding-left: 35px;
   margin-bottom: 12px;
   cursor: pointer;
-  font-size: 42px;
+  font-size: 32px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -280,7 +286,7 @@ input[type="range"]:disabled {
   vertical-align: middle;
 }
 
-.checkmark {
+/* .checkmark {
   position: absolute;
   top: 50%;
   left: 0;
@@ -288,15 +294,15 @@ input[type="range"]:disabled {
   height: 25px;
   width: 25px;
   background-color: #eee;
-}
+} */
 
-.untimed-label input {
+/* .untimed-label input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
   height: 0;
   width: 0;
-}
+} */
 
 .checkmark {
   border: 1px solid black;
@@ -316,7 +322,7 @@ input[type="range"]:disabled {
   background-color: #2196f3;
 }
 
-.checkmark:after {
+/* .checkmark:after {
   content: "";
   position: absolute;
   display: none;
@@ -336,4 +342,4 @@ input[type="range"]:disabled {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
-}
+} */

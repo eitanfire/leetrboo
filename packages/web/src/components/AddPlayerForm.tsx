@@ -183,7 +183,9 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
 
   return (
     <Col>
-      <div className="mb-4">
+      <div 
+      // className="mb-4"
+      >
         <h2>Manage Competitions</h2>
         <div className="competition-selector mb-3">
           <select
