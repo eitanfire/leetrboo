@@ -7,6 +7,7 @@ import { useCompetitions } from "../services/competitionService";
 interface ParticipantFormProps {
   selectedCompetition: Competition | null;
   onCompetitionSelect: (competition: Competition) => void;
+  competitions: Competition[];
 }
 
 type PlayerEntryFormData = Pick<PlayerEntry, "player_name" | "video_url">;
