@@ -14,7 +14,7 @@ import './App.css';
 
 const App: React.FC = () => {
   return (
-    <MantineProvider>
+    <MantineProvider >
       <BrowserRouter>
         <AuthProvider>
           <Routes>

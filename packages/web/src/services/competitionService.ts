@@ -6,6 +6,7 @@ export interface Competition {
   name: string;
   created_at: string;
   created_by: string;
+  competition_code: string;
 }
 
 export function useCompetitions() {
