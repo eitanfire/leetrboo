@@ -8,10 +8,8 @@ import { JoinCompetitionModal } from "../components/JoinCompetitionModal";
 import React, { useState, useCallback } from "react";
 
 const SignInPage: React.FC = () => {
-  // Use state to track modal visibility
   const [joinModalOpened, setJoinModalOpened] = useState(false);
 
-  // Use callback to ensure consistent reference
   const handleOpenModal = useCallback(() => {
     console.log("Opening modal - setting state to true");
     setJoinModalOpened(true);
@@ -27,36 +25,48 @@ const SignInPage: React.FC = () => {
   return (
     <Container fluid className="auth-container">
       <h1>
-        <Text fz="sm" fw={1000}>
+        <Text c="black" fz="5rem" fw={1000}>
           leetrboo
         </Text>
       </h1>
       <Row className="row">
         <Col className="col">
-          <Image radius="md" height={300} src={Brand} alt="boo!" />
+          <Image
+            radius="md"
+            style={{
+              width: "80%",
+              height: "auto",
+              display: "block",
+            }}
+            src={Brand}
+            alt="boo!"
+          />
         </Col>
         <Col className="col mb-4">
-          <Text>
+          <Text c="black" fz="5rem" fw={1000}>
             <h2>Sign In</h2>
           </Text>
           <SignInForm />
         </Col>
       </Row>
 
-      {/* Button to open the modal */}
-      <Button className="mt-3" color="teal" onClick={handleOpenModal}>
+      <Button
+        className="mt-3"
+        color="teal"
+        style={{ minHeight: "36px" }}
+        onClick={handleOpenModal}
+      >
         Join a Competition
       </Button>
 
-      {/* Modal component with opened prop */}
       <JoinCompetitionModal
         opened={joinModalOpened}
         onClose={handleCloseModal}
+        zIndex={1000}
       />
 
       <Row className="row mt-3 d-flex">
         <Col className="col vstack">
-          {/* Link to Sign Up page */}
           <Button className="sign-up-btn" component={Link} to="/signup">
             Sign up
           </Button>

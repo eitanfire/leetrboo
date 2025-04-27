@@ -1,71 +1,11 @@
 // src/components/JoinCompetitionModal.tsx
 import { useState } from "react";
-import { createStyles } from "@mantine/styles";
-import {
-  Modal,
-  TextInput,
-  Button,
-  Stack,
-  LoadingOverlay,
-  Text,
-  Group,
-  Alert,
-} from "@mantine/core";
+// No longer need createStyles if it was only for this modal
+// import { createStyles } from "@mantine/styles";
+import { Modal, Text } from "@mantine/core"; // Import Text
 import { useForm } from "@mantine/form";
-import { IconAlertCircle, IconCheck } from "@tabler/icons-react";
-import { supabase } from "../services/supabaseClient";
-
-// Define styles using createStyles
-const useStyles = createStyles(() => ({
-  modal: {
-    "& .mantine-Modal-overlay": {
-      backgroundColor: "rgba(0, 0, 0, 0.65)",
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      zIndex: 1000,
-      display: "block",
-      opacity: 1,
-      visibility: "visible",
-    },
-
-    "& .mantine-Modal-root": {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      zIndex: 1001,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      overflowY: "auto",
-      padding: "20px",
-    },
-
-    "& .mantine-Modal-content": {
-      backgroundColor: "#ffffff",
-      color: "#212529",
-      borderRadius: "8px",
-      boxShadow: "0 5px 15px rgba(0, 0, 0, 0.15)",
-      border: "none",
-      padding: "24px",
-      width: "90%",
-      maxWidth: "500px",
-      transform: "none",
-      overflow: "visible",
-      position: "relative",
-    },
-
-    "& .mantine-Modal-close": {
-      color: "#666",
-      right: "16px",
-      top: "16px",
-    },
-  },
-}));
+import { supabase } from "../services/supabaseClient"; // Ensure this path is correct
+import { JoinCompetitionForm } from "./JoinCompetitionForm"; // Ensure this path is correct
 
 interface JoinCompetitionModalProps {
   opened: boolean;
@@ -76,38 +16,36 @@ interface JoinCompetitionModalProps {
 export function JoinCompetitionModal({
   opened,
   onClose,
+  zIndex = 1000, // Default zIndex if not provided
 }: JoinCompetitionModalProps) {
-  // Get our custom styles
-  const { classes } = useStyles();
-
   const [step, setStep] = useState<"enterCode" | "enterDetails">("enterCode");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [inviteCode, setInviteCode] = useState("");
 
-  // Form for step 1: Invite Code
+  // Form for entering the invite code
   const codeForm = useForm({
-    initialValues: {
-      code: "",
-    },
+    initialValues: { code: "" },
     validate: {
       code: (value) => (value.trim() ? null : "Invite code is required"),
     },
   });
 
-  // Form for step 2: Player Details
+  // Form for entering player details
   const detailsForm = useForm({
-    initialValues: {
-      playerName: "",
-      videoUrl: "",
-    },
+    initialValues: { playerName: "", videoUrl: "" },
     validate: {
       playerName: (value) => (value.trim() ? null : "Your name is required"),
       videoUrl: (value) => {
         if (!value.trim()) return "Video URL is required";
+        // Basic URL validation
         try {
           new URL(value);
+          // Optional: Add more specific checks like requiring https://
+          if (!value.startsWith("https://") && !value.startsWith("http://")) {
+            return "URL must start with http:// or https://";
+          }
           return null;
         } catch (_) {
           return "Please enter a valid URL (e.g., https://...)";
@@ -116,14 +54,15 @@ export function JoinCompetitionModal({
     },
   });
 
-  // Handlers remain unchanged
+  // Handler for submitting the invite code
   const handleCodeSubmit = (values: { code: string }) => {
     setError(null);
     setSuccess(null);
-    setInviteCode(values.code);
-    setStep("enterDetails");
+    setInviteCode(values.code.trim()); // Trim the code
+    setStep("enterDetails"); // Move to the next step
   };
 
+  // Handler for submitting player details
   const handleDetailsSubmit = async (values: {
     playerName: string;
     videoUrl: string;
@@ -133,177 +72,134 @@ export function JoinCompetitionModal({
     setIsLoading(true);
 
     if (!inviteCode) {
-      console.error("Attempted submission with empty invite code!");
+      console.error("Submission attempted without an invite code.");
       setError("Invite code missing. Please go back and enter it.");
       setIsLoading(false);
-      return;
+      return; // Stop execution if invite code is missing
     }
 
     try {
-      console.log("Calling RPC join_competition with:", {
+      console.log("Calling Supabase RPC 'join_competition' with:", {
         code: inviteCode,
-        player_name: values.playerName,
-        video_url: values.videoUrl,
+        player_name: values.playerName.trim(), // Trim values before sending
+        video_url: values.videoUrl.trim(),
       });
 
+      // Call the Supabase function
       const { error: rpcError } = await supabase.rpc("join_competition", {
         code: inviteCode,
-        player_name: values.playerName,
-        video_url: values.videoUrl,
+        player_name: values.playerName.trim(),
+        video_url: values.videoUrl.trim(),
       });
 
-      console.log("Supabase RPC Response Error:", rpcError);
+      console.log("Supabase RPC response error object:", rpcError);
 
       if (rpcError) {
-        console.error("Supabase RPC Error:", rpcError);
+        console.error("Supabase RPC Error details:", rpcError);
+        // Provide user-friendly error messages based on Supabase response
         if (rpcError.message.includes("Competition code does not exist")) {
-          setError("Invalid or expired invite code.");
+          setError(
+            "Invalid or expired invite code. Please check the code and try again."
+          );
         } else if (rpcError.message.includes("value too long")) {
           setError("One of the fields entered is too long. Please shorten it.");
+        } else if (rpcError.message.includes("already joined")) {
+          // Example: Handle custom error
+          setError("You have already joined this competition.");
         } else {
-          setError(`Failed to join competition. Please try again.`);
-          console.error("Detailed join error:", rpcError.message);
+          // Generic error for other unexpected issues
+          setError(
+            `Failed to join competition due to an error. Please try again later.`
+          );
         }
       } else {
+        // Success case
         setSuccess("Successfully joined the competition!");
         detailsForm.reset();
         codeForm.reset();
         setInviteCode("");
+        // Close modal after a short delay to show success message
         setTimeout(() => {
-          handleCloseModal();
-        }, 2000);
+          handleCloseModal(); // Use the combined close handler
+        }, 2000); // 2-second delay
       }
     } catch (err: any) {
-      console.error("Submission Error:", err);
+      // Catch unexpected errors during the process
+      console.error("Error during submission process:", err);
       setError(
         err.message || "An unexpected error occurred. Please try again."
       );
     } finally {
-      setIsLoading(false);
+      // Ensure loading state is turned off unless success message is being shown
+      if (!success) {
+        // Only set loading to false if not in success state (waiting for timeout)
+        setIsLoading(false);
+      }
     }
   };
 
+  // Handler to go back from details step to code step
   const handleGoBack = () => {
-    setError(null);
+    setError(null); // Clear errors/success when navigating back
     setSuccess(null);
-    detailsForm.reset();
+    detailsForm.reset(); // Reset details form when going back
     setStep("enterCode");
   };
 
+  // Combined handler for closing the modal (cleans up state)
   const handleCloseModal = () => {
+    // Reset all states and forms before closing
     setError(null);
     setSuccess(null);
-    setIsLoading(false);
-    setStep("enterCode");
+    setIsLoading(false); // Ensure loading is off
+    setStep("enterCode"); // Reset to initial step
     codeForm.reset();
     detailsForm.reset();
-    setInviteCode("");
-    onClose();
+    setInviteCode(""); // Clear stored invite code
+    onClose(); // Call the parent's onClose handler
   };
 
-  // Render content logic unchanged
-  const renderStepContent = () => {
-    if (step === "enterCode") {
-      return (
-        <form onSubmit={codeForm.onSubmit(handleCodeSubmit)}>
-          <Stack>
-            <TextInput
-              required
-              label="Invite Code"
-              placeholder="Enter the competition invite code"
-              {...codeForm.getInputProps("code")}
-            />
-            <Button type="submit" loading={isLoading}>
-              Next
-            </Button>
-          </Stack>
-        </form>
-      );
-    }
-
-    if (step === "enterDetails") {
-      return (
-        <form onSubmit={detailsForm.onSubmit(handleDetailsSubmit)}>
-          <Stack>
-            <Text size="sm" c="dimmed" mb="md">
-              Entering competition with code: {inviteCode}
-            </Text>
-            <TextInput
-              required
-              label="Your Name"
-              placeholder="Enter your display name"
-              {...detailsForm.getInputProps("playerName")}
-            />
-            <TextInput
-              required
-              label="Video URL"
-              placeholder="e.g., https://youtube.com/watch?v=..."
-              type="url"
-              {...detailsForm.getInputProps("videoUrl")}
-            />
-            <Group justify="space-between" mt="md">
-              <Button
-                variant="default"
-                onClick={handleGoBack}
-                disabled={isLoading}
-              >
-                Back
-              </Button>
-              <Button type="submit" loading={isLoading}>
-                Join Competition
-              </Button>
-            </Group>
-          </Stack>
-        </form>
-      );
-    }
-
-    return null;
-  };
-
-  // Using our custom class for styling
   return (
     <Modal
+      ta="center"
       opened={opened}
-      onClose={handleCloseModal}
-      title="Enter a Competition"
-      closeOnClickOutside={!isLoading}
-      withCloseButton={!isLoading}
-      closeButtonProps={{ "aria-label": "Close", size: "sm" }}
-      className={classes.modal}
+      onClose={handleCloseModal} // Use the combined close handler
+      // Apply styling directly to the Text component for the title
+      title={
+        <Text c="black" fz="2.4rem" fw={1000}>
+          Enter a Competition
+        </Text>
+      }
+      closeOnClickOutside={!isLoading} // Prevent closing while loading
+      withCloseButton={!isLoading} // Hide close button while loading
+      closeButtonProps={{ "aria-label": "Close competition modal", size: "sm" }}
+      overlayProps={{
+        color: "#000", // Or theme.black if using theme context
+        opacity: 0.65,
+        blur: 3,
+      }}
+      padding="xl" // Generous padding
+      size="md" // Moderate size
+      radius="md" // Rounded corners
+      shadow="lg" // Noticeable shadow
+      zIndex={zIndex} // Use the provided zIndex
+      centered // Center the modal vertically and horizontally
     >
-      <LoadingOverlay
-        visible={isLoading}
-        overlayProps={{ radius: "sm", blur: 2 }}
+      {/* Render the form component, passing all necessary state and handlers */}
+      <JoinCompetitionForm
+        isLoading={isLoading}
+        error={error}
+        success={success}
+        step={step}
+        inviteCode={inviteCode} // Pass invite code for potential display
+        codeForm={codeForm}
+        detailsForm={detailsForm}
+        handleCodeSubmit={handleCodeSubmit}
+        handleDetailsSubmit={handleDetailsSubmit}
+        handleGoBack={handleGoBack}
+        setError={setError} // Pass setError to the form
+        setSuccess={setSuccess} // Pass setSuccess to the form
       />
-
-      {error && (
-        <Alert
-          icon={<IconAlertCircle size="1rem" />}
-          title="Error"
-          color="red"
-          withCloseButton
-          onClose={() => setError(null)}
-          mb="md"
-        >
-          {error}
-        </Alert>
-      )}
-
-      {success && !isLoading && (
-        <Alert
-          icon={<IconCheck size="1rem" />}
-          title="Success"
-          color="green"
-          withCloseButton
-          onClose={() => setSuccess(null)}
-          mb="md"
-        >
-          {success}
-        </Alert>
-      )}
-
-      {!success && renderStepContent()}
     </Modal>
   );
 }

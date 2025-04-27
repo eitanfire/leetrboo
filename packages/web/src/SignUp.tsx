@@ -7,7 +7,7 @@ import { Text, Center, Grid } from "@mantine/core";
 const SignUp: React.FC = () => {
   return (
     <div className="auth-container">
-      <Text mt="4">
+      <Text mt="4" c="black" fz="5rem" fw={1000}>
         <h2>Create an Account</h2>
       </Text>
       <SignUpForm />

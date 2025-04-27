@@ -1,25 +1,24 @@
+import "@mantine/core/styles.css";
 import React from "react";
-    import { MantineProvider } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthRedirect } from "./AuthRedirect";
 import LeetrbooApp from "./LeetrbooApp";
-import SignIn from "./SignIn";
 import SignInPage from "./pages/SignInPage";
 import SignUp from "./SignUp";
 import ResetPassword from "./ResetPassword";
 import SetNewPassword from "./SetNewPassword";
-import './App.css';
+import "./App.css";
 
 const App: React.FC = () => {
   return (
-    <MantineProvider >
+    <MantineProvider>
       <BrowserRouter>
         <AuthProvider>
           <Routes>
             <Route path="/auth/callback" element={<AuthRedirect />} />
-            {/* <Route path="/signin" element={<SignIn />} /> */}
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/reset-password" element={<ResetPassword />} />
