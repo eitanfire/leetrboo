@@ -16,7 +16,8 @@ export default $config({
         output: "dist",
       },
       domain: {
-        name: 'leetr.boo'
+        name: 'leetr.boo',
+                dns: false
       }
     });
   },
