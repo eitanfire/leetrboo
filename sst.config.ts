@@ -10,15 +10,15 @@ export default $config({
   },
   async run() {
     new sst.aws.StaticSite("Web", {
-      path: 'packages/web',
+      path: "packages/web",
       build: {
         command: "npm run build",
         output: "dist",
       },
       domain: {
-        name: 'leetr.boo',
-                dns: false
-      }
+        name: "leetr.boo",
+        cert: "arn:aws:acm:us-east-1:YOUR_AWS_ACCOUNT_ID:certificate/YOUR_CERT_ID",
+      },
     });
   },
 });
