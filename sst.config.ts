@@ -17,7 +17,6 @@ export default $config({
       },
       domain: {
         name: "leetr.boo",
-        cert: "arn:aws:acm:us-east-1:YOUR_AWS_ACCOUNT_ID:certificate/YOUR_CERT_ID",
       },
     });
   },
