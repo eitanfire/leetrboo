@@ -7,9 +7,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial auth state
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // Don't set the user if we're in a password reset flow
       if (window.location.hash.includes("type=recovery")) {
         setUser(null);
       } else {
@@ -18,7 +16,6 @@ export const useAuth = () => {
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
