@@ -1,13 +1,8 @@
-// src/LeetrbooApp.tsx
 import React, { useState, useEffect } from "react";
-// --- Reactstrap Imports (Keep) ---
 import { Container, Row, Col, Alert, Spinner, Button } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-// --- Bootstrap CSS (Keep for Reactstrap) ---
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
-// --- Mantine Imports (Add ONLY for the new section) ---
 import {
   TextInput,
   Group,
@@ -15,12 +10,10 @@ import {
   Tooltip,
   ActionIcon,
   Text,
-  Stack, // For vertical layout within the new section
-  Title, // For the heading within the new section
+  Stack,
+  Title,
 } from "@mantine/core";
-import { IconCopy, IconCheck } from "@tabler/icons-react"; // Icons for copy button
-
-// --- Your Component Imports ---
+import { IconCopy, IconCheck } from "@tabler/icons-react";
 import Header from "./components/Header";
 import ParticipantForm from "./components/AddPlayerForm";
 import ListPlayerEntries from "./components/ListPlayerEntries";
@@ -38,14 +31,12 @@ const LeetrbooApp: React.FC = () => {
     error,
   } = useCompetitions();
 
-  // Handle auth state changes (Keep)
   useEffect(() => {
     if (!authLoading && !user) {
       navigate("/signin", { replace: true });
     }
   }, [user, authLoading, navigate]);
 
-  // Automatically select the first competition when data loads (Keep)
   useEffect(() => {
     if (competitions.length > 0 && !selectedCompetition) {
       setSelectedCompetition(competitions[0]);
@@ -53,7 +44,6 @@ const LeetrbooApp: React.FC = () => {
     }
   }, [competitions, selectedCompetition]);
 
-  // Handle loading states (Keep Reactstrap)
   if (authLoading || competitionsLoading) {
     return (
       <Container fluid className="p-0">
@@ -79,7 +69,6 @@ const LeetrbooApp: React.FC = () => {
     );
   }
 
-  // Handle errors (Keep Reactstrap)
   if (error) {
     return (
       <Container fluid className="p-0">
@@ -104,7 +93,6 @@ const LeetrbooApp: React.FC = () => {
     );
   }
 
-  // Handle no competitions case (Keep Reactstrap)
   if (competitions.length === 0) {
     return (
       <Container fluid className="p-0">
@@ -123,12 +111,10 @@ const LeetrbooApp: React.FC = () => {
     );
   }
 
-  // --- Main Content ---
   return (
     <Container fluid className="p-0">
       <Header />
       <Container className="mt-4">
-        {/* --- Row 1: Participant Form --- */}
         <Row>
           <Col>
             <ParticipantForm
@@ -143,30 +129,22 @@ const LeetrbooApp: React.FC = () => {
           </Col>
         </Row>
 
-        {/* --- Row 2: Invite Participants Section (Uses Mantine Inside) --- */}
-        {/* Only show if a competition with a code is selected */}
         {selectedCompetition && selectedCompetition.competition_code && (
           <Row className="mt-3 mb-3">
             {" "}
-            {/* Add vertical margin */}
             <Col>
-              {/* Using Mantine Stack for vertical layout within this section */}
               <Stack gap="xs">
                 <Title order={5}>Invite Participants</Title>
                 <Text size="sm">
                   Share this code with participants so they can join:
                 </Text>
-                {/* Using Mantine Group for horizontal layout of input + button */}
                 <Group gap="xs" wrap="nowrap">
-                  {/* Mantine TextInput for displaying the code */}
                   <TextInput
                     readOnly
                     value={selectedCompetition.competition_code}
-                    // Apply monospace font specifically to the code
                     style={{ fontFamily: "monospace", flexGrow: 1 }}
                     aria-label="Competition Invite Code"
                   />
-                  {/* Mantine CopyButton Helper */}
                   <CopyButton
                     value={selectedCompetition.competition_code}
                     timeout={2000}
@@ -200,13 +178,11 @@ const LeetrbooApp: React.FC = () => {
           </Row>
         )}
 
-        {/* --- Row 3: List Player Entries --- */}
-        {/* Only show if a competition is selected */}
         {selectedCompetition && (
           <Row className="mt-4">
             <Col>
               <ListPlayerEntries
-                key={selectedCompetition.id} // Force re-render when competition changes
+                key={selectedCompetition.id}
                 selectedCompetition={selectedCompetition}
               />
             </Col>
