@@ -21,5 +21,8 @@ export default {
   },
   esbuild: {
     external: ["fsevents", "better-sqlite3", "mysql2", "pg"],
+    loader: {
+      ".node": "file",
+    },
   },
 };
