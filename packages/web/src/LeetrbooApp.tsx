@@ -100,7 +100,7 @@ const LeetrbooApp: React.FC = () => {
         {competitions.length === 0 ? (
           <Row>
             <Col>
-              <Alert color="info" className="mb-4">
+              <Alert color="info" mt="xl">
                 No competitions available. Please create a new competition to
                 get started.
               </Alert>
