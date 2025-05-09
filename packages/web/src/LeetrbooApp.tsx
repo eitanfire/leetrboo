@@ -93,28 +93,21 @@ const LeetrbooApp: React.FC = () => {
     );
   }
 
-  if (competitions.length === 0) {
-    return (
-      <Container fluid className="p-0">
-        <Header />
-        <Container className="mt-4">
+  return (
+    <Container fluid className="p-0">
+      <Header />
+      <Container className="mt-4">
+        {competitions.length === 0 ? (
           <Row>
             <Col>
-              <Alert color="info">
+              <Alert color="info" className="mb-4">
                 No competitions available. Please create a new competition to
                 get started.
               </Alert>
             </Col>
           </Row>
-        </Container>
-      </Container>
-    );
-  }
+        ) : null}
 
-  return (
-    <Container fluid className="p-0">
-      <Header />
-      <Container className="mt-4">
         <Row>
           <Col>
             <ParticipantForm
@@ -123,7 +116,6 @@ const LeetrbooApp: React.FC = () => {
                 setSelectedCompetition(competition);
                 console.log("Competition selected:", competition);
               }}
-              // VVV Pass the competitions prop VVV
               competitions={competitions}
             />
           </Col>
@@ -131,7 +123,6 @@ const LeetrbooApp: React.FC = () => {
 
         {selectedCompetition && selectedCompetition.competition_code && (
           <Row className="mt-3 mb-3">
-            {" "}
             <Col>
               <Stack gap="xs">
                 <Title order={5}>Invite Participants</Title>
