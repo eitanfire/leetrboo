@@ -15,7 +15,7 @@
     "bootstrap": "^5.3.3",
     "react-router-dom": "^7.1.1",
     "reactstrap": "^9.2.3",
-    "sst": "3.2.46"
+    "sst": "^3.14.12"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",
