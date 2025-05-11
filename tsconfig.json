@@ -1,13 +1,12 @@
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
-  "include": ["packages/web/src/**/*"],
   "compilerOptions": {
-    "module": "esnext",
+    "types": ["node"],
     "moduleResolution": "node",
+    "target": "ES2020",
+    "module": "ESNext",
+    "strict": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "allowJs": true,
-    "jsx": "react-jsx",
-    "lib": ["dom", "esnext"]
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   }
 }
