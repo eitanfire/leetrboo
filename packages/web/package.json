@@ -1,13 +1,16 @@
 {
-  "name": "web",
+  "name": "leetrboo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "sst bind vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "sst deploy",
+    "deploy:prod": "sst deploy --stage prod",
+    "remove": "sst remove"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -27,6 +30,8 @@
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
+    "aws-cdk-lib": "2.124.0",
+    "constructs": "10.3.0",
     "eslint": "^9.11.1",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
@@ -35,6 +40,8 @@
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
+    "sst": "^3.14.25",
+    "typescript": "^5.4.2",
     "vite": "^5.4.11"
   }
 }

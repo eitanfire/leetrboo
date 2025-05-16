@@ -18,8 +18,10 @@
   "devDependencies": {
     "@tsconfig/node18": "^18.2.4",
     "@types/aws-lambda": "8.10.145",
+    "aws-cdk-lib": "^2.195.0",
+    "constructs": "^10.4.2",
     "install": "^0.13.0",
-    "sst": "^3.14.12",
+    "sst": "^3.14.25",
     "typescript": "^5.8.3",
     "typescriptnpm": "^1.0.1"
   },
