@@ -7,7 +7,7 @@ export default {
     };
   },
   async run() {
-    // Define your web application
+    // Define the web application
     const web = new sst.aws.StaticSite("Web", {
       path: "packages/web",
       build: {
@@ -19,7 +19,7 @@ export default {
       },
     });
 
-    // Return any outputs you want to access
+    // Return the outputs to be accessed
     return {
       web: web.url,
     };
