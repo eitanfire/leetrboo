@@ -4,5 +4,6 @@
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "node"
-  }
+  },
+  "include": ["sst-env.d.ts", "sst.config.ts"]
 }
