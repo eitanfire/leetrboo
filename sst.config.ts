@@ -7,7 +7,6 @@ export default {
     };
   },
   async run() {
-    // Define the web application
     const web = new sst.aws.StaticSite("Web", {
       path: "packages/web",
       build: {
@@ -17,9 +16,11 @@ export default {
       dev: {
         command: "npm run dev",
       },
+      domain: {
+        name: "leetr.boo",
+      },
     });
 
-    // Return the outputs to be accessed
     return {
       web: web.url,
     };
