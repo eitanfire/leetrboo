@@ -1,11 +1,9 @@
 // src/components/JoinCompetitionModal.tsx
 import { useState } from "react";
-// No longer need createStyles if it was only for this modal
 // import { createStyles } from "@mantine/styles";
-import { Modal, Text } from "@mantine/core"; // Import Text
-import { useForm } from "@mantine/form";
-import { supabase } from "../services/supabaseClient"; // Ensure this path is correct
-import { JoinCompetitionForm } from "./JoinCompetitionForm"; // Ensure this path is correct
+import { Modal, Text } from "@mantine/core";
+import { supabase } from "../services/supabaseClient";
+import { JoinCompetitionForm } from "./JoinCompetitionForm";
 
 interface JoinCompetitionModalProps {
   opened: boolean;
