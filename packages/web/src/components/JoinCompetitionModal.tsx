@@ -1,5 +1,5 @@
 // src/components/JoinCompetitionModal.tsx
-import { useState } from "react";
+import React, { useState } from "react";
 // import { createStyles } from "@mantine/styles";
 import { Modal, Text } from "@mantine/core";
 import { supabase } from "../services/supabaseClient";
@@ -201,3 +201,55 @@ export function JoinCompetitionModal({
     </Modal>
   );
 }
+function useForm<T extends Record<string, any>>({
+  initialValues,
+  validate,
+}: {
+  initialValues: T;
+  validate: { [K in keyof T]?: (value: T[K]) => string | null };
+}) {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
+
+  const handleChange = (field: keyof T, value: T[keyof T]) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    if (validate[field]) {
+      const error = validate[field]!(value);
+      setErrors((prev) => ({ ...prev, [field]: error }));
+    }
+  };
+
+  const handleSubmit = (onSubmit: (values: T) => void) => {
+    const newErrors: Partial<Record<keyof T, string>> = {};
+    let hasError = false;
+
+    for (const field in validate) {
+      const value = values[field];
+      const error = validate[field]?.(value);
+      if (error) {
+        hasError = true;
+        newErrors[field] = error;
+      }
+    }
+
+    setErrors(newErrors);
+
+    if (!hasError) {
+      onSubmit(values);
+    }
+  };
+
+  const reset = () => {
+    setValues(initialValues);
+    setErrors({});
+  };
+
+  return {
+    values,
+    errors,
+    handleChange,
+    handleSubmit,
+    reset,
+  };
+}
+
