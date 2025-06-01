@@ -207,7 +207,7 @@ function useForm<T extends Record<string, any>>({
 }: {
   initialValues: T;
   validate: { [K in keyof T]?: (value: T[K]) => string | null };
-}) {
+}): any {
   const [values, setValues] = useState<T>(initialValues);
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
 
@@ -250,6 +250,17 @@ function useForm<T extends Record<string, any>>({
     handleChange,
     handleSubmit,
     reset,
+    submitting: false,
+    initialized: true,
+    setSubmitting: () => {},
+    initialize: () => {},
+    validate: () => {},
+    clearErrors: () => {},
+    setFieldValue: () => {},
+    setValues: () => {},
+    setFieldError: () => {},
+    setErrors: () => {},
+    getInputProps: () => ({ value: "", onChange: () => {} }),
   };
 }
 
