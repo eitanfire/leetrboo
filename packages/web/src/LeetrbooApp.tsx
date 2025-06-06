@@ -12,8 +12,11 @@ import {
   Text,
   Stack,
   Title,
+  Modal,
+  Paper,
+  Center,
 } from "@mantine/core";
-import { IconCopy, IconCheck } from "@tabler/icons-react";
+import { IconCopy, IconCheck, IconMaximize } from "@tabler/icons-react";
 import Header from "./components/Header";
 import ParticipantForm from "./components/AddPlayerForm";
 import ListPlayerEntries from "./components/ListPlayerEntries";
@@ -25,6 +28,7 @@ const LeetrbooApp: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const [selectedCompetition, setSelectedCompetition] =
     useState<Competition | null>(null);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const {
     competitions,
     isLoading: competitionsLoading,
@@ -160,6 +164,19 @@ const LeetrbooApp: React.FC = () => {
                       </Tooltip>
                     )}
                   </CopyButton>
+                  <Tooltip
+                    label="Show in larger view"
+                    withArrow
+                    position="right"
+                  >
+                    <ActionIcon
+                      color="blue"
+                      variant="subtle"
+                      onClick={() => setIsInviteModalOpen(true)}
+                    >
+                      <IconMaximize size="1rem" />
+                    </ActionIcon>
+                  </Tooltip>
                 </Group>
                 <Text size="xs" c="dimmed">
                   Participants can enter this code via "Enter a Competition".
@@ -180,6 +197,67 @@ const LeetrbooApp: React.FC = () => {
           </Row>
         )}
       </Container>
+
+      {/* Invite Code Modal */}
+      <Modal
+        opened={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        title="Competition Invite Code"
+        centered
+        size="md"
+      >
+        <Stack gap="md">
+          <Text>
+            Share this code with participants so they can join your competition:
+          </Text>
+
+          <Paper p="xl" bg="gray.0" radius="md">
+            <Center>
+              <Text
+                size="xl"
+                fw={700}
+                ff="monospace"
+                c="dark"
+                style={{
+                  letterSpacing: "0.2em",
+                  fontSize: "2rem",
+                  userSelect: "all",
+                }}
+              >
+                {selectedCompetition?.competition_code}
+              </Text>
+            </Center>
+          </Paper>
+
+          <Group justify="center" gap="md">
+            <CopyButton
+              value={selectedCompetition?.competition_code || ""}
+              timeout={2000}
+            >
+              {({ copied, copy }) => (
+                <Button
+                  onClick={copy}
+                  color={copied ? "teal" : "blue"}
+                  leftSection={
+                    copied ? (
+                      <IconCheck size="1rem" />
+                    ) : (
+                      <IconCopy size="1rem" />
+                    )
+                  }
+                >
+                  {copied ? "Copied!" : "Copy Code"}
+                </Button>
+              )}
+            </CopyButton>
+          </Group>
+
+          <Text size="sm" c="dimmed" ta="center">
+            Participants can enter this code via "Enter a Competition" to join
+            your competition.
+          </Text>
+        </Stack>
+      </Modal>
     </Container>
   );
 };
