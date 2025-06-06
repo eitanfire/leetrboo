@@ -11,32 +11,29 @@ export interface Competition {
 
 // Function to generate short competition codes
 function generateShortCompetitionCode(): string {
-  // Option 1: 6-digit numeric code
   return Math.floor(100000 + Math.random() * 900000).toString();
-
-  // Option 2: 4-character alphanumeric (uncomment to use instead)
-  // const chars = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // Avoiding confusing chars
-  // return Array.from({length: 4}, () =>
-  //   chars.charAt(Math.floor(Math.random() * chars.length))
-  // ).join('');
-
-  // Option 3: Word + Number format (uncomment to use instead)
-  // const words = ['GAME', 'PLAY', 'CODE', 'TEAM', 'QUIZ', 'MEET', 'JOIN'];
-  // const word = words[Math.floor(Math.random() * words.length)];
-  // const num = Math.floor(10 + Math.random() * 90);
-  // return `${word}${num}`;
 }
 
 // Function to check if code already exists
 async function isCodeUnique(code: string): Promise<boolean> {
-  const { data, error } = await supabase
-    .from("competitions")
-    .select("id")
-    .eq("competition_code", code)
-    .limit(1);
+  try {
+    const { data, error } = await supabase
+      .from("competitions")
+      .select("id")
+      .eq("competition_code", code)
+      .limit(1);
 
-  if (error) throw error;
-  return data.length === 0;
+    if (error) {
+      console.error("Error checking code uniqueness:", error);
+      throw error;
+    }
+
+    return data === null || data.length === 0;
+  } catch (error) {
+    console.error("Failed to check code uniqueness:", error);
+    // If we can't check uniqueness, assume it's not unique to be safe
+    return false;
+  }
 }
 
 // Function to generate unique competition code
@@ -86,8 +83,9 @@ export function useCompetitions() {
 
   const createCompetition = async (name: string) => {
     try {
-      // Generate unique competition code
-      const competitionCode = await generateUniqueCompetitionCode();
+      const competitionCode = Math.floor(
+        100000 + Math.random() * 900000
+      ).toString();
 
       const { data, error: createError } = await supabase
         .from("competitions")
@@ -100,13 +98,37 @@ export function useCompetitions() {
         .select()
         .single();
 
-      if (createError) throw createError;
+      if (createError) {
+        // If there's a unique constraint error, try with a different code
+        if (createError.code === "23505") {
+          // PostgreSQL unique violation
+          const newCode = Math.floor(
+            100000 + Math.random() * 900000
+          ).toString();
+          const { data: retryData, error: retryError } = await supabase
+            .from("competitions")
+            .insert([
+              {
+                name,
+                competition_code: newCode,
+              },
+            ])
+            .select()
+            .single();
+
+          if (retryError) throw retryError;
+          await fetchCompetitions();
+          return retryData as Competition;
+        }
+        throw createError;
+      }
 
       // Refresh the list after creating
       await fetchCompetitions();
 
       return data as Competition;
     } catch (error) {
+      console.error("Error creating competition:", error);
       throw error instanceof Error
         ? error
         : new Error("Failed to create competition");
