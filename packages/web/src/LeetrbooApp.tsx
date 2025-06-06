@@ -124,74 +124,78 @@ const LeetrbooApp: React.FC = () => {
             />
           </Col>
         </Row>
-
-        {selectedCompetition && selectedCompetition.competition_code && (
-          <Row className="mt-3 mb-3">
-            <Col>
-              <Stack gap="xs">
-                <Title order={5}>Invite Participants</Title>
-                <Text size="sm">
-                  Share this code with participants so they can join:
-                </Text>
-                <Group gap="xs" wrap="nowrap">
-                  <TextInput
-                    readOnly
-                    value={selectedCompetition.competition_code
-                      .slice(-6)
-                      .toUpperCase()}
-                    style={{ fontFamily: "monospace", flexGrow: 1 }}
-                    aria-label="Competition Invite Code"
-                  />
-                  <CopyButton
-                    value={selectedCompetition.competition_code
-                      .slice(-6)
-                      .toUpperCase()}
-                    timeout={2000}
-                  >
-                    {({ copied, copy }) => (
-                      <Tooltip
-                        label={copied ? "Copied!" : "Copy code"}
-                        withArrow
-                        position="right"
-                      >
-                        <ActionIcon
-                          color={copied ? "teal" : "gray"}
-                          variant="subtle"
-                          onClick={copy}
-                        >
-                          {copied ? (
-                            <IconCheck size="1rem" />
-                          ) : (
-                            <IconCopy size="1rem" />
-                          )}
-                        </ActionIcon>
-                      </Tooltip>
-                    )}
-                  </CopyButton>
-                  <Tooltip
-                    label="Show in larger view"
-                    withArrow
-                    position="right"
-                  >
-                    <ActionIcon
-                      color="blue"
-                      variant="subtle"
-                      onClick={() => setIsInviteModalOpen(true)}
-                    >
-                      <IconMaximize size="1rem" />
-                    </ActionIcon>
-                  </Tooltip>
-                </Group>
-                <Text size="xs" c="dimmed">
-                  Participants can enter this code via "Enter a Competition".
-                </Text>
-              </Stack>
-            </Col>
-          </Row>
-        )}
-
+{selectedCompetition && selectedCompetition.competition_code && (
+  <Center style={{ minHeight: '35vh' }} >
+    <Paper shadow="md" p="xl" radius="md" withBorder>
+      <Stack align="center" gap="xs">
+        <Title order={5} ta="center">
+          Join the Competition
+        </Title>
+        
+        <Text size="sm" ta="center">
+          Share this code with participants so they can join:
+        </Text>
+        
+        <Group gap="xs" wrap="nowrap" justify="center">
+          <TextInput
+            size="md"
+            readOnly
+            value={selectedCompetition.competition_code
+              .slice(-6)
+              .toUpperCase()}
+            style={{ width: "90px" }}
+            aria-label="Competition Invite Code"
+          />
+          <CopyButton
+            value={selectedCompetition.competition_code
+              .slice(-6)
+              .toUpperCase()}
+            timeout={2000}
+          >
+            {({ copied, copy }) => (
+              <Tooltip
+                label={copied ? "Copied!" : "Copy code"}
+                withArrow
+                position="right"
+              >
+                <ActionIcon
+                  color={copied ? "teal" : "gray"}
+                  variant="subtle"
+                  onClick={copy}
+                >
+                  {copied ? (
+                    <IconCheck size="1rem" />
+                  ) : (
+                    <IconCopy size="1rem" />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            )}
+          </CopyButton>
+          <Tooltip
+            label="Show in larger view"
+            withArrow
+            position="right"
+          >
+            <ActionIcon
+              color="blue"
+              variant="subtle"
+              onClick={() => setIsInviteModalOpen(true)}
+            >
+              <IconMaximize size="1rem" />
+            </ActionIcon>
+          </Tooltip>
+        </Group>
+        
+        <Text size="md" c="dimmed" ta="center">
+          Participants can enter this code via "Enter a Competition"
+        </Text>
+      </Stack>
+    </Paper>
+  </Center>
+)}
         {selectedCompetition && (
-          <Row className="mt-4">
+          <Row >
             <Col>
               <ListPlayerEntries
                 key={selectedCompetition.id}
@@ -208,23 +212,22 @@ const LeetrbooApp: React.FC = () => {
         onClose={() => setIsInviteModalOpen(false)}
         title="Competition Invite Code"
         centered
-        size="md"
+        size="lg"
       >
         <Stack gap="md">
           <Text>
             Share this code with participants so they can join your competition:
           </Text>
 
-          <Paper p="xl" bg="gray.0" radius="md">
+          <Paper p="xl" bg="gray.1" radius="md">
             <Center>
               <Text
-                size="xl"
                 fw={700}
                 ff="monospace"
                 c="dark"
                 style={{
-                  letterSpacing: "0.2em",
-                  fontSize: "2rem",
+                  letterSpacing: "0.5em",
+                  fontSize: "4rem",
                   userSelect: "all",
                 }}
               >
@@ -261,7 +264,7 @@ const LeetrbooApp: React.FC = () => {
 
           <Text size="sm" c="dimmed" ta="center">
             Participants can enter this code via "Enter a Competition" to join
-            your competition.
+            the competition.
           </Text>
         </Stack>
       </Modal>
