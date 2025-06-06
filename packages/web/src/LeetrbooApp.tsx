@@ -136,12 +136,16 @@ const LeetrbooApp: React.FC = () => {
                 <Group gap="xs" wrap="nowrap">
                   <TextInput
                     readOnly
-                    value={selectedCompetition.competition_code}
+                    value={selectedCompetition.competition_code
+                      .slice(-6)
+                      .toUpperCase()}
                     style={{ fontFamily: "monospace", flexGrow: 1 }}
                     aria-label="Competition Invite Code"
                   />
                   <CopyButton
-                    value={selectedCompetition.competition_code}
+                    value={selectedCompetition.competition_code
+                      .slice(-6)
+                      .toUpperCase()}
                     timeout={2000}
                   >
                     {({ copied, copy }) => (
@@ -224,14 +228,17 @@ const LeetrbooApp: React.FC = () => {
                   userSelect: "all",
                 }}
               >
-                {selectedCompetition?.competition_code}
+                {selectedCompetition?.competition_code.slice(-6).toUpperCase()}
               </Text>
             </Center>
           </Paper>
 
           <Group justify="center" gap="md">
             <CopyButton
-              value={selectedCompetition?.competition_code || ""}
+              value={
+                selectedCompetition?.competition_code.slice(-6).toUpperCase() ||
+                ""
+              }
               timeout={2000}
             >
               {({ copied, copy }) => (
