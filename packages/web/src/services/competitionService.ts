@@ -48,7 +48,6 @@ export function useCompetitions() {
         throw createError;
       }
 
-      // Refresh the list after creating
       await fetchCompetitions();
 
       return data as Competition;
