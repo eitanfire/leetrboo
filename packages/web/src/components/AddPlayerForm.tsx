@@ -3,6 +3,7 @@ import { Col } from "reactstrap";
 import { usePlayerEntries, PlayerEntry } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
 import { useCompetitions } from "../services/competitionService";
+import { Select } from '@mantine/core';
 
 interface ParticipantFormProps {
   selectedCompetition: Competition | null;
@@ -12,6 +13,19 @@ interface ParticipantFormProps {
 }
 
 type PlayerEntryFormData = Pick<PlayerEntry, "player_name" | "video_url">;
+
+const COMPETITION_THEMES = [
+  { value: 'default', label: 'Default Leetrboo Theme' },
+  { value: 'halloween', label: 'Halloween Costume Contest' },
+  { value: 'karaoke', label: 'Karaoke' },
+  { value: 'debate', label: 'Debate' },
+  { value: 'lightning_talks', label: 'Lightning Talks' },
+  { value: 'dance_off', label: 'Dance Off' },
+  { value: 'rap_battle', label: 'Rap Battle' },
+  { value: 'fashion_show', label: 'Fashion Show' },
+  { value: 'sing_off', label: 'Sing Off' },
+  { value: 'video_game_battle', label: 'Video Game Battle' }
+];
 
 const ParticipantForm: React.FC<ParticipantFormProps> = ({
   selectedCompetition,
@@ -182,12 +196,28 @@ const ParticipantForm: React.FC<ParticipantFormProps> = ({
       </Col>
     );
   }
+  
+const getThemeColor = (theme) => {
+  switch(theme) {
+    case 'halloween': return 'orange';
+    case 'karaoke': return 'pink';
+    case 'debate': return 'red';
+    case 'lightning_talks': return 'yellow';
+    case 'dance_off': return 'purple';
+    case 'rap_battle': return 'dark';
+    case 'fashion_show': return 'grape';
+    case 'sing_off': return 'teal';
+    case 'video_game_battle': return 'violet';
+    default: return 'blue'; // Default leetrboo theme
+  }
+};
 
   return (
     <Col>
       <div 
       // className="mb-4"
       >
+        
         <h2>Manage Competitions</h2>
         <div className="competition-selector mb-3">
           <select
