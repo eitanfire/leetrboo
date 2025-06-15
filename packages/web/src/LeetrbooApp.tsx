@@ -22,6 +22,7 @@ import { IconCopy, IconCheck, IconMaximize, IconPalette } from "@tabler/icons-re
 import Header from "./components/DynamicThemeHeader";
 import ParticipantForm from "./components/AddPlayerForm";
 import ListPlayerEntries from "./components/ListPlayerEntries";
+import EnhancedThemeModal from "./components/EnhancedThemeModal"
 import ThemeSelector from "./components/ThemeSelector";
 import { Competition, useCompetitions } from "./services/competitionService";
 import { useAuth } from "./contexts/AuthContext";
@@ -257,36 +258,12 @@ return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
           )}
         </Container>
 
-        {/* Theme Customization Modal */}
-        <Modal
-          opened={isThemeModalOpen}
-          onClose={() => setIsThemeModalOpen(false)}
-          title="Customize Competition Theme"
-          centered
-          size="lg"
-        >
-          <Stack gap="md">
-            <Text>
-              Choose a theme that matches your competition style. This will affect
-              the visual appearance and branding throughout the competition.
-            </Text>
-
-            <ThemeSelector
-              value={selectedCompetition?.theme || 'default'}
-              onChange={(theme) => {
-                handleThemeChange(theme);
-                setIsThemeModalOpen(false);
-              }}
-            />
-
-            <Divider />
-
-            <Text size="sm" c="dimmed">
-              Theme changes will be applied immediately and affect all participants' views.
-            </Text>
-          </Stack>
-        </Modal>
-
+     <EnhancedThemeModal
+        opened={isThemeModalOpen}
+        onClose={() => setIsThemeModalOpen(false)}
+        value={selectedCompetition?.theme || 'default'}
+        onChange={handleThemeChange}
+      />
         {/* Invite Code Modal */}
         <Modal
           opened={isInviteModalOpen}

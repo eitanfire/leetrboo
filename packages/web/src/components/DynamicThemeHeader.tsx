@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconPalette } from '@tabler/icons-react';
 import { Competition } from '../services/competitionService';
@@ -13,6 +13,30 @@ const Header: React.FC<HeaderProps> = ({ selectedCompetition, onThemeModalOpen }
   const getThemeClass = (theme?: Competition['theme']) => {
     return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
   };
+
+  // Apply theme class to document body for global theme application
+  useEffect(() => {
+    const themeClass = getThemeClass(selectedCompetition?.theme);
+    
+    // Remove all existing theme classes
+    document.body.classList.forEach(className => {
+      if (className.startsWith('theme-')) {
+        document.body.classList.remove(className);
+      }
+    });
+    
+    // Add new theme class
+    document.body.classList.add(themeClass);
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.forEach(className => {
+        if (className.startsWith('theme-')) {
+          document.body.classList.remove(className);
+        }
+      });
+    };
+  }, [selectedCompetition?.theme]);
 
   const themeClass = getThemeClass(selectedCompetition?.theme);
 
