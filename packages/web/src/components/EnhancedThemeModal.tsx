@@ -11,7 +11,6 @@ import {
   Divider,
   Grid,
   ThemeIcon,
-  Tooltip,
   Transition,
   Paper
 } from '@mantine/core';
