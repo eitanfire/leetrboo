@@ -1,6 +1,5 @@
 // src/components/JoinCompetitionModal.tsx
 import React, { useState } from "react";
-// import { createStyles } from "@mantine/styles";
 import { Modal, Text } from "@mantine/core";
 import { supabase } from "../services/supabaseClient";
 import { JoinCompetitionForm } from "./JoinCompetitionForm";
