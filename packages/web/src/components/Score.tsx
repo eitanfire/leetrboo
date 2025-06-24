@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { supabase } from "../services/supabaseClient"; // You'll need to ensure this exists
 import { Spinner } from "reactstrap";
 
