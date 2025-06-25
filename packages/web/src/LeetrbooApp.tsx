@@ -15,15 +15,12 @@ import {
   Modal,
   Paper,
   Center,
-  Card,
-  Divider,
 } from "@mantine/core";
-import { IconCopy, IconCheck, IconMaximize, IconPalette } from "@tabler/icons-react";
+import { IconCopy, IconCheck, IconMaximize } from "@tabler/icons-react";
 import Header from "./components/DynamicThemeHeader";
 import ParticipantForm from "./components/AddPlayerForm";
 import ListPlayerEntries from "./components/ListPlayerEntries";
 import EnhancedThemeModal from "./components/EnhancedThemeModal"
-import ThemeSelector from "./components/ThemeSelector";
 import { Competition, useCompetitions } from "./services/competitionService";
 import { useAuth } from "./contexts/AuthContext";
 
