@@ -1,3 +1,5 @@
+import * as sst from "@serverless-stack/resources";
+
 export default {
   app(input) {
     return {

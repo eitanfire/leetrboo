@@ -5,6 +5,10 @@
 
 declare module "sst" {
   export interface Resource {
+    "Web": {
+      "type": "sst.aws.StaticSite"
+      "url": string
+    }
   }
 }
 /// <reference path="sst-env.d.ts" />

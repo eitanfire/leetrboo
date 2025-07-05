@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "reactstrap";
 import { SignUpForm } from "./components/AuthForms";
-import { Text, Center, Grid } from "@mantine/core";
+import { Text } from "@mantine/core";
 
 const SignUp: React.FC = () => {
   return (
