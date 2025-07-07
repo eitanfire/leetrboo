@@ -1,6 +1,6 @@
-import * as sst from "@serverless-stack/resources";
+/// <reference path="./.sst/platform/config.d.ts" />
 
-export default {
+export default $config({
   app(input) {
     return {
       name: "leetrboo",
@@ -18,13 +18,11 @@ export default {
       dev: {
         command: "npm run dev",
       },
-      domain: {
-        name: "leetr.boo",
-      },
+      domain: "leetr.boo",
     });
 
     return {
       web: web.url,
     };
   },
-};
+});
