@@ -3,6 +3,7 @@ import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconPalette } from '@tabler/icons-react';
 import { Competition } from '../services/competitionService';
 import Brand from '../assets/leetrboo_brand_bg.png';
+import LogoutButton  from '../components/LogoutButton.tsx';
 
 interface HeaderProps {
   selectedCompetition: Competition | null;
@@ -72,7 +73,6 @@ const Header: React.FC<HeaderProps> = ({ selectedCompetition, onThemeModalOpen }
           }}
         />
       )}
-      
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -147,6 +147,7 @@ const Header: React.FC<HeaderProps> = ({ selectedCompetition, onThemeModalOpen }
           )}
         </div>
       </div>
+            < LogoutButton />
     </header>
   );
 };
