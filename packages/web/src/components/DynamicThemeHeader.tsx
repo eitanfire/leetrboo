@@ -80,11 +80,12 @@ const Header: React.FC<HeaderProps> = ({ selectedCompetition, onThemeModalOpen }
         maxWidth: '1200px',
         margin: '0 auto',
         position: 'relative',
-        zIndex: 1,
+        zIndex: 0,
       }}>
         <h1 style={{
           margin: 0,
-          fontSize: '1.8rem',
+                    marginLeft: 90,
+          fontSize: '2.8rem',
           fontWeight: 'bold',
           color: 'white'
         }}>
