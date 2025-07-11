@@ -13,7 +13,7 @@ interface JoinCompetitionModalProps {
 export function JoinCompetitionModal({
   opened,
   onClose,
-  zIndex = 1000, // Default zIndex if not provided
+  zIndex = 1000,
 }: JoinCompetitionModalProps) {
   const [step, setStep] = useState<"enterCode" | "enterDetails">("enterCode");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +39,6 @@ export function JoinCompetitionModal({
         // Basic URL validation
         try {
           new URL(value);
-          // Optional: Add more specific checks like requiring https://
           if (!value.startsWith("https://") && !value.startsWith("http://")) {
             return "URL must start with http:// or https://";
           }
