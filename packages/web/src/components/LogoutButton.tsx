@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, ModalHeader, ModalFooter } from "reactstrap";
-import { Text, Button, Center } from "@mantine/core";
+import { Button } from "@mantine/core";
 import { supabase } from "../services/supabaseClient";
 
 const LogoutButton: React.FC = () => {
