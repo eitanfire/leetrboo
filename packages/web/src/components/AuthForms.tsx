@@ -4,14 +4,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import {
   TextInput,
-  PasswordInput,
   Button,
   Stack,
   Alert,
   Paper,
-  Center,
-  Image,
-  BackgroundImage,
   Box,
 } from "@mantine/core";
 
