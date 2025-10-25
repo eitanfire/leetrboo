@@ -111,92 +111,93 @@ export const SignInForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Paper component="form" onSubmit={handleSignIn} p="md">
-      <Stack>
-        {state.error && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            className="error danger"
-            title="Error"
-          >
-            {state.error}
-          </Alert>
-        )}
-        {state.message && (
-          <Alert
-            icon={<IconCheck size={16} />}
-            className="success"
-            title="Success"
-          >
-            {state.message}
-          </Alert>
-        )}
-        <TextInput
-          className="input-field"
-          label="Email"
-          type="email"
-          value={state.email}
-          onChange={(e) =>
-            setState((s) => ({
-              ...s,
-              email: e.target.value.trim(),
-              emailError: null,
-            }))
-          }
-          placeholder="Enter your email"
-          required
-          error={state.emailError}
-        />
-        <Box className="mt-4" style={{ position: "relative" }}>
+    <form onSubmit={handleSignIn}>
+      <Paper p="md">
+        <Stack>
+          {state.error && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              className="error danger"
+              title="Error"
+            >
+              {state.error}
+            </Alert>
+          )}
+          {state.message && (
+            <Alert
+              icon={<IconCheck size={16} />}
+              className="success"
+              title="Success"
+            >
+              {state.message}
+            </Alert>
+          )}
           <TextInput
             className="input-field"
-            label="Password"
-            value={state.password}
+            label="Email"
+            type="email"
+            value={state.email}
             onChange={(e) =>
               setState((s) => ({
                 ...s,
-                password: e.target.value,
-                passwordError: null,
+                email: e.target.value.trim(),
+                emailError: null,
               }))
             }
-            placeholder="Enter your password"
+            placeholder="Enter your email"
             required
-            type={showPassword ? "text" : "password"}
-            error={state.passwordError}
+            error={state.emailError}
           />
-          {/* Add a separate clickable eye icon element */}
-          <div
-            style={{
-              position: "absolute",
-              right: "4px",
-              top: "75%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              zIndex: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "30px",
-              width: "30px",
-            }}
-            onClick={() => setShowPassword(!showPassword)}
+          <Box className="mt-4" style={{ position: "relative" }}>
+            <TextInput
+              className="input-field"
+              label="Password"
+              value={state.password}
+              onChange={(e) =>
+                setState((s) => ({
+                  ...s,
+                  password: e.target.value,
+                  passwordError: null,
+                }))
+              }
+              placeholder="Enter your password"
+              required
+              type={showPassword ? "text" : "password"}
+              error={state.passwordError}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: "4px",
+                top: "75%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "30px",
+                width: "30px",
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <IconEyeOff size={16} />
+              ) : (
+                <IconEyeCheck size={16} />
+              )}
+            </div>
+          </Box>
+          <Button
+            className="sign-in-btn primary mt-4"
+            type="submit"
+            loading={state.loading}
           >
-            {showPassword ? (
-              <IconEyeOff size={16} />
-            ) : (
-              <IconEyeCheck size={16} />
-            )}
-          </div>
-        </Box>
-        <Button
-          className="sign-in-btn primary mt-4"
-          type="submit"
-          loading={state.loading}
-        >
-          {state.loading ? "Signing In..." : "Sign In"}
-        </Button>
-      </Stack>
-    </Paper>
+            {state.loading ? "Signing In..." : "Sign In"}
+          </Button>
+        </Stack>
+      </Paper>
+    </form>
   );
 };
 
@@ -287,95 +288,97 @@ export const SignUpForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Paper component="form" onSubmit={handleSignUp} p="md">
-      <Stack>
-        {state.error && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            className="error danger"
-            title="Error"
-          >
-            {state.error}
-          </Alert>
-        )}
-        {state.message && (
-          <Alert
-            icon={<IconCheck size={16} />}
-            className="success"
-            title="Success"
-          >
-            {state.message}
-          </Alert>
-        )}
+    <form onSubmit={handleSignUp}>
+      <Paper p="md">
+        <Stack>
+          {state.error && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              className="error danger"
+              title="Error"
+            >
+              {state.error}
+            </Alert>
+          )}
+          {state.message && (
+            <Alert
+              icon={<IconCheck size={16} />}
+              className="success"
+              title="Success"
+            >
+              {state.message}
+            </Alert>
+          )}
 
-        <TextInput
-          className="input-field mb-4"
-          label="Email"
-          type="email"
-          value={state.email}
-          onChange={(e) =>
-            setState((s) => ({
-              ...s,
-              email: e.target.value.trim(),
-              emailError: null,
-            }))
-          }
-          placeholder="Enter your email"
-          required
-          error={state.emailError}
-        />
-
-        <Box style={{ position: "relative" }} className="mb-4">
           <TextInput
-            className="input-field"
-            label="Password"
-            value={state.password}
+            className="input-field mb-4"
+            label="Email"
+            type="email"
+            value={state.email}
             onChange={(e) =>
               setState((s) => ({
                 ...s,
-                password: e.target.value,
-                passwordError: null,
+                email: e.target.value.trim(),
+                emailError: null,
               }))
             }
-            placeholder="Enter your password"
+            placeholder="Enter your email"
             required
-            minLength={6}
-            type={showPassword ? "text" : "password"}
-            error={state.passwordError}
+            error={state.emailError}
           />
-          <div
-            style={{
-              position: "absolute",
-              right: "4px",
-              top: "75%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              zIndex: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "30px",
-              width: "30px",
-            }}
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? (
-              <IconEyeOff size={16} />
-            ) : (
-              <IconEyeCheck size={16} />
-            )}
-          </div>
-        </Box>
 
-        <Button
-          className="sign-up-btn primary"
-          type="submit"
-          loading={state.loading}
-        >
-          {state.loading ? "Signing Up..." : "Sign Up"}
-        </Button>
-      </Stack>
-    </Paper>
+          <Box style={{ position: "relative" }} className="mb-4">
+            <TextInput
+              className="input-field"
+              label="Password"
+              value={state.password}
+              onChange={(e) =>
+                setState((s) => ({
+                  ...s,
+                  password: e.target.value,
+                  passwordError: null,
+                }))
+              }
+              placeholder="Enter your password"
+              required
+              minLength={6}
+              type={showPassword ? "text" : "password"}
+              error={state.passwordError}
+            />
+            <div
+              style={{
+                position: "absolute",
+                right: "4px",
+                top: "75%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "30px",
+                width: "30px",
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <IconEyeOff size={16} />
+              ) : (
+                <IconEyeCheck size={16} />
+              )}
+            </div>
+          </Box>
+
+          <Button
+            className="sign-up-btn primary"
+            type="submit"
+            loading={state.loading}
+          >
+            {state.loading ? "Signing Up..." : "Sign Up"}
+          </Button>
+        </Stack>
+      </Paper>
+    </form>
   );
 };
 
@@ -435,53 +438,55 @@ export const RequestPasswordResetForm: React.FC<AuthFormProps> = ({
   };
 
   return (
-    <Paper component="form" onSubmit={handleResetRequest} p="md">
-      <Stack>
-        {state.error && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            className="error danger"
-            title="Error"
-          >
-            {state.error}
-          </Alert>
-        )}
-        {state.message && (
-          <Alert
-            icon={<IconCheck size={16} />}
-            className="success"
-            title="Success"
-          >
-            {state.message}
-          </Alert>
-        )}
+    <form onSubmit={handleResetRequest}>
+      <Paper p="md">
+        <Stack>
+          {state.error && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              className="error danger"
+              title="Error"
+            >
+              {state.error}
+            </Alert>
+          )}
+          {state.message && (
+            <Alert
+              icon={<IconCheck size={16} />}
+              className="success"
+              title="Success"
+            >
+              {state.message}
+            </Alert>
+          )}
 
-        <TextInput
-          className="input-field mb-4"
-          label="Email"
-          type="email"
-          value={state.email}
-          onChange={(e) =>
-            setState((s) => ({
-              ...s,
-              email: e.target.value.trim(),
-              emailError: null,
-            }))
-          }
-          placeholder="Enter your email"
-          required
-          error={state.emailError}
-        />
+          <TextInput
+            className="input-field mb-4"
+            label="Email"
+            type="email"
+            value={state.email}
+            onChange={(e) =>
+              setState((s) => ({
+                ...s,
+                email: e.target.value.trim(),
+                emailError: null,
+              }))
+            }
+            placeholder="Enter your email"
+            required
+            error={state.emailError}
+          />
 
-        <Button
-          className="primary reset-btn"
-          type="submit"
-          loading={state.loading}
-        >
-          {state.loading ? "Sending..." : "Send Reset Link"}
-        </Button>
-      </Stack>
-    </Paper>
+          <Button
+            className="primary reset-btn"
+            type="submit"
+            loading={state.loading}
+          >
+            {state.loading ? "Sending..." : "Send Reset Link"}
+          </Button>
+        </Stack>
+      </Paper>
+    </form>
   );
 };
 
@@ -498,7 +503,6 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
     confirmPasswordError: null,
   });
 
-  // Add state for password visibility
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -607,121 +611,123 @@ export const SetNewPasswordForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Paper component="form" onSubmit={handleSetPassword} p="md">
-      <Stack>
-        {state.error && (
-          <Alert
-            icon={<IconAlertCircle size={16} />}
-            className="error danger"
-            title="Error"
-          >
-            {state.error}
-          </Alert>
-        )}
-        {state.message && (
-          <Alert
-            icon={<IconCheck size={16} />}
-            className="success"
-            title="Success"
-          >
-            {state.message}
-          </Alert>
-        )}
+    <form onSubmit={handleSetPassword}>
+      <Paper p="md">
+        <Stack>
+          {state.error && (
+            <Alert
+              icon={<IconAlertCircle size={16} />}
+              className="error danger"
+              title="Error"
+            >
+              {state.error}
+            </Alert>
+          )}
+          {state.message && (
+            <Alert
+              icon={<IconCheck size={16} />}
+              className="success"
+              title="Success"
+            >
+              {state.message}
+            </Alert>
+          )}
 
-        <Box
-          style={{ position: "relative" }}
-          p="md"
-          w="100%"
-          maw="500px"
-          className="mb-4"
-        >
-          <TextInput
-            className="input-field"
-            label="New Password"
-            value={state.password}
-            onChange={(e) =>
-              setState((s) => ({
-                ...s,
-                password: e.target.value,
-                passwordError: null,
-              }))
-            }
-            placeholder="Enter your new password"
-            required
-            minLength={6}
-            type={showPassword ? "text" : "password"}
-            error={state.passwordError}
-          />
-          <div
-            style={{
-              position: "absolute",
-              left: "-7%",
-              top: "75%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              zIndex: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "30px",
-              width: "30px",
-            }}
-            onClick={() => setShowPassword(!showPassword)}
+          <Box
+            style={{ position: "relative" }}
+            p="md"
+            w="100%"
+            maw="500px"
+            className="mb-4"
           >
-            {showPassword ? (
-              <IconEyeOff size={16} />
-            ) : (
-              <IconEyeCheck size={16} />
-            )}
-          </div>
-        </Box>
+            <TextInput
+              className="input-field"
+              label="New Password"
+              value={state.password}
+              onChange={(e) =>
+                setState((s) => ({
+                  ...s,
+                  password: e.target.value,
+                  passwordError: null,
+                }))
+              }
+              placeholder="Enter your new password"
+              required
+              minLength={6}
+              type={showPassword ? "text" : "password"}
+              error={state.passwordError}
+            />
+            <div
+              style={{
+                position: "absolute",
+                left: "-7%",
+                top: "75%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "30px",
+                width: "30px",
+              }}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <IconEyeOff size={16} />
+              ) : (
+                <IconEyeCheck size={16} />
+              )}
+            </div>
+          </Box>
 
-        <Box style={{ position: "relative" }} className="mb-4">
-          <TextInput
-            className="input-field"
-            label="Confirm New Password"
-            value={state.confirmPassword}
-            onChange={(e) =>
-              setState((s) => ({
-                ...s,
-                confirmPassword: e.target.value,
-                confirmPasswordError: null,
-              }))
-            }
-            placeholder="Confirm your new password"
-            required
-            minLength={6}
-            type={showConfirmPassword ? "text" : "password"}
-            error={state.confirmPasswordError}
-          />
-          <div
-            style={{
-              position: "absolute",
-              left: "-7%",
-              top: "75%",
-              transform: "translateY(-50%)",
-              cursor: "pointer",
-              zIndex: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "30px",
-              width: "30px",
-            }}
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          >
-            {showConfirmPassword ? (
-              <IconEyeOff size={16} />
-            ) : (
-              <IconEyeCheck size={16} />
-            )}
-          </div>
-        </Box>
+          <Box style={{ position: "relative" }} className="mb-4">
+            <TextInput
+              className="input-field"
+              label="Confirm New Password"
+              value={state.confirmPassword}
+              onChange={(e) =>
+                setState((s) => ({
+                  ...s,
+                  confirmPassword: e.target.value,
+                  confirmPasswordError: null,
+                }))
+              }
+              placeholder="Confirm your new password"
+              required
+              minLength={6}
+              type={showConfirmPassword ? "text" : "password"}
+              error={state.confirmPasswordError}
+            />
+            <div
+              style={{
+                position: "absolute",
+                left: "-7%",
+                top: "75%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                zIndex: 10,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "30px",
+                width: "30px",
+              }}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? (
+                <IconEyeOff size={16} />
+              ) : (
+                <IconEyeCheck size={16} />
+              )}
+            </div>
+          </Box>
 
-        <Button className="primary" type="submit" loading={state.loading}>
-          {state.loading ? "Updating..." : "Update Password"}
-        </Button>
-      </Stack>
-    </Paper>
+          <Button className="primary" type="submit" loading={state.loading}>
+            {state.loading ? "Updating..." : "Update Password"}
+          </Button>
+        </Stack>
+      </Paper>
+    </form>
   );
 };

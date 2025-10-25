@@ -54,32 +54,32 @@ const LeetrbooApp: React.FC = () => {
   }, [competitions, selectedCompetition]);
 
   const getThemeClass = (theme?: Competition['theme']) => {
-return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
+    return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
   };
 
- const handleThemeChange = async (theme: Competition['theme']) => {
-  console.log('handleThemeChange called with theme:', theme);
-  console.log('selectedCompetition before update:', selectedCompetition);
-  
-  if (!selectedCompetition) {
-    console.log('No selected competition, returning early');
-    return;
-  }
-
-  try {
-    console.log('Calling updateCompetitionTheme...');
-    await updateCompetitionTheme(selectedCompetition.id, theme);
-    console.log('updateCompetitionTheme completed successfully');
+  const handleThemeChange = async (theme: Competition['theme']) => {
+    console.log('handleThemeChange called with theme:', theme);
+    console.log('selectedCompetition before update:', selectedCompetition);
     
-    setSelectedCompetition(prev => {
-      const newCompetition = prev ? { ...prev, theme } : null;
-      console.log('Updated selectedCompetition:', newCompetition);
-      return newCompetition;
-    });
-  } catch (error) {
-    console.error("Failed to update theme:", error);
-  }
-};
+    if (!selectedCompetition) {
+      console.log('No selected competition, returning early');
+      return;
+    }
+
+    try {
+      console.log('Calling updateCompetitionTheme...');
+      await updateCompetitionTheme(selectedCompetition.id, theme);
+      console.log('updateCompetitionTheme completed successfully');
+      
+      setSelectedCompetition(prev => {
+        const newCompetition = prev ? { ...prev, theme } : null;
+        console.log('Updated selectedCompetition:', newCompetition);
+        return newCompetition;
+      });
+    } catch (error) {
+      console.error("Failed to update theme:", error);
+    }
+  };
  
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserHasTypedName(true);
@@ -89,10 +89,11 @@ return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
   if (authLoading || competitionsLoading) {
     return (
       <Container fluid className="p-0">
-<Header 
-  selectedCompetition={selectedCompetition} 
-  onThemeModalOpen={() => setIsThemeModalOpen(true)}
-/>        <Container className="mt-4">
+        <Header 
+          selectedCompetition={selectedCompetition} 
+          onThemeModalOpen={() => setIsThemeModalOpen(true)}
+        />
+        <Container className="mt-4">
           <Row>
             <Col
               className="d-flex justify-content-center align-items-center"
@@ -117,9 +118,9 @@ return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
     return (
       <Container fluid className="p-0">
         <Header 
-  selectedCompetition={selectedCompetition} 
-  onThemeModalOpen={() => setIsThemeModalOpen(true)}
-/>
+          selectedCompetition={selectedCompetition} 
+          onThemeModalOpen={() => setIsThemeModalOpen(true)}
+        />
         <Container className="mt-4">
           <Row>
             <Col>
@@ -141,12 +142,12 @@ return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
   }
 
   return (
-<div className={getThemeClass(selectedCompetition?.theme)}>
+    <div className={getThemeClass(selectedCompetition?.theme)}>
       <Container fluid className="p-0">
         <Header 
-  selectedCompetition={selectedCompetition} 
-  onThemeModalOpen={() => setIsThemeModalOpen(true)}
-/>
+          selectedCompetition={selectedCompetition} 
+          onThemeModalOpen={() => setIsThemeModalOpen(true)}
+        />
         <Container className="mt-4">
           {competitions.length === 0 ? (
             <Row>
@@ -255,12 +256,13 @@ return theme ? `theme-${theme.replaceAll('_', '-')}` : 'theme-default';
           )}
         </Container>
 
-     <EnhancedThemeModal
-        opened={isThemeModalOpen}
-        onClose={() => setIsThemeModalOpen(false)}
-        value={selectedCompetition?.theme || 'default'}
-        onChange={handleThemeChange}
-      />
+        <EnhancedThemeModal
+          opened={isThemeModalOpen}
+          onClose={() => setIsThemeModalOpen(false)}
+          value={selectedCompetition?.theme || 'default'}
+          onChange={handleThemeChange}
+        />
+
         {/* Invite Code Modal */}
         <Modal
           opened={isInviteModalOpen}
