@@ -143,7 +143,7 @@ export function JoinCompetitionForm({
           title="Success"
           color="green"
           withCloseButton
-          onClose={() => setSuccess(null)} // Or maybe keep it until modal closes
+          onClose={() => setSuccess(null)}
           mb="md"
           variant="light"
         >

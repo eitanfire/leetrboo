@@ -7,7 +7,7 @@
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.14.0",
-    "@mantine/form": "^7.17.4",
+    "@mantine/form": "^7.17.8",
     "@mantine/styles": "^6.0.22",
     "@serverless-stack/resources": "^1.18.4",
     "@supabase/supabase-js": "^2.47.10",
