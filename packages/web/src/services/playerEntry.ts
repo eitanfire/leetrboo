@@ -67,6 +67,23 @@ export function usePlayerEntries(competitionId?: string) {
     return data as PlayerEntry;
   };
 
+  const deletePlayerEntry = async (entryId: string): Promise<void> => {
+    const { error: deleteError } = await supabase
+      .from("player_entries")
+      .delete()
+      .eq("id", entryId);
+
+    if (deleteError) {
+      throw deleteError;
+    }
+
+    // Manually update state as fallback if realtime doesn't trigger
+    setPlayerEntries((current) =>
+      current.filter((entry) => entry.id !== entryId)
+    );
+    setParticipantCount((currentCount) => currentCount - 1);
+  };
+
   useEffect(() => {
     fetchPlayerEntries();
 
@@ -116,6 +133,7 @@ export function usePlayerEntries(competitionId?: string) {
             filter: `competition_id=eq.${competitionId}`,
           },
           (payload) => {
+            console.log('DELETE event received:', payload);
             setPlayerEntries((current) =>
               current.filter((entry) => entry.id !== payload.old.id)
             );
@@ -137,5 +155,6 @@ export function usePlayerEntries(competitionId?: string) {
     error,
     refreshPlayerEntries: fetchPlayerEntries,
     insertPlayerEntry,
+    deletePlayerEntry,
   };
 }

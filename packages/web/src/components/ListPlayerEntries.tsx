@@ -1,5 +1,5 @@
-import React, { useMemo } from "react";
-import { Table, Spinner, Alert } from "reactstrap";
+import React, { useMemo, useState } from "react";
+import { Table, Spinner, Alert, Button } from "reactstrap";
 import { usePlayerEntries } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
 import Score from "./Score";
@@ -11,9 +11,38 @@ interface ListPlayerEntriesProps {
 const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
   selectedCompetition,
 }) => {
-  const { playerEntries, isLoading, error } = usePlayerEntries(
+  const { playerEntries, isLoading, error, deletePlayerEntry } = usePlayerEntries(
     selectedCompetition.id.toString()
   );
+  const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
+
+  const handleDelete = async (entryId: string, playerName: string) => {
+    if (!window.confirm(`Are you sure you want to delete ${playerName}'s entry?`)) {
+      return;
+    }
+
+    setDeletingIds((prev) => new Set(prev).add(entryId));
+
+    try {
+      console.log('Attempting to delete entry:', entryId);
+      await deletePlayerEntry(entryId);
+      console.log('Delete successful for entry:', entryId);
+      // Successfully deleted - remove from loading state
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(entryId);
+        return next;
+      });
+    } catch (err) {
+      console.error('Delete failed:', err);
+      alert(`Failed to delete entry: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setDeletingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(entryId);
+        return next;
+      });
+    }
+  };
 
   // Sort entries: scored entries first (highest to lowest), then unscored entries
   const sortedEntries = useMemo(() => {
@@ -77,6 +106,7 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
             <th>Name</th>
             <th>Video</th>
             <th>Score</th>
+            <th>Delete</th>
             {/* <th>Submitted</th> */}
           </tr>
         </thead>
@@ -95,6 +125,16 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
               </td>
               <td>
                 <Score entryId={entry.id} initialScore={entry.score} />
+              </td>
+              <td>
+                <Button
+                  color="danger"
+                  size="sm"
+                  onClick={() => handleDelete(entry.id, entry.player_name)}
+                  disabled={deletingIds.has(entry.id)}
+                >
+                  {deletingIds.has(entry.id) ? 'Deleting...' : 'Delete'}
+                </Button>
               </td>
               {/* <td>{new Date(entry.created_at).toLocaleDateString()}</td> */}
             </tr>
