@@ -6,6 +6,7 @@ export interface PlayerEntry {
   player_name: string;
   video_url: string;
   score?: number;
+  comments?: string;
   created_at: string;
   competition_id: string;
 }
@@ -84,6 +85,30 @@ export function usePlayerEntries(competitionId?: string) {
     setParticipantCount((currentCount) => currentCount - 1);
   };
 
+  const updateComments = async (entryId: string, comments: string): Promise<void> => {
+    console.log('Updating comments for entry:', entryId, 'with:', comments);
+
+    const { data, error: updateError } = await supabase
+      .from("player_entries")
+      .update({ comments })
+      .eq("id", entryId)
+      .select();
+
+    if (updateError) {
+      console.error('Update comments error:', updateError);
+      throw updateError;
+    }
+
+    console.log('Update successful, data:', data);
+
+    // Manually update state as fallback if realtime doesn't trigger
+    setPlayerEntries((current) =>
+      current.map((entry) =>
+        entry.id === entryId ? { ...entry, comments } : entry
+      )
+    );
+  };
+
   useEffect(() => {
     fetchPlayerEntries();
 
@@ -156,5 +181,6 @@ export function usePlayerEntries(competitionId?: string) {
     refreshPlayerEntries: fetchPlayerEntries,
     insertPlayerEntry,
     deletePlayerEntry,
+    updateComments,
   };
 }

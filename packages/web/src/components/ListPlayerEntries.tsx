@@ -4,6 +4,7 @@ import { usePlayerEntries } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
 import Score from "./Score";
 import YouTubePlayer from "./YouTubePlayer";
+import Comment from "./Comment";
 
 interface ListPlayerEntriesProps {
   selectedCompetition: Competition;
@@ -12,7 +13,7 @@ interface ListPlayerEntriesProps {
 const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
   selectedCompetition,
 }) => {
-  const { playerEntries, isLoading, error, deletePlayerEntry } = usePlayerEntries(
+  const { playerEntries, isLoading, error, deletePlayerEntry, updateComments } = usePlayerEntries(
     selectedCompetition.id.toString()
   );
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
@@ -107,7 +108,8 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
             <th>Name</th>
             <th>Video</th>
             <th>Score</th>
-            <th>Delete</th>
+            <th>Comments</th>
+            <th>Actions</th>
             {/* <th>Submitted</th> */}
           </tr>
         </thead>
@@ -123,6 +125,13 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
               </td>
               <td>
                 <Score entryId={entry.id} initialScore={entry.score} />
+              </td>
+              <td style={{ maxWidth: "300px" }}>
+                <Comment
+                  entryId={entry.id}
+                  initialComments={entry.comments}
+                  onUpdate={updateComments}
+                />
               </td>
               <td>
                 <Button
