@@ -3,6 +3,7 @@ import { Table, Spinner, Alert, Button } from "reactstrap";
 import { usePlayerEntries } from "../services/playerEntry";
 import type { Competition } from "../services/competitionService";
 import Score from "./Score";
+import YouTubePlayer from "./YouTubePlayer";
 
 interface ListPlayerEntriesProps {
   selectedCompetition: Competition;
@@ -115,13 +116,10 @@ const ListPlayerEntries: React.FC<ListPlayerEntriesProps> = ({
             <tr key={entry.id}>
               <td>{entry.player_name}</td>
               <td>
-                <a
-                  href={entry.video_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <button> 🎤 Watch Video</button>
-                </a>
+                <YouTubePlayer
+                  videoUrl={entry.video_url}
+                  playerName={entry.player_name}
+                />
               </td>
               <td>
                 <Score entryId={entry.id} initialScore={entry.score} />
